@@ -1,7 +1,11 @@
 import { app, session } from 'electron'
 import serve from 'electron-serve'
-import { createWindow } from './helpers'
+import path from 'path'
 
+import { createWindow } from './helpers'
+import { registerIpc } from './helpers/ipc'
+
+console.log('load: background.ts')
 
 
 const isProd: boolean = process.env.NODE_ENV === 'production'
@@ -74,7 +78,13 @@ if (isProd) {
     const mainWindow = createWindow('main', {
         width: 1600,
         height: 800,
+
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+        },
     })
+
+    registerIpc()
 
     if (isProd) {
         await mainWindow.loadURL('app://./home')

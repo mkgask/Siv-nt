@@ -3,16 +3,15 @@ import Image from 'next/image'
 import { Box, Typography } from '@mui/material'
 
 
-
 const accepted_types = {
-    'image/png': 'img',
-    'image/apng': 'img',
-    'image/jpeg': 'img',
-    'image/gif': 'img',
-    'image/bmp': 'img',
-    'image/svg+xml': 'img',
-    'image/webp': 'img',
-    'image/avif': 'img',
+    'image/png': 'image',
+    'image/apng': 'image',
+    'image/jpeg': 'image',
+    'image/gif': 'image',
+    'image/bmp': 'image',
+    'image/svg+xml': 'image',
+    'image/webp': 'image',
+    'image/avif': 'image',
 /*
     'video/mp4': 'video',
     'video/webm': 'video',
@@ -31,10 +30,10 @@ const accepted_types = {
 
 
 
-const calculateDisplayFileSize = (size) => {
+const calculateDisplayFileSize = (size: number) => {
     const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     const index = Math.floor(Math.log(size) / Math.log(1024))
-    const display_size = (size / Math.pow(1024, index)).toFixed(2) * 1 + ' ' + units[index]
+    const display_size = (size / Math.pow(1024, index)).toFixed(2) + ' ' + units[index]
     return display_size
 }
 
@@ -64,7 +63,13 @@ function MediaViewer() {
 
         const size = calculateDisplayFileSize(file.size)
         setSize(size)
-
+/*
+        window.ipc.changeView({
+            type: type,
+            path: path,
+            size: size,
+        })
+*/
         const reader = new FileReader()
         reader.onload = (e) => { setSrc(e.target.result) }
         reader.readAsDataURL(file)
@@ -84,7 +89,7 @@ function MediaViewer() {
             onDragOver={handleDragOver}
             style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
-            {src && type === 'img' &&
+            {src && type === 'image' &&
                 <Image
                     className='media-viewer'
                     src={src}

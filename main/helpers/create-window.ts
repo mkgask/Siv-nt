@@ -7,7 +7,8 @@ import {
 
 import Store from 'electron-store'
 
-import { registerIpc } from './ipc'
+console.log('load: create-window.ts')
+
 
 
 export const createWindow = (
@@ -81,6 +82,8 @@ export const createWindow = (
 
     state = ensureVisibleOnSomeDisplay(restore())
 
+    console.log('__dirname: ' + __dirname)
+
     const win = new BrowserWindow({
         ...state,
         ...options,
@@ -91,8 +94,6 @@ export const createWindow = (
     })
 
     win.on('close', saveState)
-
-    registerIpc()
 
     return win
 }
