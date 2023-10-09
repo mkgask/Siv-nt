@@ -1,0 +1,12 @@
+appId: jp.zsw.nt.siv
+productName: Siv-nt
+copyright: Copyright © 2023 @mkgask
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
