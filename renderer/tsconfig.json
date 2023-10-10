@@ -5,7 +5,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../main/**/*.ts",
   ],
 
   "exclude": ["node_modules"]

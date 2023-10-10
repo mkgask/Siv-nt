@@ -63,13 +63,15 @@ function MediaViewer() {
 
         const size = calculateDisplayFileSize(file.size)
         setSize(size)
-/*
-        window.ipc.changeView({
+
+        const { ipc } = window as any
+
+        ipc.changeView({
             type: type,
             path: path,
             size: size,
         })
-*/
+
         const reader = new FileReader()
         reader.onload = (e) => { setSrc(e.target.result) }
         reader.readAsDataURL(file)
