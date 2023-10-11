@@ -1,6 +1,17 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Box, Typography } from '@mui/material'
+import styled from '@emotion/styled'
+
+
+
+const Theme = styled('div')(({ theme }) => {
+    return {
+        width: '100%',
+        height: '100%',
+    }
+})
+
 
 
 const accepted_types = {
@@ -86,45 +97,47 @@ export default function MediaViewer() {
 
 
     return (
-        <Box
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            className="media-viewer"
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-        >
-            {src && type === 'image' &&
-                <Image
-                    className='media-viewer-image'
-                    src={src}
-                    alt='Image'
-                    layout='inrinsic'
-                    width={5120}
-                    height={5120}
-                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                />
-            }
-{/*
-            {src && type === 'video' &&
-                <video
-                    className='media-viewer-video'
-                    src={src}
-                />
-            }
-            {src && type === 'audio' &&
-                <audio
-                    className='media-viewer-audio'
-                    src={src}
-                />
-            }
-*/}
-            {(!src || !type) &&
-                <Typography
-                    className='media-viewer-drag-here'
-                >
-                    Drop any media file here
-                </Typography>
-            }
-        </Box>
+        <Theme>
+            <Box
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                className="media-viewer"
+                style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                {src && type === 'image' &&
+                    <Image
+                        className='media-viewer-image'
+                        src={src}
+                        alt='Image'
+                        layout='inrinsic'
+                        width={5120}
+                        height={5120}
+                        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                    />
+                }
+    {/*
+                {src && type === 'video' &&
+                    <video
+                        className='media-viewer-video'
+                        src={src}
+                    />
+                }
+                {src && type === 'audio' &&
+                    <audio
+                        className='media-viewer-audio'
+                        src={src}
+                    />
+                }
+    */}
+                {(!src || !type) &&
+                    <Typography
+                        className='media-viewer-drag-here'
+                    >
+                        Drop any media file here
+                    </Typography>
+                }
+            </Box>
+        </Theme>
     )
 }
 

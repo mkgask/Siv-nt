@@ -11,7 +11,8 @@ import MediaViewer from '../components/media-viewer'
 import FileInfo from '../components/file-info'
 
 
-const Root = styled('section')(({ theme }) => {
+
+const Theme = styled('section')(({ theme }) => {
     return {
         textAlign: 'center',
         height: '100vh',
@@ -49,9 +50,9 @@ function Home() {
             <Head>
                 <title>{packageJson.name} v{packageJson.version}</title>
             </Head>
-            <Root>
+            <Theme>
                 <MediaViewer></MediaViewer>
-            </Root>
+            </Theme>
             <AppBar position='fixed' color='primary' sx={{ top: 'auto', bottom: 0 }}>
                 <Toolbar>
                     <Stack>

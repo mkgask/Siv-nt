@@ -1,14 +1,19 @@
-import React, { useEffect } from "react"
-import Box from "@mui/material/Box"
+import { useEffect, useState } from "react"
+import styled from '@emotion/styled'
+
+const Theme = styled('div')(({ theme }) => {
+    return {
+    }
+})
+
 
 
 export default function FileInfo() {
 
-    const [filePath, setFilePath] = React.useState(null)
-    const [fileSize, setFileSize] = React.useState(null)
+    const [filePath, setFilePath] = useState(null)
+    const [fileSize, setFileSize] = useState(null)
 
     useEffect(() => {
-
         const { ipc } = window as any
 
         ipc.onChangeFilePath((path) => {
@@ -23,9 +28,9 @@ export default function FileInfo() {
     }, [])
 
     return (
-        <Box className="file-info">
-            <p className="file-path">{filePath}</p>
-            <p className="file-size">{fileSize}</p>
-        </Box>
+        <Theme className="file-info">
+            <p className="filepath">{filePath}</p>
+            <p className="filesize">{fileSize}</p>
+        </Theme>
     )
 }
