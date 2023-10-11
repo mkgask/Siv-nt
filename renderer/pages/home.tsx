@@ -4,9 +4,11 @@ import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import { AppBar, IconButton, Toolbar, styled, Link, Box, Menu, MenuItem, Stack } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import packageJson from '../../package.json'
-import MediaViewer from '../components/media-viewer'
 
+import packageJson from '../../package.json'
+
+import MediaViewer from '../components/media-viewer'
+import FileInfo from '../components/file-info'
 
 
 const Root = styled('section')(({ theme }) => {
@@ -42,8 +44,6 @@ function Home() {
     }
 
 
-
-
     return (
         <React.Fragment>
             <Head>
@@ -55,8 +55,7 @@ function Home() {
             <AppBar position='fixed' color='primary' sx={{ top: 'auto', bottom: 0 }}>
                 <Toolbar>
                     <Stack>
-                        FilePath: <br />
-                        FileSize: <br />
+                        <FileInfo></FileInfo>
                     </Stack>
                     {/*
             <Box sx={{ flexGrow: 1 }} />

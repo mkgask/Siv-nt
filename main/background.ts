@@ -84,7 +84,7 @@ if (isProd) {
         },
     })
 
-    registerIpc()
+    registerIpc(mainWindow)
 
     if (isProd) {
         await mainWindow.loadURL('app://./home')

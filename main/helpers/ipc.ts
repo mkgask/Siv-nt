@@ -5,7 +5,7 @@ console.log('load: ipc.ts')
 
 
 
-export const registerIpc = () => {
+export const registerIpc = (mainWindow) => {
 
     console.log('call: registerIpc')
 
@@ -27,6 +27,9 @@ export const registerIpc = () => {
         console.log('changeView: path', item.path)
         console.log('changeView: type', item.type)
         console.log('changeView: size', item.size)
+
+        mainWindow.webContents.send('changeFilePath', item.path)
+        mainWindow.webContents.send('changeFileSize', item.size)
     })
 
     function validateSender(frame) {

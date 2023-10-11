@@ -39,7 +39,7 @@ const calculateDisplayFileSize = (size: number) => {
 
 
 
-function MediaViewer() {
+export default function MediaViewer() {
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
     const [path, setPath] = useState(null)
@@ -89,11 +89,12 @@ function MediaViewer() {
         <Box
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+            className="media-viewer"
             style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
             {src && type === 'image' &&
                 <Image
-                    className='media-viewer'
+                    className='media-viewer-image'
                     src={src}
                     alt='Image'
                     layout='inrinsic'
@@ -105,20 +106,20 @@ function MediaViewer() {
 {/*
             {src && type === 'video' &&
                 <video
-                    className='media-viewer'
+                    className='media-viewer-video'
                     src={src}
                 />
             }
             {src && type === 'audio' &&
                 <audio
-                    className='media-viewer'
+                    className='media-viewer-audio'
                     src={src}
                 />
             }
 */}
             {(!src || !type) &&
                 <Typography
-                    className='media-viewer'
+                    className='media-viewer-drag-here'
                 >
                     Drop any media file here
                 </Typography>
@@ -126,9 +127,5 @@ function MediaViewer() {
         </Box>
     )
 }
-
-
-
-export default MediaViewer
 
 
