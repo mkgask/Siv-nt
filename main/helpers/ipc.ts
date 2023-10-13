@@ -5,7 +5,7 @@ console.log('load: ipc.ts')
 
 
 
-export const registerIpc = (mainWindow) => {
+export default function registerIpc(mainWindow) {
 
     console.log('call: registerIpc')
 

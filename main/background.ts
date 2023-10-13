@@ -3,7 +3,8 @@ import serve from 'electron-serve'
 import path from 'path'
 
 import { createWindow } from './helpers'
-import { registerIpc } from './helpers/ipc'
+import registerIpc from './helpers/ipc'
+import openAssociation from './helpers/open-association'
 
 console.log('load: background.ts')
 
@@ -37,6 +38,7 @@ if (isProd) {
 
             webPreferences.nodeIntegration = false;
             webPreferences.nodeIntegrationInWorker = false;
+            webPreferences.nodeIntegrationInSubFrames = false;
             webPreferences.sandbox = true;
             webPreferences.contextIsolation = true;
 
@@ -80,11 +82,18 @@ if (isProd) {
         height: 800,
 
         webPreferences: {
+            nodeIntegration: true,    // 本当ならfalseにしたいが、何故かpreloadスクリプトが読まれなくなるので一旦true
+            nodeIntegrationInWorker: false,
+            nodeIntegrationInSubFrames: false,
+            sandbox: true,
+            contextIsolation: true,
+
             preload: path.join(__dirname, 'preload.js'),
         },
     })
 
     registerIpc(mainWindow)
+    openAssociation(mainWindow)
 
     if (isProd) {
         await mainWindow.loadURL('app://./home')
