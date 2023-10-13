@@ -2,7 +2,19 @@ import React from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Typography from '@mui/material/Typography'
-import { AppBar, IconButton, Toolbar, styled, Link, Box, Menu, MenuItem, Stack } from '@mui/material'
+
+import {
+    AppBar,
+    IconButton,
+    Toolbar,
+    styled,
+    Link,
+    Box,
+    Menu,
+    MenuItem,
+    Stack
+ } from '@mui/material'
+
 import MenuIcon from '@mui/icons-material/Menu'
 
 import packageJson from '../../package.json'

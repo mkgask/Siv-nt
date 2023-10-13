@@ -14,14 +14,14 @@ export default function FileInfo() {
     const [fileSize, setFileSize] = useState(null)
 
     useEffect(() => {
-        const { ipc } = window as any
+        const { ipcEvent } = window as any
 
-        ipc.onChangeFilePath((path) => {
+        ipcEvent.onChangeFilePath((path) => {
             console.log('Fileinfo: onChangeFilePath: path: ', path)
             setFilePath(path)
         })
 
-        ipc.onChangeFileSize((size) => {
+        ipcEvent.onChangeFileSize((size) => {
             console.log('Fileinfo: onChangeFileSize: size: ', size)
             setFileSize(size)
         })

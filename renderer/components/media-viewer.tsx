@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
@@ -51,10 +51,20 @@ const calculateDisplayFileSize = (size: number) => {
 
 
 export default function MediaViewer() {
+
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
-    const [path, setPath] = useState(null)
-    const [size, setSize] = useState(null)
+
+    useEffect(() => {
+        const { ipcEvent } = window as any
+
+        ipcEvent.onChangeView((dataUrl, type) => {
+            console.log('MediaViewer: onChangeView: dataUrl: ', dataUrl)
+            console.log('MediaViewer: onChangeView: type: ', type)
+            setSrc(dataUrl)
+            setType(type)
+        })
+    }, [])
 
     const handleDrop = (event) => {
         event.preventDefault()
@@ -70,14 +80,11 @@ export default function MediaViewer() {
         setType(type)
 
         const path = file.path
-        setPath(path)
-
         const size = calculateDisplayFileSize(file.size)
-        setSize(size)
 
-        const { ipc } = window as any
+        const { ipcSend } = window as any
 
-        ipc.changeView({
+        ipcSend.changeView({
             type: type,
             path: path,
             size: size,
