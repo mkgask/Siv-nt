@@ -56,12 +56,14 @@ export default function MediaViewer() {
     const [type, setType] = useState(null)
 
     useEffect(() => {
-        const { ipcEvent } = window as any
-
-        ipcEvent.onChangeView((media) => {
+        ;(window as any).ipcEvent.onChangeView((media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
-            setSrc(media.dataUrl())
-            setType(media.filetype)
+            const type = media.type
+            const dataURI = `data:${media.mime_type};base64,${media.b64}`
+            console.log('MediaViewer: onChangeView: type: ', type)
+            console.log('MediaViewer: onChangeView: dataURI: ', dataURI)
+            setType(media.type)
+            setSrc(dataURI)
         })
     }, [])
 
@@ -78,20 +80,15 @@ export default function MediaViewer() {
         const type = accepted_types[file.type]
         setType(type)
 
-        const path = file.path
+        const path = file.path;
         const filesize = calculateDisplayFileSize(file.size)
 
-        const { ipcSend } = window as any
-
-        ipcSend.changeView({
+        ;(window as any).ipcSend.changeView({
             type: type,
+            mime_type: file.type,
             path: path,
             filesize: filesize,
         })
-
-        const reader = new FileReader()
-        reader.onload = (e) => { setSrc(e.target.result) }
-        reader.readAsDataURL(file)
     }
 
 

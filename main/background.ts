@@ -14,6 +14,11 @@ const isProd: boolean = process.env.NODE_ENV === 'production'
 
 if (isProd) {
     serve({ directory: 'app' })
+
+    // 今は開発中なので本番環境でも全部出す
+    log.transports.console.level = 'silly'
+    log.transports.file.level = 'silly';
+
     /*
         // TODO: 本番環境ではログファイルの出力をフラグで管理したい
         if (!isLogOutput) {
@@ -31,7 +36,6 @@ logStarter()
 
 console.log('load: background.ts')
 
-log.debug('load: background.ts: logg.debug')
 
 
 

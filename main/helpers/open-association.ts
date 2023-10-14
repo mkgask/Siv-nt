@@ -1,5 +1,11 @@
 import fs from 'fs'
+
 import mime from 'mime-lite'
+import Store from 'electron-store'
+import log from 'electron-log'
+
+import Media from '../components/media'
+
 
 
 const accepted_types = {
@@ -27,6 +33,8 @@ const accepted_types = {
     */
 }
 
+
+
 export default function openAssociation(mainWindow: Electron.BrowserWindow) {
 
     // 関連付けを開く
@@ -53,16 +61,21 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
             break
         }
 
-        // データURIを作成
-        if (path) {
-            const base64 = Buffer.from(path).toString('base64')
-            open_src = `data:${mime_type};base64,${base64}`
-        }
+        const media = new Media(path, '', type, mime_type)
 
-        //mainWindow.webContents.send('changeView', open_src, type)
-        //mainWindow.webContents.send('changeFilePath', path)
-        // mainWindow.webContents.send('changeFileSize', filesize)
-        // mainWindow.webContents.send('changeFileSize', imagesize)
+        const store = new Store()
+        store.set('media', media)
+
+        log.debug('changeView: path', media.path)
+        log.debug('changeView: b64', !!media.b64)
+        log.debug('changeView: type', media.type)
+        log.debug('changeView: mime_type', media.mime_type)
+        log.debug('changeView: filesize', media.filesize)
+        log.debug('changeView: imagesize_w', media.imagesize_w)
+        log.debug('changeView: imagesize_h', media.imagesize_h)
+
+        mainWindow.webContents.send('changeView', media)
+        mainWindow.webContents.send('changeFileInfo', media)
     })
 
 }

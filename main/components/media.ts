@@ -1,4 +1,5 @@
-import { statSync, existsSync } from 'fs'
+import { statSync, existsSync, readFileSync } from 'fs'
+
 import mime from 'mime-lite'
 import sizeOf from 'image-size'
 
@@ -30,22 +31,31 @@ const accepted_types = {
 
 
 
+const calculateDisplayFileSize = (size: number) => {
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    const index = Math.floor(Math.log(size) / Math.log(1024))
+    const display_size = (size / Math.pow(1024, index)).toFixed(2) + ' ' + units[index]
+    return display_size
+}
+
+
+
 export default class Media {
     path: string
     b64: string
     type: string
     mime_type: string
-    filesize: number
+    filesize: string
     imagesize_w: number
     imagesize_h: number
 
-    constructor(path: string = '', b64: string = '', type: string = '', mime_type: string = '', filesize = -1, imagesize_w = -1, imagesize_h = -1) {
+    constructor(path: string = '', b64: string = '', type: string = '', mime_type: string = '', filesize: string = '', imagesize_w: number = -1, imagesize_h: number = -1) {
         this.reset(path, b64, type, mime_type, filesize, imagesize_w, imagesize_h)
     }
 
     get dataURI() { return `data:${this.mime_type};base64,${this.b64}` }
 
-    reset(path: string = '', b64: string = '', type: string = '', mime_type: string = '', filesize = -1, imagesize_w = -1, imagesize_h = -1) {
+    reset(path: string = '', b64: string = '', type: string = '', mime_type: string = '', filesize: string = '', imagesize_w: number = -1, imagesize_h: number = -1) {
         console.log('call: Media.reset')
 
         // pathにファイルが存在しない場合は処理しない
@@ -71,15 +81,17 @@ export default class Media {
         if (type === '') {
             this.type = accepted_types[this.mime_type]
         }
-        
+
         // Base64データが未取得の場合は、pathからBase64データを取得する
         if (b64 === '') {
-            this.b64 = Buffer.from(path).toString('base64')
+            // pathからファイルの内容を取得する
+            const data = readFileSync(path)
+            this.b64 = Buffer.from(data).toString('base64')
         }
 
         // filesizeが未取得の場合は、pathからfilesizeを取得する
-        if (filesize === -1) {
-            this.filesize = statSync(path).size
+        if (!filesize) {
+            this.filesize = calculateDisplayFileSize(statSync(path).size)
         }
 
         // imagesizeが未取得の場合は、pathからimagesizeを取得する
