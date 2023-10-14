@@ -59,8 +59,8 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
             open_src = `data:${mime_type};base64,${base64}`
         }
 
-        mainWindow.webContents.send('changeView', open_src, type)
-        mainWindow.webContents.send('changeFilePath', path)
+        //mainWindow.webContents.send('changeView', open_src, type)
+        //mainWindow.webContents.send('changeFilePath', path)
         // mainWindow.webContents.send('changeFileSize', filesize)
         // mainWindow.webContents.send('changeFileSize', imagesize)
     })

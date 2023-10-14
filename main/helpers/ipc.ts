@@ -1,6 +1,8 @@
 import { ipcMain } from "electron"
 import Store from "electron-store";
 
+import Media from "../components/media";
+
 console.log('load: ipc.ts')
 
 
@@ -14,22 +16,23 @@ export default function registerIpc(mainWindow) {
 
         if (!validateSender(event.senderFrame)) return null
 
-        // item.pathのファイルを読み込み、base64エンコードする
-        const base64 = Buffer.from(item.path).toString('base64')
+        const media = new Media(item.path, '', item.type, '', item.filesize)
 
         // Storeに保存
         const store = new Store()
-        store.set('viewItem.path', item.path)
-        store.set('viewItem.b64', base64)
-        store.set('viewItem.type', item.type)
-        store.set('viewItem.size', item.size)
+        store.set('media', media)
 
-        console.log('changeView: path', item.path)
-        console.log('changeView: type', item.type)
-        console.log('changeView: size', item.size)
+        console.log('changeView: path', media.path)
+        console.log('changeView: b64', !!media.b64)
+        console.log('changeView: type', media.type)
+        console.log('changeView: mime_type', media.mime_type)
+        console.log('changeView: filesize', media.filesize)
+        console.log('changeView: imagesize_w', media.imagesize_w)
+        console.log('changeView: imagesize_h', media.imagesize_h)
+        console.log('changeView: dataURI', media.dataURI)
 
-        mainWindow.webContents.send('changeFilePath', item.path)
-        mainWindow.webContents.send('changeFileSize', item.size)
+        //mainWindow.webContents.send('changeView', media.dataURI, media.type)
+        mainWindow.webContents.send('changeFileInfo', media)
     })
 
     function validateSender(frame) {

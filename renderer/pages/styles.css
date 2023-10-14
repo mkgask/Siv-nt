@@ -1,8 +1,30 @@
 
 
 
-.filepath,
+/*  Modules  file info
+*/
+
+.file-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    gap: 0 3.2vw;
+}
+
+.filepath {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 .filesize {
+    margin: 0;
+    padding: 0;
+}
+
+.imagesize {
     margin: 0;
     padding: 0;
 }

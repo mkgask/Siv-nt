@@ -1,21 +1,37 @@
 import { app, session } from 'electron'
 import serve from 'electron-serve'
 import path from 'path'
+import log from 'electron-log'
 
 import { createWindow } from './helpers'
+import logStarter from './helpers/log-starter'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
 
-console.log('load: background.ts')
 
 
 const isProd: boolean = process.env.NODE_ENV === 'production'
 
 if (isProd) {
     serve({ directory: 'app' })
+    /*
+        // TODO: 本番環境ではログファイルの出力をフラグで管理したい
+        if (!isLogOutput) {
+            log.transports.console.level = false;
+            log.transports.file.level = false;
+        }
+    */
 } else {
     app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
+
+
+
+logStarter()
+
+console.log('load: background.ts')
+
+log.debug('load: background.ts: logg.debug')
 
 
 
@@ -58,6 +74,7 @@ if (isProd) {
     })
 
     await app.whenReady()
+    log.debug('load: app.whenReady')
 
     // リモートコンテンツはすべて不許可
     session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
@@ -82,7 +99,15 @@ if (isProd) {
         height: 800,
 
         webPreferences: {
-            nodeIntegration: true,    // 本当ならfalseにしたいが、何故かpreloadスクリプトが読まれなくなるので一旦true
+
+            /* レンダラープロセスのコンソールで
+             * VM4 sandbox_bundle:2 Unable to load preload script: preload.js
+             * のエラーが出るが、動作には支障はない。
+             * nodeIntegration: trueにするとエラーが出なくなるが、
+             * セキュリティ上良い設定ではないので、一旦これで進める。
+            */
+            nodeIntegration: true,
+
             nodeIntegrationInWorker: false,
             nodeIntegrationInSubFrames: false,
             sandbox: true,
