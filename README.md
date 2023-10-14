@@ -33,8 +33,9 @@ Simple image viewer - nextron
 
 # Release Plan
 
+- [ ] v0.7.0 change next or prev file in same directory
 - [ ] v0.6.0 zoom in out, move zoom in image  
-- [ ] v0.5.0 toggle file info bar on click  
+- [x] v0.5.0 toggle file info bar on click  
 - [x] v0.4.0 open image from file association
 - [x] v0.3.1 add logger for main process in build application  
 - [x] v0.3.0 view image size  
@@ -42,6 +43,7 @@ Simple image viewer - nextron
 - [x] v0.1.0 show image  
 
 If I feel like it
+- [ ] v?.?.? multilingual (jp, en)
 - [ ] v?.?.? auto updater
 - [ ] v?.?.? signing application
 - [ ] v?.?.? select output log level for prod 

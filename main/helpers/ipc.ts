@@ -12,6 +12,21 @@ export default function registerIpc(mainWindow) {
 
     log.debug('call: registerIpc')
 
+    function validateSender(frame) {
+        const url = new URL(frame.url);
+
+        log.debug('call: ipcMain.handle.changeView.validateSender: url.host: ' + url.host)
+        log.debug('call: ipcMain.handle.changeView.validateSender: url.protocol: ' + url.protocol)
+
+        // デバッグ環境
+        if (url.host.match(/^localhost:?\d*/) || url.protocol === 'file:') { return true }
+
+        // 本番環境
+        if (url.host === '.' || url.protocol === 'app:') { return true }
+
+        return false
+    }
+
     ipcMain.on('changeView', (event, item) => {
         log.debug('call: ipcMain.handle.changeView')
         log.debug('call: ipcMain.handle.changeView: item.path' + item.path)
@@ -39,20 +54,13 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('changeFileInfo', media)
     })
 
-    function validateSender(frame) {
-        const url = new URL(frame.url);
+    ipcMain.on('toggleMenuBar', (event, item) => {
+        log.debug('call: ipcMain.handle.toggleMenuBar')
 
-        log.debug('call: ipcMain.handle.changeView.validateSender: url.host: ' + url.host)
-        log.debug('call: ipcMain.handle.changeView.validateSender: url.protocol: ' + url.protocol)
+        if (!validateSender(event.senderFrame)) return null
 
-        // デバッグ環境
-        if (url.host.match(/^localhost:?\d*/) || url.protocol === 'file:') { return true }
-
-        // 本番環境
-        if (url.host === '.' || url.protocol === 'app:') { return true }
-
-        return false
-    }
+        mainWindow.webContents.send('toggleMenuBar')
+    })
 
 }
 

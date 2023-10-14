@@ -12,8 +12,8 @@ import {
     Box,
     Menu,
     MenuItem,
-    Stack
- } from '@mui/material'
+    Stack,
+} from '@mui/material'
 
 import MenuIcon from '@mui/icons-material/Menu'
 
@@ -35,28 +35,22 @@ const Theme = styled('section')(({ theme }) => {
     }
 })
 
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+    minHeight: 'initial',
+    padding: 0,
+    [`@media (min-width: ${theme.breakpoints.values.sm}px)`]: {
+        minHeight: 'initial',
+        padding: 0,
+    },
+    [`@media (min-width: ${theme.breakpoints.values.md}px)`]: {
+        minHeight: 'initial',
+        padding: 0,
+    },
+}))
+
 
 
 function Home() {
-    const [open, setOpen] = React.useState(false)
-    const handleClose = () => setOpen(false)
-    const handleClick = () => setOpen(true)
-
-
-
-    /*  Modules  Menu
-    */
-    const [anchorEl, setAnchorEl] = React.useState(null)
-
-    const menuClick = (event) => {
-        setAnchorEl(event.currentTarget)
-    }
-
-    const menuClose = () => {
-        setAnchorEl(null)
-    }
-
-
     return (
         <React.Fragment>
             <Head>
@@ -65,11 +59,9 @@ function Home() {
             <Theme>
                 <MediaViewer></MediaViewer>
             </Theme>
-            <AppBar position='fixed' color='primary' sx={{ top: 'auto', bottom: 0 }}>
-                <Toolbar>
-                    <Stack>
-                        <FileInfo></FileInfo>
-                    </Stack>
+            <AppBar position='fixed' color="transparent" sx={{ top: 'auto', bottom: 0 }}>
+                <StyledToolbar>
+                    <FileInfo></FileInfo>
                     {/*
             <Box sx={{ flexGrow: 1 }} />
             <IconButton
@@ -91,7 +83,7 @@ function Home() {
                 <MenuItem onClick={handleClose}>メニューアイテム3</MenuItem>
             </Menu>
           */}
-                </Toolbar>
+                </StyledToolbar>
             </AppBar>
         </React.Fragment>
     )

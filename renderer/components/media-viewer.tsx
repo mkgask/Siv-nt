@@ -99,9 +99,19 @@ export default function MediaViewer() {
 
 
 
+    const handleClick = (event) => {
+        event.preventDefault()
+
+        ;(window as any).ipcSend.toggleMenuBar()
+
+    }
+
+
+
     return (
         <Theme>
             <Box
+                onClick={handleClick}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 className="media-viewer"
