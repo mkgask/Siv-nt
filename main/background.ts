@@ -34,9 +34,6 @@ if (isProd) {
 
 logStarter()
 
-console.log('load: background.ts')
-
-
 
 
 ; (async () => {
@@ -131,6 +128,7 @@ console.log('load: background.ts')
         await mainWindow.loadURL(`http://localhost:${port}/home`)
         mainWindow.webContents.openDevTools()
     }
+
 })()
 
 app.on('window-all-closed', () => {

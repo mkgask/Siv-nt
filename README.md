@@ -17,6 +17,7 @@ Simple image viewer - nextron
 
 - output log data to file (%APPDATA%/Roaming/Siv-nt/(date)-main.log)
 - log file auto remove (max 512 files or 1 month)
+- save window position and size and restore
 
 
 
@@ -34,6 +35,7 @@ Simple image viewer - nextron
 
 - ログデータをファイルに出力（%APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log）
 - ログファイルの自動削除（512件または一ヶ月）
+- ウィンドウの位置、大きさを保存し復元
 
 
 
@@ -42,7 +44,8 @@ Simple image viewer - nextron
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
-- [ ] v0.6.2 save file info bar active state
+- [ ] v0.6.3 save file info bar active state
+- [x] v0.6.2 fix image position move speed
 - [x] v0.6.1 save window size
 - [x] v0.6.0 zoom in out, move zoom in image  
 - [x] v0.5.0 toggle file info bar on click  
@@ -53,6 +56,7 @@ Simple image viewer - nextron
 - [x] v0.1.0 show image  
 
 If I feel like it
+- [ ] v?.?.? some setting options
 - [ ] v?.?.? auto release in GitHub Actions
 - [ ] v?.?.? multilingual (jp, en)
 - [ ] v?.?.? auto updater

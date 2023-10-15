@@ -100,7 +100,7 @@ const calculateStyleValue2Px = (value: string, key: string, parent) => {
 
 const default_media_ratio = 100
 const zoom_ratio = -0.05
-const mouse_move_ratio = 1.5
+let mouse_move_ratio = 7
 
 
 
@@ -128,7 +128,9 @@ export default function MediaViewer() {
 
 
     useEffect(() => {
-        ;(window as any).ipcEvent.onChangeView((media) => {
+        const ipcEvent = (window as any).ipcEvent
+
+        ipcEvent.onChangeView((media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
             if (!media || !media.mime_type || !media.b64) { return }
             const dataURI = `data:${media.mime_type};base64,${media.b64}`
@@ -140,6 +142,15 @@ export default function MediaViewer() {
             const viewSizeRatio = defaultViewSizeRatio(media.imagesize_w, media.imagesize_h)
             changeViewSize(media.imagesize_w, media.imagesize_h, viewSizeRatio)
         })
+
+        ipcEvent.onEnv((env) => {
+            console.log('MediaViewer: onEnv: env: ', env)
+            console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
+            mouse_move_ratio = env.isProd ? 7 : 3
+            console.log('MediaViewer: onEnv: mouse_move_ratio: ', mouse_move_ratio)
+        })
+
+        ; (window as any).ipcSend.readyMediaViewer()
     }, [])
 
     const changeViewSize = (w, h, ratio) => {

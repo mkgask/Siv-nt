@@ -62,6 +62,12 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('toggleMenuBar')
     })
 
+    ipcMain.on('readyMediaViewer', (event, item) => {
+        mainWindow.webContents.send('env', {
+            isProd: process.env.NODE_ENV === 'production',
+        })
+    })
+
 }
 
 
