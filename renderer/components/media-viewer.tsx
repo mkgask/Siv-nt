@@ -215,6 +215,7 @@ export default function MediaViewer() {
         imageMarginTop = 0
         
         requestAnimationFrame(() => {
+            if (imageRef === null || imageRef.current === null) { return }
             imageRef.current.style.transform = `translate(${imageMarginLeft}px, ${imageMarginTop}px)`
         })
     }
@@ -304,6 +305,7 @@ export default function MediaViewer() {
             imageMarginTop += (moveY * mouse_move_ratio)
 
             requestAnimationFrame(() => {
+                if (imageRef === null || imageRef.current === null) { return }
                 imageRef.current.style.transform = `translate(${imageMarginLeft}px, ${imageMarginTop}px)`
             })
         }

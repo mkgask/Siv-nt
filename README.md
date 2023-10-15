@@ -42,6 +42,8 @@ Simple image viewer - nextron
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
+- [ ] v0.6.2 save file info bar active state
+- [x] v0.6.1 save window size
 - [x] v0.6.0 zoom in out, move zoom in image  
 - [x] v0.5.0 toggle file info bar on click  
 - [x] v0.4.0 open image from file association

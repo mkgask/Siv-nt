@@ -7,8 +7,6 @@ import {
 
 import Store from 'electron-store'
 
-console.log('load: create-window.ts')
-
 
 
 export const createWindow = (
@@ -82,11 +80,9 @@ export const createWindow = (
 
     state = ensureVisibleOnSomeDisplay(restore())
 
-    console.log('__dirname: ' + __dirname)
-
     const win = new BrowserWindow({
-        ...state,
         ...options,
+        ...state,
 
         webPreferences: {
             ...options.webPreferences,
