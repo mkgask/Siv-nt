@@ -43,7 +43,6 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
         console.log('call: openAssociation.did-finish-load: process.argv: ' + process.argv.join(', '))
 
         let path = ''
-        let open_src = ''
         let mime_type = ''
         let type = ''
 
