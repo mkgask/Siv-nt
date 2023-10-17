@@ -1,4 +1,4 @@
-appId: jp.zsw.nt.siv
+appId: jp.zsw.siv.nt
 productName: Siv-nt
 copyright: Copyright © 2023 @mkgask
 directories:
@@ -10,3 +10,20 @@ files:
       - package.json
       - app
 publish: null
+fileAssociations:
+  - ext:
+    - "bmp"
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "gif"
+    - "webp"
+    - "avif"
+    name: "画像ファイル"
+    description: "画像ファイル"
+    role: Editor
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
