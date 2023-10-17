@@ -2,7 +2,7 @@
   "private": true,
   "name": "Siv-nt",
   "description": "Simple image viewer - nextron",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "author": "mkgask",
   "main": "app/background.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "electron-builder": "^24.6.4",
     "electron-log": "^4.4.8",
     "image-size": "^1.0.2",
+    "js-yaml": "^4.1.0",
     "mime-lite": "^1.0.3",
     "next": "^13.5.4",
     "nextron": "^8.12.0",

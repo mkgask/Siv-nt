@@ -1,7 +1,8 @@
+import log from 'electron-log'
+
 import fs from 'fs'
 import path from 'path'
 
-import log from 'electron-log'
 
 
 

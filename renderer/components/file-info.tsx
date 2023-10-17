@@ -20,6 +20,7 @@ export default function FileInfo() {
     useEffect(() => {
 
         const ipcEvent = (window as any).ipcEvent
+        const ipcSend = (window as any).ipcSend
 
         const onChangeFileInfo = (media) => {
             console.log('Fileinfo: onChangeFileInfo: media: ', media)
@@ -30,16 +31,29 @@ export default function FileInfo() {
         }
 
         const onToggleMenuBar = () => {
-            console.log('Fileinfo: onToggleMenuBar()')
-            setActive(prevActive => !prevActive)
+            setActive((prevActive) => {
+                const newActive = !prevActive
+                console.log('Fileinfo: onToggleMenuBar(): prevActive -> newActive ', prevActive, ' -> ', newActive)
+                ipcSend.settings('display_info_enabled', newActive )
+                return newActive
+            })
+        }
+
+        const onSettings = (settings) => {
+            console.log('FileInfo: onSettings(): settings.display_info_enabled : ', settings.display_info_enabled)
+            setActive(settings.display_info_enabled)
         }
 
         ipcEvent.onChangeFileInfo(onChangeFileInfo)
         ipcEvent.onToggleMenuBar(onToggleMenuBar)
+        ipcEvent.onSettings(onSettings)
+
+        ipcSend.readyFileInfo()
 
         return () => {
             ipcEvent.off('onChangeFileInfo', onChangeFileInfo)
             ipcEvent.off('onToggleMenuBar', onToggleMenuBar)
+            ipcEvent.off('onSettings', onSettings)
         }
     }, [])
 

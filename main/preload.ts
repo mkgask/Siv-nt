@@ -26,6 +26,16 @@ contextBridge.exposeInMainWorld('ipcSend', {
         console.log('call: ipcSend.readyMediaViewer')
         ipcRenderer.send('readyMediaViewer')
     },
+
+    readyFileInfo: () => {
+        console.log('call: ipcSend.readyFileInfo')
+        ipcRenderer.send('readyFileInfo')
+    },
+
+    settings: (key, value) => {
+        console.log('call: ipcSend.settings')
+        ipcRenderer.send('settings', key, value)
+    }
 })
 
 
@@ -41,6 +51,11 @@ contextBridge.exposeInMainWorld('ipcEvent', {
     onEnv: (callback) => {
         console.log('call: ipcEvent.onEnv')
         ipcRenderer.on('env', (event, env) => callback(env))
+    },
+
+    onSettings: (callback) => {
+        console.log('call: ipcEvent.onSettings')
+        ipcRenderer.on('settings', (event, settings) => callback(settings))
     },
 
     onChangeView: (callback) => {

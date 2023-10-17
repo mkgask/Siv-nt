@@ -312,8 +312,8 @@ export default function MediaViewer() {
                 ((event.movementY) < 0) ? -1 :
                 0
 
-            imageMarginLeft += (moveX * mouse_move_ratio)
-            imageMarginTop += (moveY * mouse_move_ratio)
+            imageMarginLeft += (moveX * mouse_move_ratio);
+            imageMarginTop += (moveY * mouse_move_ratio);
 
             requestAnimationFrame(() => {
                 if (imageRef === null || imageRef.current === null) { return }

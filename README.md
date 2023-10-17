@@ -41,10 +41,13 @@ Simple image viewer - nextron
 
 # Release Plan
 
+In no particular order
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
-- [ ] v0.6.3 save file info bar active state
+- [ ] v0.6.5 display zoom level
+- [ ] v0.6.4 do not change image size smaller than window when both clicks
+- [x] v0.6.3 save file info bar active state
 - [x] v0.6.2 fix image position move speed
 - [x] v0.6.1 save window size
 - [x] v0.6.0 zoom in out, move zoom in image  

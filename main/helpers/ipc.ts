@@ -1,8 +1,9 @@
 import { ipcMain } from "electron"
-import Store from "electron-store"
 import log from "electron-log"
+import Store from "electron-store"
 
 import Media from "../components/media"
+import Settings from "../components/settings"
 
 log.debug('load: ipc.ts')
 
@@ -33,14 +34,9 @@ export default function registerIpc(mainWindow) {
         log.debug('call: ipcMain.handle.changeView: item.type' + item.type)
         log.debug('call: ipcMain.handle.changeView: item.mime_type' + item.mime_type)
         log.debug('call: ipcMain.handle.changeView: item.filesize' + item.filesize)
-
         if (!validateSender(event.senderFrame)) return null
 
         const media = new Media(item.path, '', item.type, item.mime_type, item.filesize)
-
-        // Storeに保存
-        const store = new Store()
-        store.set('media', media)
 
         log.debug('changeView: path', media.path)
         log.debug('changeView: b64', !!media.b64)
@@ -56,18 +52,39 @@ export default function registerIpc(mainWindow) {
 
     ipcMain.on('toggleMenuBar', (event, item) => {
         log.debug('call: ipcMain.handle.toggleMenuBar')
-
         if (!validateSender(event.senderFrame)) return null
 
         mainWindow.webContents.send('toggleMenuBar')
     })
 
     ipcMain.on('readyMediaViewer', (event, item) => {
+        log.debug('call: ipcMain.handle.readyMediaViewer')
+        if (!validateSender(event.senderFrame)) return null
+
         mainWindow.webContents.send('env', {
             isProd: process.env.NODE_ENV === 'production',
         })
     })
 
+    ipcMain.on('readyFileInfo', (event) => {
+        log.debug('call: ipcMain.handle.readyFileInfo')
+        if (!validateSender(event.senderFrame)) return null
+        
+        const settings = new Settings()
+        log.debug('call: ipcMain.handle.readyFileInfo: settings', settings)
+        mainWindow.webContents.send('settings', settings)
+    })
+
+    ipcMain.on('settings', (event, key, value) => {
+        log.debug('call: ipcMain.handle.settings')
+
+        if (!validateSender(event.senderFrame)) return null
+
+        log.debug('call: ipcMain.handle.settings: key: value', key, ' : ', value)
+
+        const settings = new Settings()
+        settings.save(key, value)
+    })
 }
 
 

@@ -1,13 +1,15 @@
 import { app, session } from 'electron'
 import serve from 'electron-serve'
-import path from 'path'
 import log from 'electron-log'
+
+import path from 'path'
 
 import { createWindow } from './helpers'
 import logStarter from './helpers/log-starter'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
 
+import Settings from './components/settings'
 
 
 const isProd: boolean = process.env.NODE_ENV === 'production'
@@ -132,5 +134,6 @@ logStarter()
 })()
 
 app.on('window-all-closed', () => {
+    ;(new Settings).save_all()
     app.quit()
 })
