@@ -42,13 +42,14 @@ Simple image viewer - nextron
 # Release Plan
 
 In no particular order
+- [ ] v1.0.0 image editing (image convert and save and paste from clipboard)
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
 - [ ] v0.6.9 split vertical and horizontal to mouse move ratio
 - [ ] v0.6.8 adjust image position move speed depending on zoom level
 - [ ] v0.6.7 display zoom level and rename file info to display info
-- [ ] v0.6.6 do not change image size smaller than window when both clicks
+- [x] v0.6.6 do not change image size smaller than window when both clicks
 - [x] v0.6.5 add accepted types and mouse move ratio in settings.yml
 - [x] v0.6.4 could not open due to file association
 - [x] v0.6.3 save file info bar active state
@@ -63,6 +64,8 @@ In no particular order
 - [x] v0.1.0 show image  
 
 If I feel like it
+- [ ] v?.?.? invert zoom in/out when mouse wheel up/down from settings
+- [ ] v?.?.? Directory viewer
 - [ ] v?.?.? some setting options
 - [ ] v?.?.? auto release in GitHub Actions
 - [ ] v?.?.? multilingual (jp, en)

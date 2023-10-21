@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
+
+import type Point from '../types/point'
 
 
 
@@ -24,7 +26,7 @@ const StyledBox = styled(Box)(({ theme }) => {
 
 
 
-const calculateDisplayFileSize = (size: number) => {
+const calculateDisplayFileSize = (size: number): string => {
     const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     const index = Math.floor(Math.log(size) / Math.log(1024))
     const display_size = (size / Math.pow(1024, index)).toFixed(2) + ' ' + units[index]
@@ -33,7 +35,7 @@ const calculateDisplayFileSize = (size: number) => {
 
 
 
-const calculateStyleValue2Px = (value: string, key: string, parent) => {
+const calculateStyleValue2Px = (value: string, key: string, parent): number => {
     const last2 = value.slice(-2)
     
     // 最後の2文字に'px'を持っていたら数値にして返す
@@ -76,9 +78,12 @@ const zoom_ratio = -0.05
 
 
 
-let imageMarginLeft = 0
-let imageMarginTop = 0
-let mouseDownPosition = { x: 0, y: 0 }
+let imageMarginLeft: number = 0
+let imageMarginTop: number = 0
+let mouseDownPosition: Point = { x: 0, y: 0 }
+
+let mediaW: number = 0
+let mediaH: number = 0
 
 
 
@@ -93,8 +98,6 @@ export default function MediaViewer() {
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
     const [mediaRatio, setMediaRatio] = useState(default_media_ratio)
-    const [mediaW, setMediaW] = useState(0)
-    const [mediaH, setMediaH] = useState(0)
     const [viewW, setViewW] = useState(5120)
     const [viewH, setViewH] = useState(5120)
 
@@ -112,11 +115,10 @@ export default function MediaViewer() {
             const dataURI = `data:${media.mime_type};base64,${media.b64}`
             setType(media.type)
             setSrc(dataURI)
-            setMediaW(media.imagesize_w)
-            setMediaH(media.imagesize_h)
+            mediaW = media.imagesize_w
+            mediaH = media.imagesize_h
 
-            const viewSizeRatio = defaultViewSizeRatio(media.imagesize_w, media.imagesize_h)
-            changeViewSize(media.imagesize_w, media.imagesize_h, viewSizeRatio)
+            toggleViewSizeOriginalOrWindow('window')
         })
 
         ipcEvent.onEnv((env) => {
@@ -136,24 +138,53 @@ export default function MediaViewer() {
     }, [])
 
     const changeViewSize = (w, h, ratio) => {
-        setViewW(w * ratio / 100)
-        setViewH(h * ratio / 100)
+        const newW = w * ratio / 100
+        const newH = h * ratio / 100
+        console.log('changeViewSize(): ', newW, 'x', newH, ' ', ratio, '%')
+        setViewW(newW)
+        setViewH(newH)
+        setMediaRatio(ratio)
     }
 
-    const defaultViewSizeRatio = (w, h) => {
-        // ウィンドウの大きさを取得
+    const changeViewSizeOriginal = () => {
+        console.log('changeViewSizeOriginal(): ', mediaW, 'x', mediaH)
+        changeViewSize(mediaW, mediaH, 100)
+    }
+
+    const changeViewSizeWindow = () => {
         const windowW = window.innerWidth
         const windowH = window.innerHeight
+        console.log('changeViewSizeWindow(): ', windowW, 'x', windowH)
 
-        // 画像のほうが大きかったらウィンドウの大きさに合わせる
-        if (w > windowW || h > windowH) {
-            const mediaratio = Math.min(windowW / w, windowH / h) * 100
-            setMediaRatio(mediaratio)
-            return mediaratio
+        // ウィンドウサイズに対する画像サイズのmediaRatioを計算
+        const mediaratio = Math.min(windowW / mediaW, windowH / mediaH) * 100
+        changeViewSize(mediaW, mediaH, mediaratio)
+    }
+
+
+
+    /*  画像の表示をウィンドウサイズまたは原寸サイズに変更する
+     *  @param {string} mode - 'both' or 'window' or 'original'
+    */
+    const toggleViewSizeOriginalOrWindow = (mode = 'both') => {
+        console.log('toggleViewSizeOriginalOrWindow(): viewW: ', viewW)
+        console.log('toggleViewSizeOriginalOrWindow(): viewH: ', viewH)
+
+        if (
+            ((
+                viewW === window.innerWidth
+            ) ||
+            (
+                viewH === window.innerHeight
+            )) || mode === 'original'
+        ) {
+            // 画像がウィンドウと同じサイズだったら原寸に戻す
+            changeViewSizeOriginal()
+            return
         }
 
-        setMediaRatio(default_media_ratio)
-        return default_media_ratio
+        // ウィンドウサイズにする
+        changeViewSizeWindow()
     }
 
 
@@ -199,6 +230,7 @@ export default function MediaViewer() {
     }
 
 
+
     const handleDoubleClick = (event) => {
         event.preventDefault()
         console.log('handleDoubleClick()')
@@ -213,31 +245,15 @@ export default function MediaViewer() {
         })
     }
 
+
+
     const handleClick = (event) => {
         event.preventDefault()
         console.log('handleClick()')
 
         // 右クリックが押されている時は画像の表示サイズを変更する
         if (rightClick) {
-            // ウィンドウの大きさと画像の大きさが同じだったら画像の原寸にする
-            if (
-                (
-                    viewW === window.innerWidth &&
-                    viewH <= window.innerHeight
-                ) ||
-                (
-                    viewH === window.innerHeight &&
-                    viewW <= window.innerWidth
-                )
-            ) {
-                setMediaRatio(default_media_ratio)
-                changeViewSize(mediaW, mediaH, default_media_ratio)
-                return
-            }
-
-            // ウィンドウの大きさにする
-            const viewSizeRatio = defaultViewSizeRatio(mediaW, mediaH)
-            changeViewSize(mediaW, mediaH, viewSizeRatio)
+            toggleViewSizeOriginalOrWindow()
             return
         }
 
@@ -249,6 +265,7 @@ export default function MediaViewer() {
 
         if (moveDistance > 5) { return }
 
+        console.log('handleClick(): ipcSend.toggleMenuBar()')
         ;(window as any).ipcSend.toggleMenuBar()
     }
 
