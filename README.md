@@ -21,7 +21,7 @@ Simple image viewer - nextron
 - can change the supported image type (from settings.yml)
 - can change the image movable speed (from settings.yml)
 
-log file is %APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log  
+log file is %APPDATA%/Roaming/Siv-nt/logs/(date)-main.log  
 settings.yml is %APPDATA%/Roaming/Siv-nt/settings.yml  
 
 
