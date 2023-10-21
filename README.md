@@ -15,9 +15,14 @@ Simple image viewer - nextron
 - move image position when mouse left button dragging
 - move first position to image when mouse left button double click
 
-- output log data to file (%APPDATA%/Roaming/Siv-nt/(date)-main.log)
+- output log data to file
 - log file auto remove (max 512 files or 1 month)
 - save window position and size and restore
+- can change the supported image type (from settings.yml)
+- can change the image movable speed (from settings.yml)
+
+log file is %APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log
+settings.yml is %APPDATA%/Roaming/Siv-nt/settings.yml
 
 
 
@@ -33,9 +38,14 @@ Simple image viewer - nextron
 - マウス左ボタンのドラッグで画像を移動
 - マウス左ボタンのダブルクリックで画像を初期位置に移動
 
-- ログデータをファイルに出力（%APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log）
+- ログデータをファイルに出力（）
 - ログファイルの自動削除（512件または一ヶ月）
 - ウィンドウの位置、大きさを保存し復元
+- 対応画像形式を可変（settings.ymlから変更）
+- 画像の移動を速度を可変（settings.ymlから変更）
+
+ログデータは %APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log
+settings.ymlは %APPDATA%/Roaming/Siv-nt/settings.yml
 
 
 
