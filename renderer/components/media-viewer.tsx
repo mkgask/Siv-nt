@@ -24,33 +24,6 @@ const StyledBox = styled(Box)(({ theme }) => {
 
 
 
-const accepted_types = {
-    'image/png': 'image',
-    'image/apng': 'image',
-    'image/jpeg': 'image',
-    'image/gif': 'image',
-    'image/bmp': 'image',
-    'image/svg+xml': 'image',
-    'image/webp': 'image',
-    'image/avif': 'image',
-/*
-    'video/mp4': 'video',
-    'video/webm': 'video',
-    'video/ogg': 'video',
-    'video/quicktime': 'video',
-    'video/x-msvideo': 'video',
-    'video/x-ms-wmv': 'video',
-
-    'audio/mp4': 'audio',
-    'audio/mpeg': 'audio',
-    'audio/ogg': 'audio',
-    'audio/wav': 'audio',
-    'audio/webm': 'audio',
-*/
-}
-
-
-
 const calculateDisplayFileSize = (size: number) => {
     const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     const index = Math.floor(Math.log(size) / Math.log(1024))
@@ -100,7 +73,6 @@ const calculateStyleValue2Px = (value: string, key: string, parent) => {
 
 const default_media_ratio = 100
 const zoom_ratio = -0.05
-let mouse_move_ratio = 7
 
 
 
@@ -113,6 +85,10 @@ let mouseDownPosition = { x: 0, y: 0 }
 export default function MediaViewer() {
 
     const imageRef = useRef(null)
+
+    const [isProd, setIsProd] = useState(false)
+    const [accepted_types, setAcceptedTypes] = useState({})
+    const [mouse_move_ratio, setMouseMoveRatio] = useState(16)
 
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
@@ -146,8 +122,14 @@ export default function MediaViewer() {
         ipcEvent.onEnv((env) => {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
-            mouse_move_ratio = env.isProd ? 7 : 3
+            setIsProd(env.isProd)
             console.log('MediaViewer: onEnv: mouse_move_ratio: ', mouse_move_ratio)
+        })
+
+        ipcEvent.onSettings((settings) => {
+            console.log('MediaViewer: onSettings: settings: ', settings)
+            setAcceptedTypes(settings.accepted_types)
+            setMouseMoveRatio(settings.mouse_move_ratio)
         })
 
         ; (window as any).ipcSend.readyMediaViewer()
@@ -183,7 +165,7 @@ export default function MediaViewer() {
         const file = event.dataTransfer.files[0]
 
         if (accepted_types[file.type] === undefined) {
-            alert('画像ファイルをドロップしてください')
+            alert('許可されていないファイル形式です')
             return
         }
 
