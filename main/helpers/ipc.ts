@@ -30,24 +30,31 @@ export default function registerIpc(mainWindow) {
 
     ipcMain.on('changeView', (event, item) => {
         log.debug('call: ipcMain.handle.changeView')
-        log.debug('call: ipcMain.handle.changeView: item.path' + item.path)
-        log.debug('call: ipcMain.handle.changeView: item.type' + item.type)
-        log.debug('call: ipcMain.handle.changeView: item.mime_type' + item.mime_type)
-        log.debug('call: ipcMain.handle.changeView: item.filesize' + item.filesize)
+        log.debug('call: ipcMain.handle.changeView: item.path: ' + item.path)
+        log.debug('call: ipcMain.handle.changeView: item.type: ' + item.type)
+        log.debug('call: ipcMain.handle.changeView: item.mime_type: ' + item.mime_type)
+        log.debug('call: ipcMain.handle.changeView: item.filesize: ' + item.filesize)
         if (!validateSender(event.senderFrame)) return null
 
-        const media = new Media(item.path, '', item.type, item.mime_type, item.filesize)
+        const media = new Media(
+            item.path,
+            item.mime_type,
+            item.type,
+            item.filesize
+        )
 
-        log.debug('changeView: path', media.path)
-        log.debug('changeView: b64', !!media.b64)
-        log.debug('changeView: type', media.type)
-        log.debug('changeView: mime_type', media.mime_type)
-        log.debug('changeView: filesize', media.filesize)
-        log.debug('changeView: imagesize_w', media.imagesize_w)
-        log.debug('changeView: imagesize_h', media.imagesize_h)
+        log.debug('changeView: path: ', media.path)
+        log.debug('changeView: type: ', media.type)
+        log.debug('changeView: mime_type: ', media.mime_type)
+        log.debug('changeView: filesize: ', media.filesize)
+        log.debug('changeView: imagesize_w: ', media.imagesize_w)
+        log.debug('changeView: imagesize_h: ', media.imagesize_h)
 
-        mainWindow.webContents.send('changeView', media)
         mainWindow.webContents.send('changeFileInfo', media)
+
+        media.generateViewerInfo(item.path)
+        log.debug('changeView: b64: ', !!media.b64)
+        mainWindow.webContents.send('changeView', media)
     })
 
     ipcMain.on('toggleMenuBar', (event, item) => {
