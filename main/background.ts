@@ -126,6 +126,7 @@ logStarter()
     openAssociation(mainWindow)
 
     if (isProd) {
+        mainWindow.setMenuBarVisibility(false)
         await mainWindow.loadURL('app://./home')
     } else {
         const port = process.argv[2]

@@ -78,22 +78,20 @@ const zoom_ratio = -0.05
 
 
 
-let imageMarginLeft: number = 0
-let imageMarginTop: number = 0
-let mouseDownPosition: Point = { x: 0, y: 0 }
-
-let mediaW: number = 0
-let mediaH: number = 0
-
-
-
 export default function MediaViewer() {
 
     const imageRef = useRef(null)
 
+    const mediaW = useRef(0)
+    const mediaH = useRef(0)
+    const imageMarginLeft = useRef(0)
+    const imageMarginTop = useRef(0)
+
+    const mouseDownPosition = useRef<Point>({ x: 0, y: 0 })
+
     const [isProd, setIsProd] = useState(false)
     const [accepted_types, setAcceptedTypes] = useState({})
-    const [mouse_move_ratio, setMouseMoveRatio] = useState(16)
+    const [image_move_ratio, setImageMoveRatio] = useState(16)
 
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
@@ -117,8 +115,8 @@ export default function MediaViewer() {
             const dataURI = `data:${media.mime_type};base64,${media.b64}`
             setType(media.type)
             setSrc(dataURI)
-            mediaW = media.imagesize_w
-            mediaH = media.imagesize_h
+            mediaW.current = media.imagesize_w
+            mediaH.current = media.imagesize_h
 
             toggleViewSizeOriginalOrWindow('window')
         })
@@ -127,13 +125,13 @@ export default function MediaViewer() {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
             setIsProd(env.isProd)
-            console.log('MediaViewer: onEnv: mouse_move_ratio: ', mouse_move_ratio)
+            console.log('MediaViewer: onEnv: image_move_ratio: ', image_move_ratio)
         })
 
         ipcEvent.onSettings((settings) => {
             console.log('MediaViewer: onSettings: settings: ', settings)
             setAcceptedTypes(settings.accepted_types)
-            setMouseMoveRatio(settings.mouse_move_ratio)
+            setImageMoveRatio(settings.image_move_ratio)
         })
 
         ; (window as any).ipcSend.readyMediaViewer()
@@ -150,8 +148,8 @@ export default function MediaViewer() {
     }
 
     const changeViewSizeOriginal = () => {
-        console.log('changeViewSizeOriginal(): ', mediaW, 'x', mediaH)
-        changeViewSize(mediaW, mediaH, 100)
+        console.log('changeViewSizeOriginal(): ', mediaW.current, 'x', mediaH.current)
+        changeViewSize(mediaW.current, mediaH.current, 100)
     }
 
     const changeViewSizeWindow = () => {
@@ -160,8 +158,8 @@ export default function MediaViewer() {
         console.log('changeViewSizeWindow(): ', windowW, 'x', windowH)
 
         // ウィンドウサイズに対する画像サイズのmediaRatioを計算
-        const mediaratio = Math.min(windowW / mediaW, windowH / mediaH) * 100
-        changeViewSize(mediaW, mediaH, mediaratio)
+        const mediaratio = Math.min(windowW / mediaW.current, windowH / mediaH.current) * 100
+        changeViewSize(mediaW.current, mediaH.current, mediaratio)
     }
 
 
@@ -233,7 +231,7 @@ export default function MediaViewer() {
 
         const mediaratio = Math.min(Math.max(10, mediaRatio + event.deltaY * zoom_ratio), 1000)
         setMediaRatio(mediaratio)
-        changeViewSize(mediaW, mediaH, mediaratio)
+        changeViewSize(mediaW.current, mediaH.current, mediaratio)
     }
 
 
@@ -243,12 +241,12 @@ export default function MediaViewer() {
         console.log('handleDoubleClick()')
 
         // 画像の位置をリセット
-        imageMarginLeft = 0
-        imageMarginTop = 0
+        imageMarginLeft.current = 0
+        imageMarginTop.current = 0
         
         requestAnimationFrame(() => {
             if (imageRef === null || imageRef.current === null) { return }
-            imageRef.current.style.transform = `translate(${imageMarginLeft}px, ${imageMarginTop}px)`
+            imageRef.current.style.transform = `translate(${imageMarginLeft.current}px, ${imageMarginTop.current}px)`
         })
     }
 
@@ -266,8 +264,8 @@ export default function MediaViewer() {
 
         // マウスの移動が大きかった時は何もしない
         const moveDistance = Math.hypot(
-            event.clientX - mouseDownPosition.x,
-            event.clientY - mouseDownPosition.y
+            event.clientX - mouseDownPosition.current.x,
+            event.clientY - mouseDownPosition.current.y
         )
 
         if (moveDistance > 5) { return }
@@ -280,8 +278,8 @@ export default function MediaViewer() {
         event.preventDefault()
         console.log('handleMouseDown()')
 
-        mouseDownPosition.x = event.clientX
-        mouseDownPosition.y = event.clientY
+        mouseDownPosition.current.x = event.clientX
+        mouseDownPosition.current.y = event.clientY
 
         // 左クリックチェック
         if (event.button === 0) { setLeftClick(true) }
@@ -318,12 +316,12 @@ export default function MediaViewer() {
                 ((event.movementY) < 0) ? -1 :
                 0
 
-            imageMarginLeft += (moveX * mouse_move_ratio);
-            imageMarginTop += (moveY * mouse_move_ratio);
+            imageMarginLeft.current += (moveX * image_move_ratio);
+            imageMarginTop.current += (moveY * image_move_ratio);
 
             requestAnimationFrame(() => {
                 if (imageRef === null || imageRef.current === null) { return }
-                imageRef.current.style.transform = `translate(${imageMarginLeft}px, ${imageMarginTop}px)`
+                imageRef.current.style.transform = `translate(${imageMarginLeft.current}px, ${imageMarginTop.current}px)`
             })
         }
     }

@@ -18,7 +18,7 @@ const store = new Store<Settings>({
 const settings_defaults = {
     display_info_enabled: false,
     accepted_types: accepted_types,
-    mouse_move_ratio: 16,
+    image_move_ratio: 16,
 }
 
 
@@ -26,7 +26,7 @@ const settings_defaults = {
 export default class Settings {
     display_info_enabled: boolean = settings_defaults.display_info_enabled
     accepted_types: object = settings_defaults.accepted_types
-    mouse_move_ratio: number = settings_defaults.mouse_move_ratio
+    image_move_ratio: number = settings_defaults.image_move_ratio
 
     constructor() {
         this.load()
@@ -35,13 +35,13 @@ export default class Settings {
     load() {
         this.display_info_enabled = store.get('display_info_enabled', settings_defaults.display_info_enabled)
         this.accepted_types = store.get('accepted_types', settings_defaults.accepted_types)
-        this.mouse_move_ratio = store.get('mouse_move_ratio', settings_defaults.mouse_move_ratio)
+        this.image_move_ratio = store.get('image_move_ratio', settings_defaults.image_move_ratio)
     }
 
     save_all() {
         store.set('display_info_enabled', this.display_info_enabled)
         store.set('accepted_types', this.accepted_types)
-        store.set('mouse_move_ratio', this.mouse_move_ratio)
+        store.set('image_move_ratio', this.image_move_ratio)
     }
 
     save(key, value) {

@@ -38,7 +38,7 @@ settings.yml is %APPDATA%/Roaming/Siv-nt/settings.yml
 - マウス左ボタンのドラッグで画像を移動
 - マウス左ボタンのダブルクリックで画像を初期位置に移動
 
-- ログデータをファイルに出力（）
+- ログデータをファイルに出力
 - ログファイルの自動削除（512件または一ヶ月）
 - ウィンドウの位置、大きさを保存し復元
 - 対応画像形式を可変（settings.ymlから変更）
@@ -52,14 +52,17 @@ settings.ymlは %APPDATA%/Roaming/Siv-nt/settings.yml
 # Release Plan
 
 In no particular order
-- [ ] v1.0.0 image editing (image convert and save and paste from clipboard)
+- [ ] v0.10.0 image editing (image convert and save and paste from clipboard)
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
-- [ ] v0.6.10 display mouse control help
-- [ ] v0.6.9 split vertical and horizontal to mouse move ratio
-- [ ] v0.6.8 adjust image position move speed depending on zoom level
+- [ ] v0.6.9 display package lisences for using
+- [ ] v0.6.8 display mouse control help
 - [x] v0.6.7 display zoom level and rename file info to display info
+
+<details>
+<summary>more old versions</summary>
+
 - [x] v0.6.6 do not change image size smaller than window when both clicks
 - [x] v0.6.5 add accepted types and mouse move ratio in settings.yml
 - [x] v0.6.4 could not open due to file association
@@ -74,7 +77,13 @@ In no particular order
 - [x] v0.2.0 view file path, file size  
 - [x] v0.1.0 show image  
 
-If I feel like it
+</details>
+
+<details>
+<summary>If I feel like it</summary>
+
+- [ ] v?.?.? adjust image position move speed (split horizontal and vertical)
+- [ ] v?.?.? correct application menu bar
 - [ ] v?.?.? display 2 images at the same time
 - [ ] v?.?.? invert zoom in/out when mouse wheel up/down from settings
 - [ ] v?.?.? Directory viewer
@@ -85,5 +94,7 @@ If I feel like it
 - [ ] v?.?.? signing application
 - [ ] v?.?.? select output log level for prod 
 - [ ] v?.?.? custom theme
+
+</details>
 
 
