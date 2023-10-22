@@ -10,7 +10,7 @@ import {
 import packageJson from '../../package.json'
 
 import MediaViewer from '../components/media-viewer'
-import FileInfo from '../components/file-info'
+import DisplayInfo from '../components/display-info'
 
 
 
@@ -53,7 +53,7 @@ function Home() {
             </Theme>
             <AppBar position='fixed' color="transparent" sx={{ top: 'auto', bottom: 0 }}>
                 <StyledToolbar>
-                    <FileInfo></FileInfo>
+                    <DisplayInfo></DisplayInfo>
                 </StyledToolbar>
             </AppBar>
         </>

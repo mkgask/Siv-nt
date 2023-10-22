@@ -4,18 +4,22 @@ import { Typography } from "@mui/material"
 
 const Theme = styled('div')(({ theme }) => {
     return {
+        backgroundColor: '#2885D181',
+        color: '#ffffff',
     }
 })
 
 
 
-export default function FileInfo() {
+export default function DisplayInfo() {
 
     const [active, setActive] = useState(true)
     const [filePath, setFilePath] = useState(null)
     const [fileSize, setFileSize] = useState(null)
     const [sizeW, setSizeW] = useState(null)
     const [sizeH, setSizeH] = useState(null)
+
+    const [zoomLevel, setZoomLevel] = useState(100)
 
     useEffect(() => {
 
@@ -28,6 +32,11 @@ export default function FileInfo() {
             setFileSize(media.filesize)
             setSizeW(media.imagesize_w)
             setSizeH(media.imagesize_h)
+        }
+
+        const onChangeZoomLevel = (zoomLevel) => {
+            console.log('Fileinfo: onChangeZoomLevel: zoomLevel: ', zoomLevel)
+            setZoomLevel(zoomLevel)
         }
 
         const onToggleMenuBar = () => {
@@ -45,6 +54,7 @@ export default function FileInfo() {
         }
 
         ipcEvent.onChangeFileInfo(onChangeFileInfo)
+        ipcEvent.onChangeZoomLevel(onChangeZoomLevel)
         ipcEvent.onToggleMenuBar(onToggleMenuBar)
         ipcEvent.onSettings(onSettings)
 
@@ -59,11 +69,12 @@ export default function FileInfo() {
 
     return (
         <Theme className={`file-info ${active ? 'active' : 'inactive'}`}>
-            {filePath || fileSize || sizeW || sizeH ? (
+            {filePath ? (
                 <>
-                    <Typography className="filepath">{filePath}</Typography>
-                    <Typography className="filesize">{fileSize}</Typography>
-                    <Typography className="imagesize">{`${(sizeW || sizeH) ? (sizeW + ' x ' + sizeH) : ''}`}</Typography>
+                    <Typography className="file-path">{filePath}</Typography>
+                    <Typography className="file-size">{fileSize}</Typography>
+                    <Typography className="image-size">{`${(sizeW || sizeH) ? (sizeW + ' x ' + sizeH) : ''}`}</Typography>
+                    <Typography className="zoom-level">{`${zoomLevel.toFixed(2)}`}%</Typography>
                 </>
             ) : (
                 <Typography className="no-file">Display file information here if file selected</Typography>

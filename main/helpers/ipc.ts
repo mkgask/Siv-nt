@@ -57,7 +57,14 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('changeView', media)
     })
 
-    ipcMain.on('toggleMenuBar', (event, item) => {
+    ipcMain.on('changeZoomLevel', (event, zoomLevel) => {
+        log.debug('call: ipcMain.handle.changeZoomLevel')
+        if (!validateSender(event.senderFrame)) return null
+
+        mainWindow.webContents.send('changeZoomLevel', zoomLevel)
+    })
+
+    ipcMain.on('toggleMenuBar', (event) => {
         log.debug('call: ipcMain.handle.toggleMenuBar')
         if (!validateSender(event.senderFrame)) return null
 

@@ -17,6 +17,11 @@ contextBridge.exposeInMainWorld('ipcSend', {
         ipcRenderer.send('changeView', viewItem)
     },
 
+    changeZoomLevel: (zoomLevel) => {
+        console.log('call: ipcSend.changeZoomLevel')
+        ipcRenderer.send('changeZoomLevel', zoomLevel)
+    },
+
     toggleMenuBar: () => {
         console.log('call: ipcSend.toggleMenuBar')
         ipcRenderer.send('toggleMenuBar')
@@ -66,6 +71,11 @@ contextBridge.exposeInMainWorld('ipcEvent', {
     onChangeFileInfo: (callback) => {
         console.log('call: ipcEvent.onChangeFileInfo')
         ipcRenderer.on('changeFileInfo', (event, media) => callback(media))
+    },
+
+    onChangeZoomLevel: (callback) => {
+        console.log('call: ipcEvent.onChangeZoomLevel')
+        ipcRenderer.on('changeZoomLevel', (event, zoomLevel) => callback(zoomLevel))
     },
 
     onToggleMenuBar: (callback) => {

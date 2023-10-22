@@ -111,7 +111,9 @@ export default function MediaViewer() {
 
         ipcEvent.onChangeView((media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
+
             if (!media || !media.mime_type || !media.b64) { return }
+
             const dataURI = `data:${media.mime_type};base64,${media.b64}`
             setType(media.type)
             setSrc(dataURI)
@@ -138,12 +140,13 @@ export default function MediaViewer() {
     }, [])
 
     const changeViewSize = (w, h, ratio) => {
-        const newW = w * ratio / 100
+        const newW = (w * ratio / 100)
         const newH = h * ratio / 100
         console.log('changeViewSize(): ', newW, 'x', newH, ' ', ratio, '%')
         setViewW(newW)
         setViewH(newH)
         setMediaRatio(ratio)
+        ; (window as any).ipcSend.changeZoomLevel(ratio)
     }
 
     const changeViewSizeOriginal = () => {
@@ -168,17 +171,21 @@ export default function MediaViewer() {
     */
     const toggleViewSizeOriginalOrWindow = (mode = 'both') => {
         console.log('toggleViewSizeOriginalOrWindow(): viewW: ', viewW)
+        console.log('toggleViewSizeOriginalOrWindow(): Math.abs(viewW - window.innerWidth): ', Math.abs(viewW - window.innerWidth))
+        console.log('toggleViewSizeOriginalOrWindow(): Math.abs(viewW - window.innerWidth) < 1: ', Math.abs(viewW - window.innerWidth) < 1)
         console.log('toggleViewSizeOriginalOrWindow(): viewH: ', viewH)
+        console.log('toggleViewSizeOriginalOrWindow(): Math.abs(viewH - window.innerHeight): ', Math.abs(viewH - window.innerHeight))
+        console.log('toggleViewSizeOriginalOrWindow(): Math.abs(viewH - window.innerHeight) < 1: ', Math.abs(viewH - window.innerHeight) < 1)
 
+        // 表示サイズがウィンドウと同じサイズだったら原寸に戻す
         if (
             ((
-                viewW === window.innerWidth
+                Math.abs(viewW - window.innerWidth) < 1
             ) ||
             (
-                viewH === window.innerHeight
+                Math.abs(viewH - window.innerHeight) < 1
             )) || mode === 'original'
         ) {
-            // 画像がウィンドウと同じサイズだったら原寸に戻す
             changeViewSizeOriginal()
             return
         }

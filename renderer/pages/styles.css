@@ -15,26 +15,20 @@
     align-items: center;
 
     gap: 0 3.2vw;
-    background-color: #2885D181;
-    color: #ffffff;
 }
 
 .file-info.inactive {
     display: none;
 }
 
-.filepath {
+.file-path {
     width: 100%;
-    margin: 0;
-    padding: 0;
 }
 
-.filesize {
-    margin: 0;
-    padding: 0;
-}
-
-.imagesize {
+.file-path,
+.file-size,
+.image-size,
+.zoom-level {
     margin: 0;
     padding: 0;
 }

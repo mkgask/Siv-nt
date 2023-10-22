@@ -12,6 +12,7 @@ import openAssociation from './helpers/open-association'
 import Settings from './components/settings'
 
 
+
 const isProd: boolean = process.env.NODE_ENV === 'production'
 
 if (isProd) {
@@ -100,6 +101,7 @@ logStarter()
     const mainWindow = createWindow('main', {
         width: 1600,
         height: 800,
+        autoHideMenuBar: isProd ? true : false,
 
         webPreferences: {
 
