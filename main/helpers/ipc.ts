@@ -34,13 +34,13 @@ export default function registerIpc(mainWindow) {
         log.debug('call: ipcMain.handle.changeView: item.type: ' + item.type)
         log.debug('call: ipcMain.handle.changeView: item.mime_type: ' + item.mime_type)
         log.debug('call: ipcMain.handle.changeView: item.filesize: ' + item.filesize)
+        
         if (!validateSender(event.senderFrame)) return null
 
         const media = new Media(
             item.path,
             item.mime_type,
             item.type,
-            item.filesize
         )
 
         log.debug('changeView: path: ', media.path)
@@ -53,7 +53,9 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('changeFileInfo', media)
 
         media.generateViewerInfo(item.path)
+
         log.debug('changeView: b64: ', !!media.b64)
+
         mainWindow.webContents.send('changeView', media)
     })
 
