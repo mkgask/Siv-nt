@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+/* Path: renderer/components/menu-bar.css */
+
+
+
+.inactive {
+    display: none;
+}
+
+
+
+.menuListActive {
+    bottom: 4.55rem
+}
+
+
+.menuListActiveAppbarInactive {
+    bottom: 3.3rem
+}

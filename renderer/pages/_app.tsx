@@ -7,8 +7,6 @@ import type { EmotionCache } from '@emotion/cache'
 import createEmotionCache from '../lib/create-emotion-cache'
 import { CacheProvider } from '@emotion/react'
 
-import './styles.css'
-
 const clientSideEmotionCache = createEmotionCache()
 
 type MyAppProps = AppProps & {

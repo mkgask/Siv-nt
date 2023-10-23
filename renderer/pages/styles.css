@@ -1,36 +1,3 @@
-
-
-
-/*  Modules  file info
-*/
-
-.file-info {
-    width: 100%;
-    height: 100%;
-    padding: 0.5rem 1rem;
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-
-    gap: 0 3.2vw;
-}
-
-.file-info.inactive {
-    display: none;
-}
-
-.file-path {
-    width: 100%;
-}
-
-.file-path,
-.file-size,
-.image-size,
-.zoom-level {
-    margin: 0;
-    padding: 0;
-}
+@charset "utf-8";
 
 

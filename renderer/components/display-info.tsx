@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import styled from '@emotion/styled'
 import { Typography } from "@mui/material"
 
+import displayInfoStyle from './display-info.module.css'
+
 const Theme = styled('div')(({ theme }) => {
     return {
-        backgroundColor: '#2885D181',
-        color: '#ffffff',
     }
 })
 
@@ -13,7 +13,6 @@ const Theme = styled('div')(({ theme }) => {
 
 export default function DisplayInfo() {
 
-    const [active, setActive] = useState(true)
     const [filePath, setFilePath] = useState(null)
     const [fileSize, setFileSize] = useState(null)
     const [sizeW, setSizeW] = useState(null)
@@ -39,42 +38,25 @@ export default function DisplayInfo() {
             setZoomLevel(zoomLevel)
         }
 
-        const onToggleMenuBar = () => {
-            setActive((prevActive) => {
-                const newActive = !prevActive
-                console.log('Fileinfo: onToggleMenuBar(): prevActive -> newActive ', prevActive, ' -> ', newActive)
-                ipcSend.settings('display_info_enabled', newActive )
-                return newActive
-            })
-        }
-
-        const onSettings = (settings) => {
-            console.log('FileInfo: onSettings(): settings.display_info_enabled : ', settings.display_info_enabled)
-            setActive(settings.display_info_enabled)
-        }
-
         ipcEvent.onChangeFileInfo(onChangeFileInfo)
         ipcEvent.onChangeZoomLevel(onChangeZoomLevel)
-        ipcEvent.onToggleMenuBar(onToggleMenuBar)
-        ipcEvent.onSettings(onSettings)
 
         ipcSend.readyFileInfo()
 
         return () => {
             ipcEvent.off('onChangeFileInfo', onChangeFileInfo)
-            ipcEvent.off('onToggleMenuBar', onToggleMenuBar)
-            ipcEvent.off('onSettings', onSettings)
+            ipcEvent.off('onChangeZoomLevel', onChangeZoomLevel)
         }
     }, [])
 
     return (
-        <Theme className={`file-info ${active ? 'active' : 'inactive'}`}>
+        <Theme className={displayInfoStyle.fileInfo}>
             {filePath ? (
                 <>
-                    <Typography className="file-path">{filePath}</Typography>
-                    <Typography className="file-size">{fileSize}</Typography>
-                    <Typography className="image-size">{`${(sizeW || sizeH) ? (sizeW + ' x ' + sizeH) : ''}`}</Typography>
-                    <Typography className="zoom-level">{`${zoomLevel.toFixed(2)}`}%</Typography>
+                    <Typography className={displayInfoStyle.filePath}>{filePath}</Typography>
+                    <Typography className={displayInfoStyle.fileSize}>{fileSize}</Typography>
+                    <Typography className={displayInfoStyle.imageSize}>{`${(sizeW || sizeH) ? (sizeW + ' x ' + sizeH) : ''}`}</Typography>
+                    <Typography className={displayInfoStyle.zoomLevel}>{`${zoomLevel.toFixed(2)}`}%</Typography>
                 </>
             ) : (
                 <Typography className="no-file">Display file information here if file selected</Typography>

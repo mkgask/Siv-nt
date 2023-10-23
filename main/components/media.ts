@@ -126,7 +126,7 @@ export default class Media {
         b64: string = '',
     ) {
         if (!path) {
-            if (!this.path) throw new Error('Media.generateViewerInfo: path is not exists')
+            if (!this.path) return
             path = this.path
         }
 

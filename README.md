@@ -84,6 +84,7 @@ In no particular order
 <summary>If I feel like it</summary>
 
 - [ ] v?.?.? adjust image position move speed (split horizontal and vertical)
+- [ ] v?.?.? send main process from renderer process logging data
 - [ ] v?.?.? correct application menu bar
 - [ ] v?.?.? display 2 images at the same time
 - [ ] v?.?.? invert zoom in/out when mouse wheel up/down from settings
