@@ -11,7 +11,6 @@ const StyledDialogText = styled(DialogContentText)({
 
 
 
-
 export default function DialogHelp(props) {
 
     const handleClose = () => {
@@ -49,10 +48,10 @@ export default function DialogHelp(props) {
                         Change image size original or fit to window
                 </StyledDialogText>
 
-            <StyledDialogText>
-                Wheel:
-                    Change zoom level
-            </StyledDialogText>
+                <StyledDialogText>
+                    Wheel:
+                        Change zoom level
+                </StyledDialogText>
             </DialogContent>
         </Dialog>
     )
