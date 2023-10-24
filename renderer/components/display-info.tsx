@@ -56,7 +56,7 @@ export default function DisplayInfo() {
                     <Typography className={displayInfoStyle.filePath}>{filePath}</Typography>
                     <Typography className={displayInfoStyle.fileSize}>{fileSize}</Typography>
                     <Typography className={displayInfoStyle.imageSize}>{`${(sizeW || sizeH) ? (sizeW + ' x ' + sizeH) : ''}`}</Typography>
-                    <Typography className={displayInfoStyle.zoomLevel}>{`${zoomLevel.toFixed(2)}`}%</Typography>
+                    <Typography className={displayInfoStyle.zoomLevel}>{`${zoomLevel.toFixed(2)}`} %</Typography>
                 </>
             ) : (
                 <Typography className="no-file">Display file information here if file selected</Typography>

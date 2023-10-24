@@ -57,7 +57,7 @@ In no particular order
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
 - [ ] v0.6.10 display package lisences for using
-- [ ] v0.6.9 display mouse control help
+- [x] v0.6.9 display mouse control help
 - [x] v0.6.8 fixed can't open file association
 
 <details>

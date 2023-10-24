@@ -36,7 +36,7 @@ const StyledHelpIcon = styled(HelpOutlineRoundedIcon)(({ theme }) => ({
 
 
 
-export default function MenuBar() {
+export default function MenuBar(props) {
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -70,13 +70,16 @@ export default function MenuBar() {
 
     const handleApiClick = (event) => {
         event.preventDefault()
-        ; (window as any).ipcSend.openDialogApi()
+        props.openDialogApi()
+        setMenuOpen(false)
     }
+
 
 
     const handleHelpClick = (event) => {
         event.preventDefault()
-        ; (window as any).ipcSend.openDialogHelp()
+        props.openDialogHelp()
+        setMenuOpen(false)
     }
 
 
@@ -93,17 +96,6 @@ export default function MenuBar() {
                         menuListStyle.inactive}
                 `}
             >
-                <MenuItem
-                    onClick={handleApiClick}
-                >
-                    <ListItemIcon>
-                        <StyledApiIcon></StyledApiIcon>
-                    </ListItemIcon>
-                    <ListItemText>
-                        Package Lisences
-                    </ListItemText>
-                </MenuItem>
-
                 <MenuItem
                     onClick={handleHelpClick}
                 >

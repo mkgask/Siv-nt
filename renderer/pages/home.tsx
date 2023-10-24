@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 
 import {
     AppBar,
+    Dialog,
     Toolbar,
     styled,
 } from '@mui/material'
@@ -12,6 +13,7 @@ import packageJson from '../../package.json'
 import MediaViewer from '../components/media-viewer'
 import DisplayInfo from '../components/display-info'
 import MenuBar from '../components/menu-bar'
+import DialogHelp from '../components/dialog-help'
 
 import appBarStyle from './app-bar.module.css'
 
@@ -48,7 +50,10 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 function Home() {
 
-    const [appBarActive, setAppBarActive] = React.useState(true)
+    const [appBarActive, setAppBarActive] = useState(true)
+
+    const [showDialogApi, setShowDialogApi] = useState(false)
+    const [showDialogHelp, setShowDialogHelp] = useState(false)
 
 
 
@@ -98,9 +103,17 @@ function Home() {
             >
                 <StyledToolbar>
                     <DisplayInfo></DisplayInfo>
-                    <MenuBar></MenuBar>
+                    <MenuBar
+                        openDialogApi={() => { setShowDialogApi(true) }}
+                        openDialogHelp={() => { setShowDialogHelp(true) }}
+                    ></MenuBar>
                 </StyledToolbar>
             </AppBar>
+
+            <DialogHelp
+                show={showDialogHelp}
+                setShowDialogHelp={setShowDialogHelp}
+            ></DialogHelp>
         </>
     )
 }
