@@ -37,6 +37,11 @@ contextBridge.exposeInMainWorld('ipcSend', {
         ipcRenderer.send('readyFileInfo')
     },
 
+    readyPackageLicenses: () => {
+        console.log('call: ipcSend.readyPackageLicenses')
+        ipcRenderer.send('readyPackageLicenses')
+    },
+
     settings: (key, value) => {
         console.log('call: ipcSend.settings')
         ipcRenderer.send('settings', key, value)
@@ -61,6 +66,11 @@ contextBridge.exposeInMainWorld('ipcEvent', {
     onSettings: (callback) => {
         console.log('call: ipcEvent.onSettings')
         ipcRenderer.on('settings', (event, settings) => callback(settings))
+    },
+
+    onPackageLicenses: (callback) => {
+        console.log('call: ipcEvent.onPackageLicenses')
+        ipcRenderer.on('packageLicenses', (event, licenses) => callback(licenses))
     },
 
     onChangeView: (callback) => {

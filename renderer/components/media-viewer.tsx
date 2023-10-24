@@ -106,6 +106,7 @@ export default function MediaViewer() {
 
     useEffect(() => {
         const ipcEvent = (window as any).ipcEvent
+        const ipcSend = (window as any).ipcSend
 
         ipcEvent.onChangeView((media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
@@ -134,7 +135,7 @@ export default function MediaViewer() {
             setImageMoveRatio(settings.image_move_ratio)
         })
 
-        ; (window as any).ipcSend.readyMediaViewer()
+        ipcSend.readyMediaViewer()
     }, [])
 
     const changeViewSize = (w, h, ratio) => {

@@ -4,6 +4,7 @@ import Store from "electron-store"
 
 import Media from "../components/media"
 import Settings from "../components/settings"
+import packageLicenses from '../components/package-licenses'
 
 log.debug('load: ipc.ts')
 
@@ -89,6 +90,15 @@ export default function registerIpc(mainWindow) {
         const settings = new Settings()
         log.debug('call: ipcMain.handle.readyFileInfo: settings', settings)
         mainWindow.webContents.send('settings', settings)
+    })
+
+    ipcMain.on('readyPackageLicenses', (event) => {
+        log.debug('call: ipcMain.handle.readyPackageLicenses')
+        if (!validateSender(event.senderFrame)) return null
+
+        const licenses = packageLicenses()
+        log.debug('call: ipcMain.handle.readyPackageLicenses: licenses', licenses)
+        mainWindow.webContents.send('packageLicenses', licenses)
     })
 
     ipcMain.on('settings', (event, key, value) => {

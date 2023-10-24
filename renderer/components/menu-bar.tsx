@@ -97,6 +97,17 @@ export default function MenuBar(props) {
                 `}
             >
                 <MenuItem
+                    onClick={handleApiClick}
+                >
+                    <ListItemIcon>
+                        <StyledApiIcon></StyledApiIcon>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Package Lisences
+                    </ListItemText>
+                </MenuItem>
+
+                <MenuItem
                     onClick={handleHelpClick}
                 >
                     <ListItemIcon>

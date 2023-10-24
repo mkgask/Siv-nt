@@ -14,6 +14,7 @@ import MediaViewer from '../components/media-viewer'
 import DisplayInfo from '../components/display-info'
 import MenuBar from '../components/menu-bar'
 import DialogHelp from '../components/dialog-help'
+import DialogPackageLicense from '../components/dialog-package-lisences'
 
 import appBarStyle from './app-bar.module.css'
 
@@ -114,6 +115,11 @@ function Home() {
                 show={showDialogHelp}
                 setShowDialogHelp={setShowDialogHelp}
             ></DialogHelp>
+
+            <DialogPackageLicense
+                show={showDialogApi}
+                setShowDialogPackageLicense={setShowDialogApi}
+            ></DialogPackageLicense>
         </>
     )
 }
