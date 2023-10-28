@@ -23,7 +23,7 @@ const settings_defaults = {
 
 
 
-export default class Settings {
+class Settings {
     display_info_enabled: boolean = settings_defaults.display_info_enabled
     accepted_types: object = settings_defaults.accepted_types
     image_move_ratio: number = settings_defaults.image_move_ratio
@@ -55,3 +55,10 @@ export default class Settings {
         store.set(key, value)
     }
 }
+
+
+
+const settings = new Settings
+export default settings
+
+

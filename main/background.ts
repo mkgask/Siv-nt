@@ -9,13 +9,12 @@ import logStarter from './helpers/log-starter'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
 
-import Settings from './components/settings'
+import env from './components/env'
+import settings from './components/settings'
 
 
 
-const isProd: boolean = process.env.NODE_ENV === 'production'
-
-if (isProd) {
+if (env.isProd) {
     serve({ directory: 'app' })
 
     // 今は開発中なので本番環境でも全部出す
@@ -101,7 +100,7 @@ logStarter()
     const mainWindow = createWindow('main', {
         width: 1600,
         height: 800,
-        autoHideMenuBar: isProd ? true : false,
+        autoHideMenuBar: env.isProd ? true : false,
 
         webPreferences: {
 
@@ -125,7 +124,7 @@ logStarter()
     registerIpc(mainWindow)
     openAssociation(mainWindow)
 
-    if (isProd) {
+    if (env.isProd) {
         mainWindow.setMenuBarVisibility(false)
         await mainWindow.loadURL('app://./home')
     } else {
@@ -137,6 +136,6 @@ logStarter()
 })()
 
 app.on('window-all-closed', () => {
-    ;(new Settings).save_all()
+    settings.save_all()
     app.quit()
 })

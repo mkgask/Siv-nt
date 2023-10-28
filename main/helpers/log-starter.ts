@@ -3,7 +3,7 @@ import log from 'electron-log'
 import fs from 'fs'
 import path from 'path'
 
-
+import env from '../components/env'
 
 
 export default async function logStarter() {
@@ -13,8 +13,9 @@ export default async function logStarter() {
     // electron-logが出力するログのファイル名をカスタマイズ
     const d = new Date()
     const prefix = d.getFullYear() + ('00' + (d.getMonth() + 1)).slice(-2) + ('00' + (d.getDate())).slice(-2)
+    const devprod = env.isProd ? 'prod' : 'dev'
     const curr = log.transports.file.fileName
-    log.transports.file.fileName = `${prefix}-${curr}`
+    log.transports.file.fileName = `${prefix}-${devprod}-${curr}`
 
     // electron-logが出力するログのうち古いファイルを削除
     await (async () => {

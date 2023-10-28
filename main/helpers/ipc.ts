@@ -3,7 +3,8 @@ import log from "electron-log"
 import Store from "electron-store"
 
 import Media from "../components/media"
-import Settings from "../components/settings"
+import env from "../components/env"
+import settings from "../components/settings"
 import packageLicenses from '../components/package-licenses'
 
 log.debug('load: ipc.ts')
@@ -78,16 +79,13 @@ export default function registerIpc(mainWindow) {
         log.debug('call: ipcMain.handle.readyMediaViewer')
         if (!validateSender(event.senderFrame)) return null
 
-        mainWindow.webContents.send('env', {
-            isProd: process.env.NODE_ENV === 'production',
-        })
+        mainWindow.webContents.send('env', env)
     })
 
     ipcMain.on('readyFileInfo', (event) => {
         log.debug('call: ipcMain.handle.readyFileInfo')
         if (!validateSender(event.senderFrame)) return null
         
-        const settings = new Settings()
         log.debug('call: ipcMain.handle.readyFileInfo: settings', settings)
         mainWindow.webContents.send('settings', settings)
     })
@@ -97,7 +95,8 @@ export default function registerIpc(mainWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         const licenses = packageLicenses()
-        log.debug('call: ipcMain.handle.readyPackageLicenses: licenses', licenses)
+        // log.debug('call: ipcMain.handle.readyPackageLicenses: licenses', licenses)
+        // ログがとても長くなってしまうので一旦OFF
         mainWindow.webContents.send('packageLicenses', licenses)
     })
 
@@ -108,7 +107,6 @@ export default function registerIpc(mainWindow) {
 
         log.debug('call: ipcMain.handle.settings: key: value', key, ' : ', value)
 
-        const settings = new Settings()
         settings.save(key, value)
     })
 }
