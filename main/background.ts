@@ -110,7 +110,7 @@ logStarter()
              * nodeIntegration: trueにするとエラーが出なくなるが、
              * セキュリティ上良い設定ではないので、一旦これで進める。
             */
-            nodeIntegration: true,
+            nodeIntegration: false,
 
             nodeIntegrationInWorker: false,
             nodeIntegrationInSubFrames: false,
