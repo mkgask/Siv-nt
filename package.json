@@ -2,8 +2,9 @@
   "private": true,
   "name": "Siv-nt",
   "description": "Simple image viewer - nextron",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "author": "mkgask",
+  "homepage": "https://zsw.jp",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",

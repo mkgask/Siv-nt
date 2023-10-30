@@ -3,7 +3,6 @@ import Head from 'next/head'
 
 import {
     AppBar,
-    Dialog,
     Toolbar,
     styled,
 } from '@mui/material'

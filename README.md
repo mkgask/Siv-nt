@@ -58,7 +58,8 @@ In no particular order
 - [ ] v0.9.0 support audio file
 - [ ] v0.8.0 support movie file
 - [ ] v0.7.0 change next or prev file in same directory
-- [ ] v0.6.11 add version information to help dialog
+- [ ] v0.6.12 select log output in production in settings dialog
+- [x] v0.6.11 add version information to help dialog
 - [x] v0.6.10 display package licenses for using
 - [x] v0.6.9 display mouse control help
 

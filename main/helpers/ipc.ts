@@ -1,6 +1,5 @@
 import { ipcMain } from "electron"
 import log from "electron-log"
-import Store from "electron-store"
 
 import Media from "../components/media"
 import env from "../components/env"
