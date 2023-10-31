@@ -19,6 +19,7 @@ const settings_defaults = {
     display_info_enabled: false,
     accepted_types: accepted_types,
     image_move_ratio: 16,
+    log_output: false,
 }
 
 
@@ -27,6 +28,7 @@ class Settings {
     display_info_enabled: boolean = settings_defaults.display_info_enabled
     accepted_types: object = settings_defaults.accepted_types
     image_move_ratio: number = settings_defaults.image_move_ratio
+    log_output: boolean = false
 
     constructor() {
         this.load()

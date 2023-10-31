@@ -1,40 +1,35 @@
 import { app, session } from 'electron'
 import serve from 'electron-serve'
-import log from 'electron-log'
 
 import path from 'path'
 
+import env from './components/env'
+import settings from './components/settings'
+
 import { createWindow } from './helpers'
-import logStarter from './helpers/log-starter'
+import log from './helpers/electron-log-wrapper'
+import { logLevel } from './helpers/electron-log-wrapper'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
 
-import env from './components/env'
-import settings from './components/settings'
+
+log.start()
+log.removeLogFile()
 
 
 
 if (env.isProd) {
     serve({ directory: 'app' })
 
-    // 今は開発中なので本番環境でも全部出す
-    log.transports.console.level = 'silly'
-    log.transports.file.level = 'silly';
+    if (settings.log_output) {
+        log.level(logLevel.silly)
+    } else {
+        log.level(logLevel.error)
+    }
 
-    /*
-        // TODO: 本番環境ではログファイルの出力をフラグで管理したい
-        if (!isLogOutput) {
-            log.transports.console.level = false;
-            log.transports.file.level = false;
-        }
-    */
 } else {
     app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
-
-
-
-logStarter()
 
 
 
