@@ -1,4 +1,4 @@
-import log, { LevelOption } from 'electron-log'
+import log, { LevelOption, LogFunctions } from 'electron-log'
 
 import fs from 'fs'
 import path from 'path'
@@ -35,7 +35,31 @@ const electronLogLevel = (level: logOption): LevelOption => {
 
 
 
-class ElectronLogWrapper
+const space = ' '
+const spaces = 4
+
+export const convert = (any: any, deps: number = 0): string => {
+    if (Array.isArray(any)) {
+        return space.repeat(deps * spaces) +
+            any.map(v => convert(v, deps + 1)).join(space)
+    }
+
+    if (Object.prototype.toString.call(any) === '[object Object]') {
+        const obj = {}
+        Object.keys(any).forEach(key => {
+            obj[key] = convert(any[key], deps + 1)
+        })
+
+        return space.repeat(deps * spaces) +
+            JSON.stringify(obj, null, spaces)
+    }
+
+    return space.repeat(deps * spaces) +
+        any.toString()
+}
+
+
+class ElectronLogWrapper implements LogFunctions
 {
     private _level: logOption = false
 
@@ -56,33 +80,42 @@ class ElectronLogWrapper
         this._level = level
     }
 
-    output(text: string, level: logOption) {
+    output(params: string, level: logOption) {
         if (this._level === false) return
         if (level === false) return
         if (this._level < level) return
 
         log.transports.file.level = electronLogLevel(this._level)
-        log.log(level, text)
+        log.log(params)
     }
 
-    error(text: string) {
-        this.output(text, logLevel.error)
+    error(...params: any[]) {
+        this.output(convert(params), logLevel.error)
     }
 
-    warn(text: string) {
-        this.output(text, logLevel.warn)
+    warn(...params: any[]) {
+        this.output(convert(params), logLevel.warn)
     }
 
-    info(text: string) {
-        this.output(text, logLevel.info)
+    info(...params: any[]) {
+        this.output(convert(params), logLevel.info)
     }
 
-    verbose(text: string) {
-        this.output(text, logLevel.verbose)
+    verbose(...params: any[]) {
+        this.output(convert(params), logLevel.verbose)
     }
 
-    debug(text: string) {
-        this.output(text, logLevel.debug)
+    debug(...params: any[]) {
+        this.output(convert(params), logLevel.debug)
+    }
+
+    silly(...params: any[]) {
+        this.output(convert(params), logLevel.silly)
+    }
+
+    // shortcut to info
+    log(...params: any[]) {
+        this.output(convert(params), logLevel.info)
     }
 
     async removeLogFile() {

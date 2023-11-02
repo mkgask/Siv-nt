@@ -1,8 +1,7 @@
 import fs from 'fs'
 
 import mime from 'mime-lite'
-import Store from 'electron-store'
-import log from 'electron-log'
+import log from './electron-log-wrapper'
 
 import Media from '../components/media'
 
@@ -14,8 +13,8 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
 
     // 関連付けを開く
     mainWindow.webContents.on('did-finish-load', () => {
-        console.log('call: openAssociation.did-finish-load')
-        console.log('call: openAssociation.did-finish-load: process.argv: ' + process.argv.join(', '))
+        log.debug('call: openAssociation.did-finish-load')
+        log.debug('call: openAssociation.did-finish-load: process.argv: ' + process.argv.join(', '))
 
         let path = ''
         let mime_type = ''

@@ -1,8 +1,9 @@
 import Store from 'electron-store'
-import log from 'electron-log'
 import yaml from 'js-yaml'
 
 import accepted_types from './accepted-types'
+
+import log from '../helpers/electron-log-wrapper'
 
 
 
@@ -35,15 +36,16 @@ class Settings {
     }
 
     load() {
-        this.display_info_enabled = store.get('display_info_enabled', settings_defaults.display_info_enabled)
-        this.accepted_types = store.get('accepted_types', settings_defaults.accepted_types)
-        this.image_move_ratio = store.get('image_move_ratio', settings_defaults.image_move_ratio)
+        for (let key in settings_defaults) {
+            // store.getした値をthisにセットする
+            this[key] = store.get(key, settings_defaults[key])
+        }
     }
 
     save_all() {
-        store.set('display_info_enabled', this.display_info_enabled)
-        store.set('accepted_types', this.accepted_types)
-        store.set('image_move_ratio', this.image_move_ratio)
+        for (let key in settings_defaults) {
+            store.set(key, this[key])
+        }
     }
 
     save(key, value) {
@@ -52,7 +54,7 @@ class Settings {
             throw new Error(`key '${key}' is not exists in Settings`)
         }
 
-        log.debug('call: Settings.save: key : value', key, ' : ', value)
+        log.debug('call: Settings.save: : ', key, ' : ', value)
 
         store.set(key, value)
     }

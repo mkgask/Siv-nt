@@ -1,5 +1,6 @@
-import log from 'electron-log'
 import fs from 'fs'
+
+import log from '../helpers/electron-log-wrapper'
 
 
 

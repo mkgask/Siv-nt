@@ -6,7 +6,7 @@ import path from 'path'
 import env from './components/env'
 import settings from './components/settings'
 
-import { createWindow } from './helpers'
+import { createWindow } from './helpers/create-window'
 import log from './helpers/electron-log-wrapper'
 import { logLevel } from './helpers/electron-log-wrapper'
 import registerIpc from './helpers/ipc'
