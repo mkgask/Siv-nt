@@ -59,7 +59,7 @@ In no particular order
 - [ ] v0.9.0 support movie file
 - [ ] v0.8.0 change next or prev file in same directory
 - [ ] v0.7.0 add settings dialog
-- [x] v0.6.12 select log output in production
+- [x] v0.6.12 select log output in production build
 - [x] v0.6.11 add version information to help dialog
 - [x] v0.6.10 display package licenses for using
 - [x] v0.6.9 display mouse control help
