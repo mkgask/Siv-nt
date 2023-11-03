@@ -12,6 +12,7 @@ import {
 
 import ApiRoundedIcon from '@mui/icons-material/ApiRounded';
 import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 
 import menuListStyle from './menu-bar.module.css';
 
@@ -31,6 +32,10 @@ const StyledApiIcon = styled(ApiRoundedIcon)(({ theme }) => ({
 }))
 
 const StyledHelpIcon = styled(HelpOutlineRoundedIcon)(({ theme }) => ({
+    color: '#ffffff',
+}))
+
+const StyledSettingsIcon = styled(SettingsRoundedIcon)(({ theme }) => ({
     color: '#ffffff',
 }))
 
@@ -82,13 +87,21 @@ export default function MenuBar(props) {
         setMenuOpen(false)
     }
 
+    const handleSettingsClick = (event) => {
+        event.preventDefault()
+        props.openDialogSettings()
+        setMenuOpen(false)
+    }
+
 
 
     return (
         <>
             <MenuIcon
                 onClick={handleMenuClick}
+                sx={{ cursor: 'pointer' }}
             ></MenuIcon>
+
             <StyledMenuList
                 className={`
                     ${menuOpen ?
@@ -96,6 +109,17 @@ export default function MenuBar(props) {
                         menuListStyle.inactive}
                 `}
             >
+                <MenuItem
+                    onClick={handleSettingsClick}
+                >
+                    <ListItemIcon>
+                        <StyledSettingsIcon></StyledSettingsIcon>
+                    </ListItemIcon>
+                    <ListItemText>
+                        Settings
+                    </ListItemText>
+                    </MenuItem>
+
                 <MenuItem
                     onClick={handleApiClick}
                 >

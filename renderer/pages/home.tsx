@@ -13,6 +13,7 @@ import MediaViewer from '../components/media-viewer'
 import DisplayInfo from '../components/display-info'
 import MenuBar from '../components/menu-bar'
 import DialogHelp from '../components/dialog-help'
+import DialogSettings from '../components/dialog-settings'
 import DialogPackageLicense from '../components/dialog-package-lisences'
 
 import appBarStyle from './app-bar.module.css'
@@ -54,6 +55,7 @@ function Home() {
 
     const [showDialogApi, setShowDialogApi] = useState(false)
     const [showDialogHelp, setShowDialogHelp] = useState(false)
+    const [showDialogSettings, setShowDialogSettings] = useState(false)
 
 
 
@@ -106,6 +108,7 @@ function Home() {
                     <MenuBar
                         openDialogApi={() => { setShowDialogApi(true) }}
                         openDialogHelp={() => { setShowDialogHelp(true) }}
+                        openDialogSettings={() => { setShowDialogSettings(true) }}
                     ></MenuBar>
                 </StyledToolbar>
             </AppBar>
@@ -119,6 +122,11 @@ function Home() {
                 show={showDialogApi}
                 setShowDialogPackageLicense={setShowDialogApi}
             ></DialogPackageLicense>
+
+            <DialogSettings
+                show={showDialogSettings}
+                setShowDialogSettings={setShowDialogSettings}
+            ></DialogSettings>
         </>
     )
 }

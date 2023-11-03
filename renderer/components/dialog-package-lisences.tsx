@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -46,6 +46,7 @@ type LicenseContent = {
 }
 
 
+
 export default function DialogPackageLicense(props) {
 
     const [licenses, setLicenses] = useState(null)
@@ -56,7 +57,7 @@ export default function DialogPackageLicense(props) {
         const ipcEvent = (window as any).ipcEvent
         const ipcSend = (window as any).ipcSend
 
-        ipcEvent.onPackageLicenses((licenses) => {
+        const onPackageLicenses = (licenses) => {
             const licenseList = []
             console.log('DialogPackageLicense: onPackageLicenses: licenses: ', licenses)
 
@@ -103,9 +104,15 @@ export default function DialogPackageLicense(props) {
             })
 
             setLicenses(licenseList)
-        })
+        }
+
+        ipcEvent.onPackageLicenses(onPackageLicenses)
 
         ipcSend.readyPackageLicenses()
+
+        return () => {
+            ipcEvent.off('onPackageLicenses', onPackageLicenses)
+        }
     }, [])
 
 

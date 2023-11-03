@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider
+} from "@mui/material";
+
 import styled from "@emotion/styled";
-import { Dialog, DialogContent, DialogContentText, DialogTitle, Divider, colors } from "@mui/material";
 
 import Env from "../../main/components/env";
 
@@ -32,9 +40,15 @@ export default function DialogHelp(props) {
     useEffect(() => {
         const ipcEvent = (window as any).ipcEvent
 
-        ipcEvent.onEnv((env) => {
+        const onEnv = (env) => {
             setEnv(env)
-        })
+        }
+
+        ipcEvent.onEnv(onEnv)
+
+        return () => {
+            ipcEvent.off('onEnv', onEnv)
+        }
     }, [])
 
     const handleClose = () => {

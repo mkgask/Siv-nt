@@ -108,7 +108,7 @@ export default function MediaViewer() {
         const ipcEvent = (window as any).ipcEvent
         const ipcSend = (window as any).ipcSend
 
-        ipcEvent.onChangeView((media) => {
+        const onChangeView = (media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
 
             if (!media || !media.mime_type || !media.b64) { return }
@@ -120,22 +120,32 @@ export default function MediaViewer() {
             mediaH.current = media.imagesize_h
 
             toggleViewSizeOriginalOrWindow('window')
-        })
+        }
 
-        ipcEvent.onEnv((env) => {
+        const onEnv = (env) => {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
             setIsProd(env.isProd)
             console.log('MediaViewer: onEnv: image_move_ratio: ', image_move_ratio)
-        })
+        }
 
-        ipcEvent.onSettings((settings) => {
+        const onSettings = (settings) => {
             console.log('MediaViewer: onSettings: settings: ', settings)
             setAcceptedTypes(settings.accepted_types)
             setImageMoveRatio(settings.image_move_ratio)
-        })
+        }
+
+        ipcEvent.onChangeView(onChangeView)
+        ipcEvent.onEnv(onEnv)
+        ipcEvent.onSettings(onSettings)
 
         ipcSend.readyMediaViewer()
+
+        return () => {
+            ipcEvent.off('onChangeView', onChangeView)
+            ipcEvent.off('onEnv', onEnv)
+            ipcEvent.off('onSettings', onSettings)
+        }
     }, [])
 
     const changeViewSize = (w, h, ratio) => {
