@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import ApiRoundedIcon from '@mui/icons-material/ApiRounded';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
+import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 
 import menuListStyle from './menu-bar.module.css';
@@ -31,7 +31,7 @@ const StyledApiIcon = styled(ApiRoundedIcon)(({ theme }) => ({
     color: '#ffffff',
 }))
 
-const StyledHelpIcon = styled(HelpOutlineRoundedIcon)(({ theme }) => ({
+const StyledHelpIcon = styled(HelpRoundedIcon)(({ theme }) => ({
     color: '#ffffff',
 }))
 
