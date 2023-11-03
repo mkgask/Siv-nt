@@ -52,13 +52,14 @@ settings.ymlは %APPDATA%/Roaming/Siv-nt/settings.yml
 # Release Plan
 
 In no particular order
-- [ ] v0.12.0 image color adjust
-- [ ] v0.11.0 image paste from clipboard
-- [ ] v0.10.0 image convert and save
-- [ ] v0.9.0 support audio file
-- [ ] v0.8.0 support movie file
-- [ ] v0.7.0 change next or prev file in same directory
-- [ ] v0.6.12 select log output in production in settings dialog
+- [ ] v0.13.0 image color adjust
+- [ ] v0.12.0 image paste from clipboard
+- [ ] v0.11.0 image convert and save
+- [ ] v0.10.0 support audio file
+- [ ] v0.9.0 support movie file
+- [ ] v0.8.0 change next or prev file in same directory
+- [ ] v0.7.0 add settings dialog
+- [x] v0.6.12 select log output in production
 - [x] v0.6.11 add version information to help dialog
 - [x] v0.6.10 display package licenses for using
 - [x] v0.6.9 display mouse control help

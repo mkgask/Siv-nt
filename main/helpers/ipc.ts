@@ -86,7 +86,7 @@ export default function registerIpc(mainWindow) {
         log.debug('call: ipcMain.handle.readyFileInfo')
         if (!validateSender(event.senderFrame)) return null
         
-        log.debug('call: ipcMain.handle.readyFileInfo: settings', settings)
+        log.debug('call: ipcMain.handle.readyFileInfo: settings: ', settings)
         mainWindow.webContents.send('settings', settings)
     })
 

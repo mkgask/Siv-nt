@@ -37,26 +37,83 @@ const electronLogLevel = (level: logOption): LevelOption => {
 
 const space = ' '
 const spaces = 4
+const linefeed = '\n'
 
-export const convert = (any: any, deps: number = 0): string => {
-    if (Array.isArray(any)) {
-        return space.repeat(deps * spaces) +
-            any.map(v => convert(v, deps + 1)).join(space)
-    }
-
-    if (Object.prototype.toString.call(any) === '[object Object]') {
-        const obj = {}
-        Object.keys(any).forEach(key => {
-            obj[key] = convert(any[key], deps + 1)
-        })
-
-        return space.repeat(deps * spaces) +
-            JSON.stringify(obj, null, spaces)
-    }
-
-    return space.repeat(deps * spaces) +
-        any.toString()
+const deps_spaces = (deps: number): string => {
+    return space.repeat(spaces * (deps < 0 ? 0 : deps))
 }
+
+const toString = (any: any, deps: number = 0, inValue: boolean = false): string => {
+
+    /*
+        考慮に入っているもの
+            undefined
+            null
+            string
+            function
+            array
+            object
+        そのまま文字列として出力されることを期待しているもの
+            number
+            boolean
+            symbol
+            bigint
+    */
+
+    const s = inValue ? '' : deps_spaces(deps)
+
+    switch (true) {
+        case typeof any === 'undefined':
+            return s + 'undefined'
+
+        case typeof any === 'string' && inValue:
+            return '"' + any.toString() + '"'
+
+        case typeof any === 'string' && 0 < deps:
+            return s + '"' + any.toString() + '"'
+        
+        case typeof any === 'function':
+            // 関数名があれば関数名を返す
+            const funcName = any.toString().match(/^(function)\s*([^\s(]*)?/)
+
+            if (funcName && funcName[2]) 
+                return s + '[function ' + funcName[2] + ']'
+
+            // 関数名が無いがfunctionから始まるものは無名関数として返す
+            if (funcName && funcName[1]) 
+                return s + '[anonymous function]'
+
+            // それ以外はlambda functionとして返す
+            return s + '[lambda function]'
+
+        case Array.isArray(any):
+            return s + any.map(v =>
+                toString(v, deps + 1) + linefeed
+            ).join(space)
+
+        case Object.prototype.toString.call(any) === '[object Object]':
+            let object_str = '{' + linefeed
+            if (!inValue) deps += 1
+
+            Object.keys(any).forEach((key) => {
+                object_str += s + deps_spaces(deps) +
+                    key + ': ' + toString(any[key], deps + 1, true) + ',' + linefeed
+            })
+
+            deps -= 1
+            object_str += s + deps_spaces(deps) + '}' + (inValue ? '' : linefeed)
+            return object_str
+
+        default:
+            if (any === null) return s + 'null'
+            return s + any.toString()
+    }
+}
+
+export const convert = (any: any[]): string => {
+    return any.map(v => toString(v)).join(space)
+}
+
 
 
 class ElectronLogWrapper implements LogFunctions

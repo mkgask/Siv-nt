@@ -36,18 +36,13 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
 
         const media = new Media(path, mime_type, type)
 
-        log.debug('changeView: path', media.path)
-        log.debug('changeView: mime_type', media.mime_type)
-        log.debug('changeView: type', media.type)
-        log.debug('changeView: filesize', media.filesize)
-        log.debug('changeView: imagesize_w', media.imagesize_w)
-        log.debug('changeView: imagesize_h', media.imagesize_h)
+        log.debug('call: openAssociation: changeFileInfo: media: ', media)
 
         mainWindow.webContents.send('changeFileInfo', media)
         
         media.generateViewerInfo(path)
 
-        log.debug('changeView: b64', !!media.b64)
+        log.debug('call: openAssociation: changeView: b64: ', !!media.b64)
 
         mainWindow.webContents.send('changeView', media)
     })
