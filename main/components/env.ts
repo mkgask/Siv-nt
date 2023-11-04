@@ -1,5 +1,6 @@
 import packageJson from '../../package.json'
 
+import font from './font'
 
 
 const env_defaults = {
@@ -8,7 +9,9 @@ const env_defaults = {
     version: '0.0.0',
     author: 'mkgask',
     homepage: 'https://zsw.jp',
+
     isProd: true,
+    font_styles: font.font_styles,
 }
 
 
@@ -21,6 +24,7 @@ class Env {
     readonly homepage: string = packageJson.homepage ?? env_defaults.homepage
 
     readonly isProd: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'production' : env_defaults.isProd
+    readonly font_styles: string = font.font_styles ?? env_defaults.font_styles
 }
 
 

@@ -34,6 +34,7 @@ export default function DialogHelp(props) {
         author: '',
         homepage: '',
         isProd: true,
+        font_styles: '',
     })
 
     useEffect(() => {

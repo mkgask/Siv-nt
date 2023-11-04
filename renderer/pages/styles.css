@@ -1,3 +1,10 @@
 @charset "utf-8";
 
 
+
+html body *{
+    font-family: Assistant, sans-serif !important;
+    letter-spacing: 0.05vw !important;
+}
+
+

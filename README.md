@@ -60,6 +60,7 @@ In no particular order
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
 - [ ] v0.8.0 change next or prev file in same directory
+- [x] v0.7.4 change default font to Assistant
 - [x] v0.7.3 change zoom level ratio in settings dialog
 
 <details>

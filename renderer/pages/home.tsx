@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 
 import {
@@ -7,14 +7,13 @@ import {
     styled,
 } from '@mui/material'
 
-import packageJson from '../../package.json'
-
 import MediaViewer from '../components/media-viewer'
 import DisplayInfo from '../components/display-info'
 import MenuBar from '../components/menu-bar'
 import DialogHelp from '../components/dialog-help'
 import DialogSettings from '../components/dialog-settings'
 import DialogPackageLicense from '../components/dialog-package-lisences'
+import Font from '../components/font'
 
 import appBarStyle from './app-bar.module.css'
 
@@ -51,12 +50,14 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 function Home() {
 
+    const [appName, setAppName] = useState('')
+    const [appVersion, setAppVersion] = useState('')
+
     const [appBarActive, setAppBarActive] = useState(true)
 
     const [showDialogApi, setShowDialogApi] = useState(false)
     const [showDialogHelp, setShowDialogHelp] = useState(false)
     const [showDialogSettings, setShowDialogSettings] = useState(false)
-
 
 
     useEffect(() => {
@@ -75,13 +76,21 @@ function Home() {
             console.log('FileInfo: onSettings(): settings.display_info_enabled : ', settings.display_info_enabled)
             setAppBarActive(settings.display_info_enabled)
         }
+
+        const onEnv = (env) => {
+            console.log('Home: onEnv: env: ', env)
+            setAppName(env.name)
+            setAppVersion(env.version)
+        }
     
         ipcEvent.onToggleMenuBar(onToggleMenuBar)
         ipcEvent.onSettings(onSettings)
+        ipcEvent.onEnv(onEnv)
 
         return () => {
             ipcEvent.off('onToggleMenuBar', onToggleMenuBar)
             ipcEvent.off('onSettings', onSettings)
+            ipcEvent.off('onEnv', onEnv)
         }
     }, [])
 
@@ -90,8 +99,10 @@ function Home() {
     return (
         <>
             <Head>
-                <title>{packageJson.name} v{packageJson.version}</title>
+                <title>{appName} v{appVersion}</title>
             </Head>
+
+            <Font />
 
             <Theme>
                 <MediaViewer></MediaViewer>

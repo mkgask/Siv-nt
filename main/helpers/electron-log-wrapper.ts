@@ -87,9 +87,16 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
             return s + '[lambda function]'
 
         case Array.isArray(any):
-            return s + any.map(v =>
+            let array_str = '[' + linefeed
+            if (!inValue) deps += 1
+
+            array_str += any.map(v =>
                 toString(v, deps + 1) + linefeed
             ).join(space)
+
+            deps -= 1
+            array_str += s + deps_spaces(deps) + ']' + (inValue ? '' : linefeed)
+            return array_str
 
         case Object.prototype.toString.call(any) === '[object Object]':
             let object_str = '{' + linefeed

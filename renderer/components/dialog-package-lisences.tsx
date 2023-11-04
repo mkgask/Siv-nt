@@ -69,8 +69,20 @@ export default function DialogPackageLicense(props) {
                 const licenseName: string = licenses[event.target.innerText].name
                 const licenseVersion: string = licenses[event.target.innerText].version
                 const licenseText: string = licenses[event.target.innerText].licenseText
+                const licenseUrl: string = 
+                    licenses[event.target.innerText].hasOwnProperty('url') && 
+                    licenses[event.target.innerText].url ?
+                        licenses[event.target.innerText].url :
+                            licenses[event.target.innerText].hasOwnProperty('homepage') &&
+                            licenses[event.target.innerText].homepage ?
+                                licenses[event.target.innerText].homepage :
+                                    licenses[event.target.innerText].hasOwnProperty('repository') &&
+                                    licenses[event.target.innerText].repository ?
+                                        licenses[event.target.innerText].repository :
+                                        ""
                 console.log('DialogPackageLicense: openDetail: licenseName: ', licenseName)
                 console.log('DialogPackageLicense: openDetail: licenseVersion: ', licenseVersion)
+                console.log('DialogPackageLicense: openDetail: licenseUrl: ', licenseUrl)
                 console.log('DialogPackageLicense: openDetail: licenseText.length: ', licenseText.length)
                 //console.log('DialogPackageLicense: openDetail: licenseText: ', licenseText)
 
@@ -79,9 +91,22 @@ export default function DialogPackageLicense(props) {
                     return md.convertMarkDown2ReactComponent(texts)
                 }
 
-                setLicenseText(licenseTextComponent(licenseName + '@' + licenseVersion + '\n\n' + licenseText))
-                //setLicenseText(licenseTextComponent(licenseText))
+                let license_text = licenseName
 
+                if (licenseVersion) {
+                    license_text += '@' + licenseVersion + '\n'
+                } else {
+                    license_text += '\n'
+                }
+
+                if (licenseUrl) license_text += licenseUrl + '\n'
+                license_text += '\n'
+
+                license_text += licenseText
+
+                console.log('DialogPackageLicense: openDetail: license_text: ', license_text)
+
+                setLicenseText(licenseTextComponent(license_text))
                 setShowDetail(true)
             }
 
@@ -93,7 +118,7 @@ export default function DialogPackageLicense(props) {
                         onClick={openDetail}
                     >
                         <StyledDialogText>
-                            {value.name}@{value.version}
+                            {value.version ? `${value.name}@${value.version}` : `${value.name}`}
                         </StyledDialogText>
 
                         <StyledDialogText>

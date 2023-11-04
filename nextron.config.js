@@ -20,6 +20,16 @@ module.exports = {
             }),
         )
 
+        // CopyWebpackPluginを使ってfontsディレクトリをappディレクトリにコピーする
+        config.plugins.push(
+            new CopyWebpackPlugin({
+                patterns: [{
+                    from: path.resolve(__dirname, 'resources/fonts/assistant'),
+                    to: path.resolve(__dirname, 'app/local-data/fonts/assistant'),
+                }],
+            }),
+        )
+
         return config
     }
 }
