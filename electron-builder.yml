@@ -13,15 +13,41 @@ publish: null
 fileAssociations:
   - ext:
     - "bmp"
+    name: "bmp画像ファイル"
+    description: "bmp画像ファイル"
+    mimeType: "image/bmp"
+    role: Viewer
+  - ext:
     - "jpg"
     - "jpeg"
+    name: "jpeg画像ファイル"
+    description: "jpeg画像ファイル"
+    mimeType: "image/jpeg"
+    role: Viewer
+  - ext:
     - "png"
+    name: "png画像ファイル"
+    description: "png画像ファイル"
+    mimeType: "image/png"
+    role: Viewer
+  - ext:
     - "gif"
+    name: "gif画像ファイル"
+    description: "gif画像ファイル"
+    mimeType: "image/gif"
+    role: Viewer
+  - ext:
     - "webp"
+    name: "webp画像ファイル"
+    description: "webp画像ファイル"
+    mimeType: "image/webp"
+    role: Viewer
+  - ext:
     - "avif"
-    name: "画像ファイル"
-    description: "画像ファイル"
-    role: Editor
+    name: "avif画像ファイル"
+    description: "avif画像ファイル"
+    mimeType: "image/avif"
+    role: Viewer
 win:
   target: nsis
 nsis:

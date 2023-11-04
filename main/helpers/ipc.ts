@@ -45,12 +45,7 @@ export default function registerIpc(mainWindow) {
             item.type,
         )
 
-        log.debug('changeView: path: ', media.path)
-        log.debug('changeView: type: ', media.type)
-        log.debug('changeView: mime_type: ', media.mime_type)
-        log.debug('changeView: filesize: ', media.filesize)
-        log.debug('changeView: imagesize_w: ', media.imagesize_w)
-        log.debug('changeView: imagesize_h: ', media.imagesize_h)
+        log.debug('changeView: media: ', media)
 
         mainWindow.webContents.send('changeFileInfo', media)
 
@@ -108,6 +103,8 @@ export default function registerIpc(mainWindow) {
         log.debug('call: ipcMain.handle.settings: key: value', key, ' : ', value)
 
         settings.save(key, value)
+
+        mainWindow.webContents.send('settings', settings)
     })
 }
 

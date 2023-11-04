@@ -42,6 +42,7 @@ const StyledDivider = styled(Divider)({
 export default function DialogSettings(props) {
 
     const [image_move_ratio, setImageMoveRatio] = useState(1)
+    const [zoom_change_ratio, setZoomChangeRatio] = useState(5)
     const [log_output, setLogOutput] = useState(false)
 
     useEffect(() => {
@@ -49,6 +50,7 @@ export default function DialogSettings(props) {
 
         const onSettings = (settings) => {
             setImageMoveRatio(settings.image_move_ratio)
+            setZoomChangeRatio(settings.zoom_change_ratio)
             setLogOutput(settings.log_output)
         }
 
@@ -61,13 +63,21 @@ export default function DialogSettings(props) {
 
     const handleImageMoveRatioChange = (event, newValue) => {
         event.preventDefault()
-
+        console.log('DialogSettings: handleImageMoveRatioChange: ', newValue)
         setImageMoveRatio(newValue as number)
         ; (window as any).ipcSend.settings('image_move_ratio', newValue)
     }
 
+    const handleZoomChangeRatioChange = (event, newValue) => {
+        event.preventDefault()
+        console.log('DialogSettings: handleZoomChangeRatioChange: ', newValue)
+        setZoomChangeRatio(newValue as number)
+        ; (window as any).ipcSend.settings('zoom_change_ratio', newValue)
+    }
+
     const handleLogoutput = (event, newValue) => {
         event.preventDefault()
+        console.log('DialogSettings: handleLogoutput: ', newValue)  
         setLogOutput(newValue as boolean)
         ; (window as any).ipcSend.settings('log_output', newValue)
     }
@@ -112,6 +122,32 @@ export default function DialogSettings(props) {
                                 onChange={handleImageMoveRatioChange}
                                 sx={{ width: '10vw' }}
                             ></Slider>
+                        </InnerStack>
+                    </StyledStack>
+
+                    <StyledDivider />
+
+                    <StyledStack
+                        direction="row"
+                    >
+                        <StyledDialogText>
+                            Zoom change ratio
+                        </StyledDialogText>
+
+                        <InnerStack
+                            direction="row"
+                        >
+                        <StyledDialogText>
+                            {zoom_change_ratio}
+                        </StyledDialogText>
+
+                        <Slider
+                            value={zoom_change_ratio}
+                            min={1}
+                            max={32}
+                            onChange={handleZoomChangeRatioChange}
+                            sx={{ width: '10vw' }}
+                        ></Slider>
                         </InnerStack>
                     </StyledStack>
 

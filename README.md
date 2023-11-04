@@ -60,13 +60,13 @@ In no particular order
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
 - [ ] v0.8.0 change next or prev file in same directory
-- [ ] v0.7.3 change zoom level ratio in settings dialog
-- [x] v0.7.2 adjust env loading with default values
-- [x] v0.7.1 change filled help icon in menu bar
+- [x] v0.7.3 change zoom level ratio in settings dialog
 
 <details>
 <summary>more old versions</summary>
 
+- [x] v0.7.2 adjust env loading with default values
+- [x] v0.7.1 change filled help icon in menu bar
 - [x] v0.7.0 add settings dialog
 - [x] v0.6.12 select log output in production build
 - [x] v0.6.11 add version information to help dialog
@@ -97,14 +97,13 @@ In no particular order
 - [ ] v?.?.? send main process from renderer process logging data
 - [ ] v?.?.? correct application menu bar
 - [ ] v?.?.? display 2 images at the same time
+- [ ] v?.?.? invert image up/down when mouse up/down from settings
 - [ ] v?.?.? invert zoom in/out when mouse wheel up/down from settings
 - [ ] v?.?.? Directory viewer
-- [ ] v?.?.? some setting options
 - [ ] v?.?.? auto release in GitHub Actions
 - [ ] v?.?.? multilingual (jp, en)
 - [ ] v?.?.? auto updater
 - [ ] v?.?.? signing application
-- [ ] v?.?.? select output log level for prod 
 - [ ] v?.?.? custom theme
 
 </details>

@@ -74,7 +74,6 @@ const calculateStyleValue2Px = (value: string, key: string, parent): number => {
 
 
 const default_media_ratio = 100
-const zoom_ratio = -0.05
 
 
 
@@ -84,14 +83,17 @@ export default function MediaViewer() {
 
     const mediaW = useRef(0)
     const mediaH = useRef(0)
+
     const imageMarginLeft = useRef(0)
     const imageMarginTop = useRef(0)
+    
+    const image_move_ratio = useRef(16)
+    const zoom_change_ratio = useRef(5)
 
     const mouseDownPosition = useRef<Point>({ x: 0, y: 0 })
 
     const [isProd, setIsProd] = useState(false)
     const [accepted_types, setAcceptedTypes] = useState({})
-    const [image_move_ratio, setImageMoveRatio] = useState(16)
 
     const [src, setSrc] = useState(null)
     const [type, setType] = useState(null)
@@ -126,13 +128,13 @@ export default function MediaViewer() {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
             setIsProd(env.isProd)
-            console.log('MediaViewer: onEnv: image_move_ratio: ', image_move_ratio)
         }
 
         const onSettings = (settings) => {
             console.log('MediaViewer: onSettings: settings: ', settings)
             setAcceptedTypes(settings.accepted_types)
-            setImageMoveRatio(settings.image_move_ratio)
+            image_move_ratio.current = settings.image_move_ratio
+            zoom_change_ratio.current = settings.zoom_change_ratio
         }
 
         ipcEvent.onChangeView(onChangeView)
@@ -171,6 +173,12 @@ export default function MediaViewer() {
         // ウィンドウサイズに対する画像サイズのmediaRatioを計算
         const mediaratio = Math.min(windowW / mediaW.current, windowH / mediaH.current) * 100
         changeViewSize(mediaW.current, mediaH.current, mediaratio)
+    }
+
+    const zoom_ratio = () => {
+        const ratio = zoom_change_ratio.current / 100 * -1
+        console.log('zoom_ratio(): ', ratio)
+        return ratio
     }
 
 
@@ -240,7 +248,7 @@ export default function MediaViewer() {
     const handleWheel = (event) => {
         console.log('handleWheel()')
 
-        const mediaratio = Math.min(Math.max(10, mediaRatio + event.deltaY * zoom_ratio), 1000)
+        const mediaratio = Math.min(Math.max(10, mediaRatio + event.deltaY * zoom_ratio()), 1000)
         setMediaRatio(mediaratio)
         changeViewSize(mediaW.current, mediaH.current, mediaratio)
     }
@@ -327,8 +335,8 @@ export default function MediaViewer() {
                 ((event.movementY) < 0) ? -1 :
                 0
 
-            imageMarginLeft.current += (moveX * image_move_ratio);
-            imageMarginTop.current += (moveY * image_move_ratio);
+            imageMarginLeft.current += (moveX * image_move_ratio.current);
+            imageMarginTop.current += (moveY * image_move_ratio.current);
 
             requestAnimationFrame(() => {
                 if (imageRef === null || imageRef.current === null) { return }
