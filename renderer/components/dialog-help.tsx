@@ -33,8 +33,7 @@ export default function DialogHelp(props) {
         version: '',
         author: '',
         homepage: '',
-        isProd: false,
-        isDev: false,
+        isProd: true,
     })
 
     useEffect(() => {

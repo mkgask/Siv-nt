@@ -26,9 +26,9 @@ if (env.isProd) {
     } else {
         log.level(logLevel.error)
     }
-
 } else {
     app.setPath('userData', `${app.getPath('userData')} (development)`)
+    log.level(logLevel.silly)
 }
 
 

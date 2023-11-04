@@ -3,6 +3,8 @@ Simple image viewer - nextron
 
 ![ScreenShot](assets/screenshot01.png)
 
+
+
 # Features
 
 - supported image type: jpg, png, gif, webp, avif
@@ -58,7 +60,8 @@ In no particular order
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
 - [ ] v0.8.0 change next or prev file in same directory
-- [ ] v0.7.2 change zoom level ratio in settings dialog
+- [ ] v0.7.3 change zoom level ratio in settings dialog
+- [x] v0.7.2 adjust env loading with default values
 - [x] v0.7.1 change filled help icon in menu bar
 
 <details>

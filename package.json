@@ -2,20 +2,23 @@
   "private": true,
   "name": "Siv-nt",
   "description": "Simple image viewer - nextron",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "author": "mkgask",
   "homepage": "https://zsw.jp",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",
-    "prebuild": "npm install && npm update && npx license-checker --summary > licenses.summary.txt && npx license-checker --production --json --excludePrivatePackages --customPath license.customFormat.json --failOn GPL;GPL-2.0;GPL-3.0;AGPL;NGPL > licenses.json",
+    "deploy": "npm run update:package && npm run build",
+    "prebuild": "npm run update:license",
     "build": "nextron build",
     "build:mac": "nextron build --mac",
     "build:mac:universal": "nextron build --mac --universal",
     "build:linux": "nextron build --linux",
     "build:win32": "nextron build --win --ia32",
     "build:win64": "nextron build --win --x64",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "update:package": "npm install && npm update",
+    "update:license": "npx license-checker --summary > licenses.summary.txt && npx license-checker --production --json --excludePrivatePackages --customPath license.customFormat.json --failOn GPL;GPL-2.0;GPL-3.0;AGPL;NGPL > licenses.json"
   },
   "dependencies": {
     "electron-serve": "^1.1.0",
