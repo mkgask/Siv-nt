@@ -127,7 +127,7 @@ export default function MenuBar(props) {
                         <StyledApiIcon></StyledApiIcon>
                     </ListItemIcon>
                     <ListItemText>
-                        Package Lisences
+                        Package Licenses
                     </ListItemText>
                 </MenuItem>
 

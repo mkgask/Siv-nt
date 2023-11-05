@@ -16,12 +16,14 @@ Simple image viewer - nextron
 - switch the image size between original size and window size by holding down the mouse right button and left clicking
 - move image position when mouse left button dragging
 - move first position to image when mouse left button double click
+- if exist other image in the same directory when image dropped, change show image next/prev when click window left/right
+- support multiple image drops (in this case, only show drop images and not show same directory images)
 
 - output log data to file
 - log file auto remove (max 512 files or 1 month)
 - save window position and size and restore
-- can change the supported image type (from settings.yml)
-- can change the image movable speed (from settings.yml)
+- can change the supported image type
+- can change the image movable speed
 
 log file is %APPDATA%/Roaming/Siv-nt/logs/(date)-main.log  
 settings.yml is %APPDATA%/Roaming/Siv-nt/settings.yml  
@@ -39,12 +41,14 @@ settings.yml is %APPDATA%/Roaming/Siv-nt/settings.yml
 - マウス右ボタンを押しながら左クリックで画像のサイズを原寸とウィンドウサイズで切り替え
 - マウス左ボタンのドラッグで画像を移動
 - マウス左ボタンのダブルクリックで画像を初期位置に移動
+- ドロップした画像と同じディレクトリに画像があればウィンドウの左右で次へ前への表示切替
+- 複数枚の画像ドロップに対応（この場合、ドロップした画像群のみ表示し、同じディレクトリの画像は表示しません）
 
 - ログデータをファイルに出力
 - ログファイルの自動削除（512件または一ヶ月）
 - ウィンドウの位置、大きさを保存し復元
-- 対応画像形式を可変（settings.ymlから変更）
-- 画像の移動を速度を可変（settings.ymlから変更）
+- 対応画像形式を可変
+- 画像の移動を速度を可変
 
 ログデータは %APPDATA%/Roaming/Siv-nt/logs/(日付)-main.log  
 settings.ymlは %APPDATA%/Roaming/Siv-nt/settings.yml  
@@ -59,13 +63,13 @@ In no particular order
 - [ ] v0.11.0 image convert and save
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
-- [ ] v0.8.0 change next or prev file in same directory
-- [x] v0.7.4 change default font to Assistant
-- [x] v0.7.3 change zoom level ratio in settings dialog
+- [x] v0.8.0 change next or prev file in same directory
 
 <details>
 <summary>more old versions</summary>
 
+- [x] v0.7.4 change default font to Assistant
+- [x] v0.7.3 change zoom level ratio in settings dialog
 - [x] v0.7.2 adjust env loading with default values
 - [x] v0.7.1 change filled help icon in menu bar
 - [x] v0.7.0 add settings dialog

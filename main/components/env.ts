@@ -1,7 +1,12 @@
+import os from 'os'
+
 import packageJson from '../../package.json'
 
 import font from './font'
 
+
+
+const platform = os.platform() ?? ''
 
 const env_defaults = {
     name: 'Siv-nt',
@@ -11,6 +16,7 @@ const env_defaults = {
     homepage: 'https://zsw.jp',
 
     isProd: true,
+    platform: platform,
     font_styles: font.font_styles,
 }
 
@@ -24,6 +30,7 @@ class Env {
     readonly homepage: string = packageJson.homepage ?? env_defaults.homepage
 
     readonly isProd: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'production' : env_defaults.isProd
+    readonly platform: string = platform ?? env_defaults.platform
     readonly font_styles: string = font.font_styles ?? env_defaults.font_styles
 }
 

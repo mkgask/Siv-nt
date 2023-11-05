@@ -7,7 +7,9 @@ import {
     styled,
 } from '@mui/material'
 
+import LoadingScreen from '../components/loading-screen'
 import MediaViewer from '../components/media-viewer'
+import NextPrev from '../components/next-prev'
 import DisplayInfo from '../components/display-info'
 import MenuBar from '../components/menu-bar'
 import DialogHelp from '../components/dialog-help'
@@ -61,6 +63,7 @@ function Home() {
 
 
     useEffect(() => {
+        console.log('Home: useEffect: window: ', window)
         const ipcEvent = (window as any).ipcEvent
 
         const onToggleMenuBar = () => {
@@ -103,9 +106,11 @@ function Home() {
             </Head>
 
             <Font />
+            <LoadingScreen />
 
             <Theme>
                 <MediaViewer></MediaViewer>
+                <NextPrev></NextPrev>
             </Theme>
 
             <AppBar

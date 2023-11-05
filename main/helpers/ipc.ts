@@ -3,12 +3,23 @@ import { ipcMain } from "electron"
 import log from "./electron-log-wrapper"
 
 import Media from "../components/media"
-import fileList from "../components/media-list"
+import mediaList from "../components/media-list"
 import env from "../components/env"
 import settings from "../components/settings"
 import packageLicenses from '../components/package-licenses'
 
 log.debug('boot', 'load: ipc.ts')
+
+
+
+let ready = 0
+const ready_go = 3
+
+const readyCheck = () => {
+    ready += 1
+    log.debug('view', 'readyCheck: ready: ', ready)
+    return ready_go <= ready
+}
 
 
 
@@ -57,12 +68,62 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('changeView', media)
     })
 
-    ipcMain.on('fileList', (event, files) => {
-        log.debug('view', 'call: ipcMain.handle.fileList')
+    ipcMain.on('mediaList', (event, files) => {
+        log.debug('view', 'call: ipcMain.handle.mediaList')
         if (!validateSender(event.senderFrame)) return null
 
-        fileList.changeList(files)
-        const media = fileList.get(0)
+        mainWindow.webContents.send('startLoading')
+
+        // ドロップされた画像を一枚だけ先に表示
+        const media = new Media(
+            files[0].path,
+            files[0].mime_type,
+            files[0].type,
+        )
+        
+        mainWindow.webContents.send('changeFileInfo', media)
+
+        media.generateViewerInfo()
+
+        mainWindow.webContents.send('changeView', media)
+
+        // MediaList生成
+        (new Promise((resolve, reject) => {
+            mediaList.changeList(files)
+            
+            mediaList.get(
+                mediaList.setCurrentIndex(
+                    mediaList.getIndexFromPath(files[0].path)
+                )
+            )
+
+            resolve(0)
+        })).then(() => {
+            mainWindow.webContents.send('endLoading')
+        }).catch((error) => {
+            log.error('view', 'call: ipcMain.handle.mediaList: error: ', error)
+        })
+
+    })
+
+    ipcMain.on('clickNext', (event) => {
+        log.debug('view', 'call: ipcMain.handle.clickNext')
+        if (!validateSender(event.senderFrame)) return null
+
+        const media = mediaList.getNext()
+
+        mainWindow.webContents.send('changeFileInfo', media)
+
+        media.generateViewerInfo()
+
+        mainWindow.webContents.send('changeView', media)
+    })
+
+    ipcMain.on('clickPrev', (event) => {
+        log.debug('view', 'call: ipcMain.handle.clickPrev')
+        if (!validateSender(event.senderFrame)) return null
+
+        const media = mediaList.getPrev()
 
         mainWindow.webContents.send('changeFileInfo', media)
 
@@ -90,6 +151,7 @@ export default function registerIpc(mainWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         mainWindow.webContents.send('env', env)
+        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyFileInfo', (event) => {
@@ -98,6 +160,7 @@ export default function registerIpc(mainWindow) {
         
         log.debug('view', 'call: ipcMain.handle.readyFileInfo: settings: ', settings)
         mainWindow.webContents.send('settings', settings)
+        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyPackageLicenses', (event) => {
@@ -108,6 +171,7 @@ export default function registerIpc(mainWindow) {
         // log.debug('package-licenses', 'call: ipcMain.handle.readyPackageLicenses: licenses', licenses)
         // ログがとても長くなってしまうので一旦OFF
         mainWindow.webContents.send('packageLicenses', licenses)
+        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('settings', (event, key, value) => {

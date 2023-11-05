@@ -17,6 +17,21 @@ contextBridge.exposeInMainWorld('ipcSend', {
         ipcRenderer.send('changeView', viewItem)
     },
 
+    mediaList: (mediaList) => {
+        console.log('call: ipcSend.mediaList')
+        ipcRenderer.send('mediaList', mediaList)
+    },
+
+    clickNext: () => {
+        console.log('call: ipcSend.clickNext')
+        ipcRenderer.send('clickNext')
+    },
+
+    clickPrev: () => {
+        console.log('call: ipcSend.clickPrev')
+        ipcRenderer.send('clickPrev')
+    },
+
     changeZoomLevel: (zoomLevel) => {
         console.log('call: ipcSend.changeZoomLevel')
         ipcRenderer.send('changeZoomLevel', zoomLevel)
@@ -58,6 +73,11 @@ contextBridge.exposeInMainWorld('ipcSend', {
  *
 */
 contextBridge.exposeInMainWorld('ipcEvent', {
+    off: (channel, listener) => {
+        console.log('call: ipcEvent.off')
+        ipcRenderer.removeListener(channel, listener)
+    },
+
     onEnv: (callback) => {
         console.log('call: ipcEvent.onEnv')
         ipcRenderer.on('env', (event, env) => callback(env))
@@ -91,6 +111,16 @@ contextBridge.exposeInMainWorld('ipcEvent', {
     onToggleMenuBar: (callback) => {
         console.log('call: ipcEvent.onToggleMenuBar')
         ipcRenderer.on('toggleMenuBar', () => callback())
+    },
+
+    onStartLoading: (callback) => {
+        console.log('call: ipcEvent.onStartLoading')
+        ipcRenderer.on('startLoading', () => callback())
+    },
+
+    onEndLoading: (callback) => {
+        console.log('call: ipcEvent.onEndLoading')
+        ipcRenderer.on('endLoading', () => callback())
     }
 })
 

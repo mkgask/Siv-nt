@@ -216,26 +216,40 @@ export default function MediaViewer() {
     const handleDrop = (event) => {
         event.preventDefault()
         console.log('handleDrop()')
+        console.log('handleDrop(): event.dataTransfer.files: ', event.dataTransfer.files)
 
-        const file = event.dataTransfer.files[0]
+        let files = []
+        let accepted = true
 
-        if (accepted_types[file.type] === undefined) {
-            alert('許可されていないファイル形式です')
+        // 複数ファイル受付対応
+        for (const file of event.dataTransfer.files) {
+            if (accepted_types[file.type] === undefined) {
+                accepted = false
+                continue
+            }
+
+            files.push({
+                path: file.path,
+                time: file.lastModified,
+                type: accepted_types[file.type],
+                mime_type: file.type,
+                filesize: calculateDisplayFileSize(file.size),
+            })
+        }
+
+        console.log('handleDrop(): files: ', files)
+
+        if (!accepted) {
+            if (0 === files.length) {
+                alert('許可されていないファイル形式です')
+                return
+            }
+
+            alert('許可されていないファイル形式が含まれています')
             return
         }
 
-        const type = accepted_types[file.type]
-        setType(type)
-
-        const path = file.path;
-        const filesize = calculateDisplayFileSize(file.size)
-
-        ;(window as any).ipcSend.changeView({
-            type: type,
-            mime_type: file.type,
-            path: path,
-            filesize: filesize,
-        })
+        ;(window as any).ipcSend.mediaList(files)
     }
 
     const handleDragOver = (event) => {

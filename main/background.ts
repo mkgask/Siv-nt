@@ -115,7 +115,7 @@ if (env.isProd) {
              * VM4 sandbox_bundle:2 Unable to load preload script: preload.js
              * のエラーが出るが、動作には支障はない。
              * nodeIntegration: trueにするとエラーが出なくなるが、
-             * セキュリティ上良い設定ではないので、一旦これで進める。
+             * セキュリティ上良い設定ではないのでfalseで進める。
             */
             nodeIntegration: false,
 
