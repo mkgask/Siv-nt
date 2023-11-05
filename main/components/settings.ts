@@ -65,7 +65,7 @@ class Settings {
         }
 
         this[key] = value
-        log.debug('call: Settings.save: : ', key, ' : ', value)
+        log.debug('settings', 'call: Settings.save: : ', key, ' : ', value)
 
         store.set(key, value)
     }

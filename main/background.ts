@@ -28,7 +28,19 @@ if (env.isProd) {
     }
 } else {
     app.setPath('userData', `${app.getPath('userData')} (development)`)
+
     log.level(logLevel.silly)
+    log.categoryMode()
+    log.allowCategories([
+        'boot',
+        'ipc',
+        'settings',
+        'file-association',
+        'media-list',
+        'media',
+        //'package-licenses',
+        'view',
+    ])
 }
 
 
@@ -72,7 +84,7 @@ if (env.isProd) {
     })
 
     await app.whenReady()
-    log.debug('load: app.whenReady')
+    log.debug('boot', 'load: app.whenReady')
 
     // リモートコンテンツはすべて不許可
     session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {

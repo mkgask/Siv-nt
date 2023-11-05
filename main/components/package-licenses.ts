@@ -14,7 +14,7 @@ export default function packageLicenses() {
         const licenses_path = `${process.resourcesPath}/app.asar/app/local-data/licenses.json`
 
         const exist = fs.existsSync(licenses_path)
-        log.debug('packageLicenses: fs.existsSync(licenses_path): ', exist)
+        log.debug('package-licenses', 'packageLicenses: fs.existsSync(licenses_path): ', exist)
 
         const _licenses = fs.readFileSync(licenses_path, 'utf8')
         licenses = JSON.parse(_licenses)
@@ -22,8 +22,8 @@ export default function packageLicenses() {
         licenses = require('../../licenses.json')
     }
 
-    log.debug('packageLicenses: licenses: ', licenses)
-    log.debug('packageLicenses: append_package_licenses: ', append_package_licenses)
+    log.debug('package-licenses', 'packageLicenses: licenses: ', licenses)
+    log.debug('package-licenses', 'packageLicenses: append_package_licenses: ', append_package_licenses)
 
     licenses = { ...licenses, ...append_package_licenses }
     
@@ -51,8 +51,7 @@ export default function packageLicenses() {
         return obj
     }, {})
     
-    log.debug('packageLicenses: licenses: ', licenses)
-
+    log.debug('package-license', 'packageLicenses: licenses: ', licenses)
 
     return licenses
 }

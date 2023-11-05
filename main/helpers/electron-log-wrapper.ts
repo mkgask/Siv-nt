@@ -90,9 +90,11 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
             let array_str = '[' + linefeed
             if (!inValue) deps += 1
 
-            array_str += any.map(v =>
-                toString(v, deps + 1) + linefeed
-            ).join(space)
+            array_str +=
+                (any.map(v =>
+                    s + deps_spaces(deps) +
+                    toString(v, deps + 1, true) + ',' + linefeed
+                ).join(space))
 
             deps -= 1
             array_str += s + deps_spaces(deps) + ']' + (inValue ? '' : linefeed)
@@ -117,15 +119,29 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
     }
 }
 
-export const convert = (any: any[]): string => {
-    return any.map(v => toString(v)).join(space)
+export const convert = (category: string, any: any[]): string => {
+    return `[${category}] ` + any.map(v => toString(v)).join(space)
 }
 
 
 
 class ElectronLogWrapper implements LogFunctions
 {
+    /*  Properties
+    */
+
     private _level: logOption = false
+    private _allowed_categories: string[] = []
+
+    // category mode
+    // true is only allowed categories are allowed
+    // false is all categories are allowed
+    private _category_mode: boolean = false
+
+
+
+    /*  Foundation
+    */
 
     start() {
         // electron-logが出力するログのファイル名をカスタマイズ
@@ -144,6 +160,11 @@ class ElectronLogWrapper implements LogFunctions
         this._level = level
     }
 
+
+
+    /*  Modules  output
+    */
+
     output(params: string, level: logOption) {
         if (this._level === false) return
         if (level === false) return
@@ -153,34 +174,68 @@ class ElectronLogWrapper implements LogFunctions
         log.log(params)
     }
 
-    error(...params: any[]) {
-        this.output(convert(params), logLevel.error)
+    error(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.error)
     }
 
-    warn(...params: any[]) {
-        this.output(convert(params), logLevel.warn)
+    warn(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.warn)
     }
 
-    info(...params: any[]) {
-        this.output(convert(params), logLevel.info)
+    info(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.info)
     }
 
-    verbose(...params: any[]) {
-        this.output(convert(params), logLevel.verbose)
+    verbose(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.verbose)
     }
 
-    debug(...params: any[]) {
-        this.output(convert(params), logLevel.debug)
+    debug(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.debug)
     }
 
-    silly(...params: any[]) {
-        this.output(convert(params), logLevel.silly)
+    silly(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.silly)
     }
 
     // shortcut to info
-    log(...params: any[]) {
-        this.output(convert(params), logLevel.info)
+    log(category: string, ...params: any[]) {
+        if (!this.isAllowedCategory(category)) return
+        this.output(convert(category, params), logLevel.info)
     }
+
+
+
+    /*  Modules  log category
+    */
+
+    isAllowedCategory(category: string): boolean {
+        if (!this._category_mode) return true
+        return this._allowed_categories.includes(category)
+    }
+
+    categoryMode(mode: boolean = true) {
+        this._category_mode = mode
+    }
+
+    allowCategories(categories: string[]) {
+        this._allowed_categories = [ ...this._allowed_categories, ...categories ]
+    }
+
+    clearCategories() {
+        this._allowed_categories = []
+    }
+
+
+
+    /*  Modules  remove log file
+    */
 
     async removeLogFile() {
         const remove_limit_num = 512

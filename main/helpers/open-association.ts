@@ -13,8 +13,8 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
 
     // 関連付けを開く
     mainWindow.webContents.on('did-finish-load', () => {
-        log.debug('call: openAssociation.did-finish-load')
-        log.debug('call: openAssociation.did-finish-load: process.argv: ' + process.argv.join(', '))
+        log.debug('file-association', 'call: openAssociation.did-finish-load')
+        log.debug('file-association', 'call: openAssociation.did-finish-load: process.argv: ' + process.argv.join(', '))
 
         let path = ''
         let mime_type = ''
@@ -36,13 +36,13 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
 
         const media = new Media(path, mime_type, type)
 
-        log.debug('call: openAssociation: changeFileInfo: media: ', media)
+        log.debug('file-association', 'call: openAssociation: changeFileInfo: media: ', media)
 
         mainWindow.webContents.send('changeFileInfo', media)
         
         media.generateViewerInfo(path)
 
-        log.debug('call: openAssociation: changeView: b64: ', !!media.b64)
+        log.debug('file-association', 'call: openAssociation: changeView: b64: ', !!media.b64)
 
         mainWindow.webContents.send('changeView', media)
     })
