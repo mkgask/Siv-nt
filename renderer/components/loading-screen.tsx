@@ -50,7 +50,7 @@ const StyledBox = styled(Box)({
 
 export default function LoadingScreen() {
 
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(true)
 
 
 

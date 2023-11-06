@@ -57,6 +57,11 @@ contextBridge.exposeInMainWorld('ipcSend', {
         ipcRenderer.send('readyPackageLicenses')
     },
 
+    readyNextPrev: () => {
+        console.log('call: ipcSend.readyNextPrev')
+        ipcRenderer.send('readyNextPrev')
+    },
+
     settings: (key, value) => {
         console.log('call: ipcSend.settings')
         ipcRenderer.send('settings', key, value)

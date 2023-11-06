@@ -7,19 +7,11 @@ import mediaList from "../components/media-list"
 import env from "../components/env"
 import settings from "../components/settings"
 import packageLicenses from '../components/package-licenses'
+import readyCheck from "../components/ready"
+
+
 
 log.debug('boot', 'load: ipc.ts')
-
-
-
-let ready = 0
-const ready_go = 3
-
-const readyCheck = () => {
-    ready += 1
-    log.debug('view', 'readyCheck: ready: ', ready)
-    return ready_go <= ready
-}
 
 
 
@@ -87,10 +79,12 @@ export default function registerIpc(mainWindow) {
 
         mainWindow.webContents.send('changeView', media)
 
+        const wc = mainWindow.webContents;    // Promise内で利用するためのキャッシュ
+
         // MediaList生成
         (new Promise((resolve, reject) => {
             mediaList.changeList(files)
-            
+
             mediaList.get(
                 mediaList.setCurrentIndex(
                     mediaList.getIndexFromPath(files[0].path)
@@ -99,11 +93,10 @@ export default function registerIpc(mainWindow) {
 
             resolve(0)
         })).then(() => {
-            mainWindow.webContents.send('endLoading')
+            wc.send('endLoading')
         }).catch((error) => {
             log.error('view', 'call: ipcMain.handle.mediaList: error: ', error)
         })
-
     })
 
     ipcMain.on('clickNext', (event) => {
@@ -151,7 +144,7 @@ export default function registerIpc(mainWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         mainWindow.webContents.send('env', env)
-        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
+        if (readyCheck('readyMediaViewer')) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyFileInfo', (event) => {
@@ -160,7 +153,7 @@ export default function registerIpc(mainWindow) {
         
         log.debug('view', 'call: ipcMain.handle.readyFileInfo: settings: ', settings)
         mainWindow.webContents.send('settings', settings)
-        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
+        if (readyCheck('readyFileInfo')) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyPackageLicenses', (event) => {
@@ -168,11 +161,21 @@ export default function registerIpc(mainWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         const licenses = packageLicenses()
+
         // log.debug('package-licenses', 'call: ipcMain.handle.readyPackageLicenses: licenses', licenses)
         // ログがとても長くなってしまうので一旦OFF
+
         mainWindow.webContents.send('packageLicenses', licenses)
-        if (readyCheck()) { mainWindow.webContents.send('endLoading')}
+        if (readyCheck('readyPackageLicenses')) { mainWindow.webContents.send('endLoading')}
     })
+
+    ipcMain.on('readyNextPrev', (event) => {
+        log.debug('view', 'call: ipcMain.handle.readyNextPrev')
+        if (!validateSender(event.senderFrame)) return null
+
+        mainWindow.webContents.send('readyNextPrev')
+        if (readyCheck('readyNextPrev')) { mainWindow.webContents.send('endLoading')}
+    }),
 
     ipcMain.on('settings', (event, key, value) => {
         log.debug('settings', 'call: ipcMain.handle.settings')

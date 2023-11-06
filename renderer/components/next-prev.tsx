@@ -20,6 +20,7 @@ export default function NextPrev() {
     const createdPrevButton = useRef(false)
 
 
+
     useEffect(() => {
 
         const createNextIcon = () => {
@@ -78,6 +79,8 @@ export default function NextPrev() {
 
         createNextIcon()
         createPrevIcon()
+
+        ; (window as any).ipcSend.readyNextPrev()
     })
 
 
