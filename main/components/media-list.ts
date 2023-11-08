@@ -4,7 +4,7 @@ import mime from 'mime-lite'
 
 import log from "../helpers/electron-log-wrapper"
 
-import accepted_types from './accepted-types'
+import { is_accepted, get_media_type } from './accepted-types'
 import Media from "./media"
 
 import env from "./env"
@@ -51,6 +51,9 @@ class MediaList {
 
     changeList(files: Array<Media>): void {
         log.debug('media-list', 'call: MediaList.changeList')
+        log.debug('media-list', 'call: MediaList.changeList: files: ', files)
+
+        if (!files || !Array.isArray(files)) return
 
         if (files.length === 1) {
             // ファイルを一枚だけドロップされた時は、同じディレクトリのファイルを収集してセット
@@ -69,9 +72,10 @@ class MediaList {
             _files.map((file) => {
                 const path = dir + dirSeparator + file
                 const mime_type = mime.getType(path)
-                if (!accepted_types.hasOwnProperty(mime_type)) return null
+                if (!is_accepted(mime_type)) return null
 
-                const type = accepted_types[mime_type]
+                const type = get_media_type(mime_type)
+
                 _files2.push({
                     path: path,
                     mime_type: mime_type,

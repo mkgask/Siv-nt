@@ -1,7 +1,7 @@
 
 
 
-export default {
+const accepted_types = {
     'image/png': 'image',
     'image/apng': 'image',
     'image/jpeg': 'image',
@@ -24,6 +24,31 @@ export default {
     'audio/wav': 'audio',
     'audio/webm': 'audio',
 */
+}
+
+
+
+const is_accepted = (mime_type: string): boolean => {
+    if (!mime_type) return false
+    if (!accepted_types.hasOwnProperty(mime_type)) return false
+    return !!accepted_types[mime_type]
+}
+
+const get_accepted_types = (): Array<string> => {
+    return Object.keys(accepted_types)
+}
+
+const get_media_type = (mime_type: string): string => {
+    return accepted_types[mime_type]
+}
+
+
+
+export {
+    accepted_types,
+    is_accepted,
+    get_accepted_types,
+    get_media_type,
 }
 
 

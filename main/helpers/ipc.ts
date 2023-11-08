@@ -1,4 +1,5 @@
 import { ipcMain } from "electron"
+import vm from "vm"
 
 import log from "./electron-log-wrapper"
 
@@ -60,11 +61,11 @@ export default function registerIpc(mainWindow) {
         mainWindow.webContents.send('changeView', media)
     })
 
-    ipcMain.on('mediaList', (event, files) => {
+    ipcMain.on('mediaList', async (event, files) => {
         log.debug('view', 'call: ipcMain.handle.mediaList')
         if (!validateSender(event.senderFrame)) return null
 
-        mainWindow.webContents.send('startLoading')
+        //mainWindow.webContents.send('startLoading')
 
         // ドロップされた画像を一枚だけ先に表示
         const media = new Media(
@@ -79,10 +80,16 @@ export default function registerIpc(mainWindow) {
 
         mainWindow.webContents.send('changeView', media)
 
-        const wc = mainWindow.webContents;    // Promise内で利用するためのキャッシュ
+        const sandbox = {
+            files: files,
+            mediaList: mediaList,
 
-        // MediaList生成
-        (new Promise((resolve, reject) => {
+            callback: (result) => {
+                mediaList.list = result.list
+            }
+        }
+
+        const generateMediaList = `(() => {
             mediaList.changeList(files)
 
             mediaList.get(
@@ -91,12 +98,16 @@ export default function registerIpc(mainWindow) {
                 )
             )
 
-            resolve(0)
-        })).then(() => {
-            wc.send('endLoading')
-        }).catch((error) => {
-            log.error('view', 'call: ipcMain.handle.mediaList: error: ', error)
-        })
+            callback(mediaList)
+        })()`
+
+        try {
+            //await generateMediaList(files)
+            await vm.runInNewContext(generateMediaList, sandbox, { timeout: 65535 })
+        } catch (error: any) {
+            log.error('view', 'call: ipcMain.handle.mediaList: error.message: ', error.message)
+            log.error('view', 'call: ipcMain.handle.mediaList: error.stack: ', error.stack)
+        }
     })
 
     ipcMain.on('clickNext', (event) => {

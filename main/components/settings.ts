@@ -1,7 +1,7 @@
 import Store from 'electron-store'
 import yaml from 'js-yaml'
 
-import accepted_types from './accepted-types'
+import { accepted_types } from './accepted-types'
 
 import log from '../helpers/electron-log-wrapper'
 

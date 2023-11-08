@@ -5,7 +5,7 @@ import log from './electron-log-wrapper'
 
 import Media from '../components/media'
 
-import accepted_types from '../components/accepted-types'
+import { get_media_type } from '../components/accepted-types'
 
 
 
@@ -27,7 +27,7 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
             if ( !fs.statSync(arg).isFile() ) { continue }
 
             mime_type = mime.getType(arg)
-            type = accepted_types[mime_type]
+            type = get_media_type(mime_type) ?? ''
             if ( !type ) { continue }
 
             path = arg
