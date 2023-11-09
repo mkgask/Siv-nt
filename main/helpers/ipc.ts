@@ -80,39 +80,39 @@ export default function registerIpc(mainWindow) {
 
         mainWindow.webContents.send('changeView', media)
 
-        const sandbox = {
-            files: files,
-            mediaList: mediaList,
-
-            callback: (result) => {
-                mediaList.list = result.list
-            }
-        }
-
-        const generateMediaList = `(() => {
-            mediaList.changeList(files)
-
-            mediaList.get(
-                mediaList.setCurrentIndex(
-                    mediaList.getIndexFromPath(files[0].path)
-                )
-            )
-
-            callback(mediaList)
-        })()`
-
         try {
-            //await generateMediaList(files)
-            await vm.runInNewContext(generateMediaList, sandbox, { timeout: 65535 })
-        } catch (error: any) {
-            log.error('view', 'call: ipcMain.handle.mediaList: error.message: ', error.message)
-            log.error('view', 'call: ipcMain.handle.mediaList: error.stack: ', error.stack)
+            mainWindow.webContents.send('startLoading')
+
+            mediaList.changeList(
+                files,
+
+                (current, length) => {
+                    mainWindow.webContents.send('progressFileLoading', current + 1, length)
+                },
+
+                () => {
+                    const current = mediaList.getIndexFromPath(files[0].path)
+                    const length = mediaList.getLength()
+            
+                    mediaList.get(
+                        mediaList.setCurrentIndex(current)
+                    )
+
+                    mainWindow.webContents.send('progressFileLoading', current + 1, length)
+                    mainWindow.webContents.send('endLoading')
+                }
+            )
+        } catch (e) {
+            log.error('view', 'call: ipcMain.handle.mediaList: e.error: ', e.message)
+            log.error('view', 'call: ipcMain.handle.mediaList: e.stack: ', e.stack)
         }
     })
 
     ipcMain.on('clickNext', (event) => {
         log.debug('view', 'call: ipcMain.handle.clickNext')
         if (!validateSender(event.senderFrame)) return null
+
+        mainWindow.webContents.send('startLoading')
 
         const media = mediaList.getNext()
 
@@ -121,11 +121,18 @@ export default function registerIpc(mainWindow) {
         media.generateViewerInfo()
 
         mainWindow.webContents.send('changeView', media)
+
+        const current = mediaList.getCurrentIndex()
+        const length = mediaList.getLength()
+        mainWindow.webContents.send('progressFileLoading', current + 1, length)
+        mainWindow.webContents.send('endLoading')
     })
 
     ipcMain.on('clickPrev', (event) => {
         log.debug('view', 'call: ipcMain.handle.clickPrev')
         if (!validateSender(event.senderFrame)) return null
+
+        mainWindow.webContents.send('startLoading')
 
         const media = mediaList.getPrev()
 
@@ -134,6 +141,11 @@ export default function registerIpc(mainWindow) {
         media.generateViewerInfo()
 
         mainWindow.webContents.send('changeView', media)
+
+        const current = mediaList.getCurrentIndex()
+        const length = mediaList.getLength()
+        mainWindow.webContents.send('progressFileLoading', current + 1, length)
+        mainWindow.webContents.send('endLoading')
     })
 
     ipcMain.on('changeZoomLevel', (event, zoomLevel) => {

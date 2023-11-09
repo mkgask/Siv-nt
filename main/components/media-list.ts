@@ -25,13 +25,13 @@ class MediaList {
     /*  Properties
     */
 
-    list: mutableProps = {}
-    length: number = 0
-    timeOrder: Array<string> = []
-    nameOrder: Array<string> = []
-    current: number = 0
-    orderby: 'time' | 'name' = 'name'
-    order: 'asc' | 'desc' = 'asc'
+    private list: mutableProps = {}
+    private length: number = 0
+    private timeOrder: Array<string> = []
+    private nameOrder: Array<string> = []
+    private current: number = 0
+    private orderby: 'time' | 'name' = 'name'
+    private order: 'asc' | 'desc' = 'asc'
 
 
 
@@ -49,7 +49,7 @@ class MediaList {
     /*  Modules List
     */
 
-    changeList(files: Array<Media>): void {
+    changeList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = () => {}): void {
         log.debug('media-list', 'call: MediaList.changeList')
         log.debug('media-list', 'call: MediaList.changeList: files: ', files)
 
@@ -68,33 +68,43 @@ class MediaList {
 
             // ファイルを一個一個確認
             let _files2 = []
+            const self = this
 
-            _files.map((file) => {
-                const path = dir + dirSeparator + file
+            const generateFileList = (file: Array<string>, current: number) => {
+                log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', current)
+
+                if (file.length <= current) {
+                    log.debug('media-list', 'call: MediaList.changeList: generateFileList: _files2: ', _files2)
+                    self.setList(_files2, progress_callback, end_callback)
+                    return
+                }
+
+                const path = dir + dirSeparator + file[current]
                 const mime_type = mime.getType(path)
-                if (!is_accepted(mime_type)) return null
 
-                const type = get_media_type(mime_type)
+                if (is_accepted(mime_type)) {
+                    const type = get_media_type(mime_type)
+    
+                    _files2.push({
+                        path: path,
+                        mime_type: mime_type,
+                        type: type,
+                    })
+                }
 
-                _files2.push({
-                    path: path,
-                    mime_type: mime_type,
-                    type: type,
-                })
-            })
+                setTimeout(() => {
+                    generateFileList(file, current + 1)
+                }, 0)
+            }
 
-            log.debug('media-list', 'call: MediaList.changeList: _files2: ', _files2)
-            this.setList(_files2)
+            generateFileList(_files, 0)
         } else {
             // ファイルを複数枚ドロップされた時は、ドロップされたファイル群をセット
-            this.setList(files)
+            this.setList(files, progress_callback, end_callback)
         }
-
-        this.createTimeOrder()
-        this.createNameOrder()
     }
 
-    setList(files: Array<Media>): void {
+    setList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = () => {}): void {
         log.debug('media-list', 'call: MediaList.setList: files: ', files)
 
         if (!files ||
@@ -105,26 +115,46 @@ class MediaList {
         this.list = {}
         this.length = 0
 
-        for (const file of files) {
-            const media = file.hasOwnProperty('filesize') ?
+        const length = files.length
+        const self = this
+
+        const generateMediaList = (file: Array<Media>, current: number) => {
+            log.debug('media-list', 'call: MediaList.changeList: generateMediaList: current: ', current)
+
+            if (length <= current) {
+                log.debug('media-list', 'call: MediaList.changeList: generateMediaList: self.list: ', self.list)
+                self.createTimeOrder()
+                self.createNameOrder()
+                end_callback()
+                return
+            }
+
+            const base = file[current]
+
+            self.list[base.path] = base.hasOwnProperty('filesize') ?
                 new Media(
-                    file.path,
-                    file.mime_type,
-                    file.type,
+                    base.path,
+                    base.mime_type,
+                    base.type,
                     0,
-                    file.filesize,
+                    base.filesize,
                 ) :
                 new Media(
-                    file.path,
-                    file.mime_type,
-                    file.type,
+                    base.path,
+                    base.mime_type,
+                    base.type,
                 )
 
-            this.list[media.path] = media
-            this.length += 1
+            self.length += 1
+
+            progress_callback(current, length)
+
+            setTimeout(() => {
+                generateMediaList(file, current + 1)
+            }, 0)
         }
 
-        log.debug('media-list', 'call: MediaList.setList: this.list: ', this.list)
+        generateMediaList(files, 0)
     }
 
     createTimeOrder(): void {
@@ -149,6 +179,16 @@ class MediaList {
 
     /*  Modules  index
     */
+
+    getLength(): number {
+        log.debug('media-list', 'call: MediaList.getLength')
+        return this.length
+    }
+
+    getCurrentIndex(): number {
+        log.debug('media-list', 'call: MediaList.getCurrentIndex')
+        return this.current
+    }
 
     setCurrentIndex(index: number): number {
         log.debug('media-list', 'call: MediaList.setCurrent: index: ', index)

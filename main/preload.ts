@@ -123,6 +123,11 @@ contextBridge.exposeInMainWorld('ipcEvent', {
         ipcRenderer.on('startLoading', () => callback())
     },
 
+    onProgressFileLoading: (callback) => {
+        console.log('call: ipcEvent.onProgressFileLoading')
+        ipcRenderer.on('progressFileLoading', (event, current, max) => callback(current, max))
+    },
+
     onEndLoading: (callback) => {
         console.log('call: ipcEvent.onEndLoading')
         ipcRenderer.on('endLoading', () => callback())

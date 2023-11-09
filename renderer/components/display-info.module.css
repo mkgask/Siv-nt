@@ -4,22 +4,26 @@
 
 .fileInfo {
     width: 100%;
-    height: 100%;
+}
 
+.topBox {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
-
     gap: 0 3.2vw;
 }
 
-.filePath {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+.bottomBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0 3.2vw;
 }
 
+.filePath,
+.progress,
 .fileSize,
 .imageSize,
 .zoomLevel {
