@@ -30,18 +30,6 @@ module.exports = {
             }),
         )
 
-        /*
-        // CopyWebpackPluginを使ってimagesディレクトリをappディレクトリにコピーする
-        config.plugins.push(
-            new CopyWebpackPlugin({
-                patterns: [{
-                    from: path.resolve(__dirname, 'resources/images'),
-                    to: path.resolve(__dirname, 'app/local-data/images'),
-                }],
-            }),
-        )
-        */
-
         return config
     }
 }

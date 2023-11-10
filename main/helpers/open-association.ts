@@ -3,7 +3,7 @@ import fs from 'fs'
 import mime from 'mime-lite'
 import log from './electron-log-wrapper'
 
-import Media from '../components/media'
+import fileOpen from './file-open'
 
 import { get_media_type } from '../components/accepted-types'
 
@@ -34,17 +34,16 @@ export default function openAssociation(mainWindow: Electron.BrowserWindow) {
             break
         }
 
-        const media = new Media(path, mime_type, type)
+        if (!path) {
+            mainWindow.webContents.send('endLoading')
+            return
+        }
 
-        log.debug('file-association', 'call: openAssociation: changeFileInfo: media: ', media)
-
-        mainWindow.webContents.send('changeFileInfo', media)
-        
-        media.generateViewerInfo(path)
-
-        log.debug('file-association', 'call: openAssociation: changeView: b64: ', !!media.b64)
-
-        mainWindow.webContents.send('changeView', media)
+        fileOpen([{
+            path: path,
+            mime_type: mime_type,
+            type: type,
+        }], mainWindow)
     })
 
 }

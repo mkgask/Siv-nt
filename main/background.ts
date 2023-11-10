@@ -23,6 +23,17 @@ if (env.isProd) {
 
     if (settings.log_output) {
         log.level(logLevel.silly)
+        log.categoryMode()
+        log.allowCategories([
+            'boot',
+            'ipc',
+            'settings',
+            'file-association',
+            'media-list',
+            'media',
+            //'package-licenses',
+            'view',
+        ])
     } else {
         log.level(logLevel.error)
     }
