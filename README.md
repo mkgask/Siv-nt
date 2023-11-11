@@ -63,7 +63,8 @@ In no particular order
 - [ ] v0.11.0 image convert and save
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
-- [ ] v0.8.2 adjust loading screen
+- [ ] v0.8.3 add some settings in settings dialog
+- [x] v0.8.2 adjust loading progress
 - [x] v0.8.1 open files in same directory to open association
 - [x] v0.8.0 change next or prev file in same directory
 

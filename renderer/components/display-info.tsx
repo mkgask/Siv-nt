@@ -28,7 +28,7 @@ export default function DisplayInfo() {
         const ipcSend = (window as any).ipcSend
 
         const onChangeFileInfo = (media) => {
-            console.log('Fileinfo: onChangeFileInfo: media: ', media)
+            console.log('DisplayInfo: onChangeFileInfo: media: ', media)
             setFilePath(media.path)
             setFileSize(media.filesize)
             setSizeW(media.imagesize_w)
@@ -36,12 +36,12 @@ export default function DisplayInfo() {
         }
 
         const onChangeZoomLevel = (zoomLevel) => {
-            console.log('Fileinfo: onChangeZoomLevel: zoomLevel: ', zoomLevel)
+            console.log('DisplayInfo: onChangeZoomLevel: zoomLevel: ', zoomLevel)
             setZoomLevel(zoomLevel)
         }
 
         const onProgressFileLoading = (current, max) => {
-            console.log('Fileinfo: onProgress: progress: ', current, ' / ', max)
+            console.log('DisplayInfo: onProgress: progress: ', current, ' / ', max)
             setCurrent(current)
             setMax(max)
         }

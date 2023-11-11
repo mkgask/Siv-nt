@@ -22,11 +22,11 @@ export default class Media {
     path: string = ''
     mime_type: string = ''
     type: string = ''
-    time: number = 0
-    filesize: string = ''
-    imagesize_w: number = -1
-    imagesize_h: number = -1
-    b64: string = ''
+    time?: number = 0
+    filesize?: string = ''
+    imagesize_w?: number = -1
+    imagesize_h?: number = -1
+    b64?: string = ''
 
     constructor(
         path: string = '',

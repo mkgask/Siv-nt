@@ -1,41 +1,51 @@
 import { useEffect, useState } from "react"
 import { Box } from "@mui/material"
 import styled from "@emotion/styled"
-import DisplayInfo from "./display-info"
 
 
 const StyledBox = styled(Box)({
     position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    backgroundColor: 'rgba(32, 32, 32, 0.8)',
+    top: '0.5rem',
+    right: '0.5rem',
+    width: '2rem',
+    height: '2rem',
+
     zIndex: 65535,
+
     '&::before': {
         content: '""',
+        display: 'inline-block',
         position: 'absolute',
-        top: 'calc(50% - 2rem)',
-        left: 'calc(50% - 2rem)',
-        width: '4rem',
-        height: '4rem',
-        border: '0.5rem solid #33BEA7',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        margin: 'auto',
+        width: '1rem',
+        height: '1rem',
+        border: '0.32rem solid #33BEA7',
         borderRight: '0.5rem solid transparent',
         borderRadius: '50%',
         animation: 'loading 2s linear infinite',
     },
+
     '&::after': {
         content: '""',
+        display: 'inline-block',
         position: 'absolute',
-        top: 'calc(50% - 2.5rem)',
-        left: 'calc(50% - 2.5rem)',
-        width: '5rem',
-        height: '5rem',
-        border: '0.5rem solid #2C48A3',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        margin: 'auto',
+        width: '2rem',
+        height: '2rem',
+        border: '0.32rem solid #2C48A3',
         borderLeft: '0.5rem solid transparent',
         borderRadius: '50%',
         animation: 'loading 2.5s linear infinite',
     },
+
     '@keyframes loading': {
         '0%': {
             transform: 'rotate(0deg)',

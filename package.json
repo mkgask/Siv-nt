@@ -2,7 +2,7 @@
   "private": true,
   "name": "Siv-nt",
   "description": "Simple image viewer - nextron",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": "mkgask",
   "homepage": "https://zsw.jp",
   "main": "app/background.js",
@@ -21,8 +21,6 @@
     "update:license": "npx license-checker --summary > licenses.summary.txt && npx license-checker --production --json --excludePrivatePackages --customPath license.customFormat.json --failOn GPL;GPL-2.0;GPL-3.0;AGPL;NGPL > licenses.json"
   },
   "dependencies": {
-    "electron-serve": "^1.1.0",
-    "electron-store": "^8.1.0"
   },
   "devDependencies": {
     "@emotion/cache": "^11.11.0",
@@ -38,6 +36,8 @@
     "electron": "^26.2.2",
     "electron-builder": "^24.6.4",
     "electron-log": "^4.4.8",
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.1.0",
     "image-size": "^1.0.2",
     "js-yaml": "^4.1.0",
     "license-checker": "^25.0.1",

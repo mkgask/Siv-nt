@@ -8,6 +8,7 @@ import { is_accepted, get_media_type } from './accepted-types'
 import Media from "./media"
 
 import env from "./env"
+import { create } from "domain"
 
 
 
@@ -41,7 +42,7 @@ class MediaList {
     constructor(files: Array<Media> = []) {
         log.debug('media-list', 'call: MediaList.constructor')
 
-        if (files) this.changeList(files)
+        if (0 < files.length) this.changeList(files)
     }
 
 
@@ -55,106 +56,52 @@ class MediaList {
 
         if (!files || !Array.isArray(files)) return
 
-        if (files.length === 1) {
-            // ファイルを一枚だけドロップされた時は、同じディレクトリのファイルを収集してセット
+        // パスからディレクトリを取得
+        const dir = files[0].path.replace(/^(.+)[\/\\][^\/\\]+$/, '$1')
+        log.debug('media-list', 'call: MediaList.changeList: dir: ', dir)
 
-            // パスからディレクトリを取得
-            const dir = files[0].path.replace(/^(.+)[\/\\][^\/\\]+$/, '$1')
-            log.debug('media-list', 'call: MediaList.changeList: dir: ', dir)
+        // ディレクトリ名からファイルリストを取得
+        const _files = fs.readdirSync(dir)
+        log.debug('media-list', 'call: MediaList.changeList: _files: ', _files)
 
-            // ディレクトリ名からファイルリストを取得
-            const _files = fs.readdirSync(dir)
-            log.debug('media-list', 'call: MediaList.changeList: _files: ', _files)
-
-            // ファイルを一個一個確認
-            let _files2 = []
-            const self = this
-
-            const generateFileList = (file: Array<string>, current: number) => {
-                log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', current)
-
-                if (file.length <= current) {
-                    log.debug('media-list', 'call: MediaList.changeList: generateFileList: _files2: ', _files2)
-                    self.setList(_files2, progress_callback, end_callback)
-                    return
-                }
-
-                const path = dir + dirSeparator + file[current]
-                const mime_type = mime.getType(path)
-
-                if (is_accepted(mime_type)) {
-                    const type = get_media_type(mime_type)
-    
-                    _files2.push({
-                        path: path,
-                        mime_type: mime_type,
-                        type: type,
-                    })
-                }
-
-                setTimeout(() => {
-                    generateFileList(file, current + 1)
-                }, 0)
-            }
-
-            generateFileList(_files, 0)
-        } else {
-            // ファイルを複数枚ドロップされた時は、ドロップされたファイル群をセット
-            this.setList(files, progress_callback, end_callback)
-        }
-    }
-
-    setList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = () => {}): void {
-        log.debug('media-list', 'call: MediaList.setList: files: ', files)
-
-        if (!files ||
-            !Array.isArray(files) ||
-            files.length === 0
-        ) return
-
+        // ファイルを一個一個確認
+        const self = this
         this.list = {}
         this.length = 0
 
-        const length = files.length
-        const self = this
+        const generateFileList = (file: Array<string>, current: number) => {
+            log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', current)
 
-        const generateMediaList = (file: Array<Media>, current: number) => {
-            log.debug('media-list', 'call: MediaList.changeList: generateMediaList: current: ', current)
-
-            if (length <= current) {
-                log.debug('media-list', 'call: MediaList.changeList: generateMediaList: self.list: ', self.list)
+            if (file.length <= current) {
                 self.createTimeOrder()
                 self.createNameOrder()
                 end_callback()
                 return
             }
 
-            const base = file[current]
+            const path = dir + dirSeparator + file[current]
+            const mime_type = mime.getType(path)
 
-            self.list[base.path] = base.hasOwnProperty('filesize') ?
-                new Media(
-                    base.path,
-                    base.mime_type,
-                    base.type,
-                    0,
-                    base.filesize,
-                ) :
-                new Media(
-                    base.path,
-                    base.mime_type,
-                    base.type,
-                )
+            if (is_accepted(mime_type)) {
+                const type = get_media_type(mime_type)
 
-            self.length += 1
+                self.list[path] = {
+                    path: path,
+                    mime_type: mime_type,
+                    type: type,
+                }
 
-            progress_callback(current, length)
+                self.length += 1
+            }
+
+            progress_callback(current, _files.length)
 
             setTimeout(() => {
-                generateMediaList(file, current + 1)
+                generateFileList(file, current + 1)
             }, 0)
         }
 
-        generateMediaList(files, 0)
+        generateFileList(_files, 0)
     }
 
     createTimeOrder(): void {
@@ -173,6 +120,59 @@ class MediaList {
             if (this.list[a].path > this.list[b].path) return 1
             return 0
         })
+    }
+
+
+
+    /*  Modules  Media
+    */
+
+    getOrCreateMediaFromPath(path: string): Media {
+        log.debug('media-list', 'call: MediaList.createMediaFromPath: path: ', path)
+
+        if (!path) return new Media()
+
+        log.debug('media-list', 'call: MediaList.createMediaFromPath: isMedia: ', (
+            this.list.hasOwnProperty(path) &&
+            this.list[path].constructor.name === 'Media'
+        ))
+
+        // 既にMediaを持っている
+        if (this.list.hasOwnProperty(path) &&
+            this.list[path].constructor.name === 'Media'
+        ) {
+            return this.list[path]
+        }
+
+        log.debug('media-list', 'call: MediaList.createMediaFromPath: isHave: ', this.list.hasOwnProperty(path))
+
+        // Mediaになる前のオブジェクトを持っている
+        if (this.list.hasOwnProperty(path)) {
+            this.list[path] = new Media(
+                this.list[path].path,
+                this.list[path].mime_type,
+                this.list[path].type,
+            )
+    
+            return this.list[path]
+        }
+
+        log.debug('media-list', 'call: MediaList.createMediaFromPath: create')
+
+        // 持ってなかったらMediaにして追加
+        const mime_type = mime.getType(path)
+        const type = get_media_type(mime_type)
+        if (!type) return new Media()
+
+        this.list[path] = new Media(
+            path,
+            mime_type,
+            type,
+        )
+
+        this.length += 1
+
+        return this.list[path]
     }
 
 
@@ -201,18 +201,23 @@ class MediaList {
     }
 
     getIndexFromPath(path: string): number {
-        log.debug('media-list', 'call: MediaList.getCurrentFromPath: path: ', path)
+        log.debug('media-list', 'call: MediaList.getIndexFromPath: path: ', path)
 
         if (this.length < 1) return -1
         if (!path) return -1
         if (!this.list.hasOwnProperty(path)) return -1
 
         if (this.orderby === 'time') {
-            return this.timeOrder.indexOf(path)
+            const index = this.timeOrder.indexOf(path)
+            log.debug('media-list', 'call: MediaList.getIndexFromPath: time order index: ', index)
+            return index
         }
 
         if (this.orderby === 'name') {
-            return this.nameOrder.indexOf(path)
+            const index = this.nameOrder.indexOf(path)
+            log.debug('media-list', 'call: MediaList.getIndexFromPath: this.nameOrder: ', this.nameOrder)
+            log.debug('media-list', 'call: MediaList.getIndexFromPath: name order index: ', index)
+            return index
         }
 
         return 0
@@ -240,17 +245,20 @@ class MediaList {
 
         if (this.orderby === 'time') {
             const path = this.timeOrder[index]
-            return this.list[path]
+            const media = this.getOrCreateMediaFromPath(path)
+            return media
         }
 
         if (this.orderby === 'name') {
             const path = this.nameOrder[index]
-            return this.list[path]
+            const media = this.getOrCreateMediaFromPath(path)
+            return media
         }
 
         // オブジェクトのプロパティの最初の一個を返す
         const firstKey = Object.keys(this.list)[0]
-        return this.list[firstKey]
+        const media = this.getOrCreateMediaFromPath(firstKey)
+        return media
     }
 
     getCurrent(): Media {

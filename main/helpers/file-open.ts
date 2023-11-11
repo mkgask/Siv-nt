@@ -6,36 +6,20 @@ import mediaList from "../components/media-list";
 
 
 
-export default function fileOpen(files, window: BrowserWindow): void {
+export default function fileOpen(files: Array<Media>, window: BrowserWindow): void {
     log.debug('file-open', 'call: fileOpen: files: ', files)
 
     // ドロップされた画像を一枚だけ先に表示
-    let media = null
+    //let media = files[0]
 
-    // filesが文字列
-    if ( typeof files === 'string' ) {
-        media = new Media(
-            files,
-            '',
-            '',
-        )
-    } else
-    // filesが配列
-    if ( Array.isArray(files) ) {
-        media = new Media(
-            files[0].path,
-            files[0].mime_type,
-            files[0].type,
-        )
-    } else
-    // filesがオブジェクト
-    if ( typeof files === 'object' && files.hasOwnProperty('path') ) {
-        media = new Media(
-            files.path,
-            files.mime_type,
-            files.type,
-        )
-    }
+    const media =
+        files[0].constructor.name === 'Media' ?
+            files[0] :
+            new Media(
+                files[0].path,
+                files[0].mime_type,
+                files[0].type,
+            )
 
     log.debug('file-open', 'call: fileOpen: media: ', media)
 
