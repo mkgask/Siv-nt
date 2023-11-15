@@ -35,6 +35,8 @@ export default function DialogHelp(props) {
         author: '',
         homepage: '',
         isProd: true,
+        isDev: false,
+        isTest: false,
         platform: '',
         font_styles: '',
     })

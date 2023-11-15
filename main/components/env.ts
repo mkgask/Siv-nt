@@ -16,6 +16,8 @@ const env_defaults = {
     homepage: 'https://zsw.jp',
 
     isProd: true,
+    isDev: false,
+    isTest: false,
     platform: platform,
     font_styles: font.font_styles,
 }
@@ -30,6 +32,8 @@ class Env {
     readonly homepage: string = packageJson.homepage ?? env_defaults.homepage
 
     readonly isProd: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'production' : env_defaults.isProd
+    readonly isDev: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'development' : env_defaults.isDev
+    readonly isTest: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'test' : env_defaults.isTest
     readonly platform: string = platform ?? env_defaults.platform
     readonly font_styles: string = font.font_styles ?? env_defaults.font_styles
 }

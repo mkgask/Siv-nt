@@ -69,7 +69,11 @@ class Font {
             Object.keys(fontFamilies).forEach(fontName => {
                 const fontFamily = fontFamilies[fontName]
                 fontFamily.forEach(font => {
-                    const font_path = path.join(__dirname, `local-data/fonts/${fontName}/${font.name}.${fontType}`)
+                    // envから呼ばれるのでenv.isTestを使うと循環参照になってしまうのでprocess.envで愚直に判定しておく
+                    const font_path =
+                        process.env.NODE_ENV === 'test' ?
+                            path.join(process.cwd(), `/app/local-data/fonts/${fontName}/${font.name}.${fontType}`) :
+                            path.join(__dirname, `local-data/fonts/${fontName}/${font.name}.${fontType}`)
                     const binary = readFileSync(font_path)
                     const b64 = Buffer.from(binary).toString('base64')
 

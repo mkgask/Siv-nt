@@ -7,7 +7,7 @@ import env from '../components/env'
 
 
 
-export enum logLevel {
+enum logLevel {
     error = 0,
     warn = 1,
     info = 2,
@@ -16,20 +16,22 @@ export enum logLevel {
     silly = 5,
 }
 
-export type logOption = logLevel | false
+type logOption = logLevel | false
 
 
 
 const electronLogLevel = (level: logOption): LevelOption => {
     switch (level) {
-        case false: return false
         case logLevel.error: return 'error'
         case logLevel.warn: return 'warn'
         case logLevel.info: return 'info'
         case logLevel.verbose: return 'verbose'
         case logLevel.debug: return 'debug'
         case logLevel.silly: return 'silly'
-        default: return false
+
+        case false:
+        default:
+            return false
     }
 }
 
@@ -62,61 +64,83 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
 
     const s = inValue ? '' : deps_spaces(deps)
 
-    switch (true) {
-        case typeof any === 'undefined':
-            return s + 'undefined'
+    if (typeof any === 'undefined')
+        return s + 'undefined'
 
-        case typeof any === 'string' && inValue:
-            return '"' + any.toString() + '"'
+    if (typeof any === 'string' && inValue)
+        return '"' + any.toString() + '"'
 
-        case typeof any === 'string' && 0 < deps:
-            return s + '"' + any.toString() + '"'
-        
-        case typeof any === 'function':
-            // 関数名があれば関数名を返す
-            const funcName = any.toString().match(/^(function)\s*([^\s(]*)?/)
+    if (typeof any === 'string' && 0 < deps)
+        return s + '"' + any.toString() + '"'
 
-            if (funcName && funcName[2]) 
-                return s + '[function ' + funcName[2] + ']'
+    if (typeof any === 'function') {
+        // 関数名があれば関数名を返す
+        const funcName = any.toString().match(/^(function)\s*([^\s(]*)?/)
 
-            // 関数名が無いがfunctionから始まるものは無名関数として返す
-            if (funcName && funcName[1]) 
-                return s + '[anonymous function]'
+        if (funcName && funcName[2]) 
+            return s + '[function ' + funcName[2] + ']'
 
-            // それ以外はlambda functionとして返す
-            return s + '[lambda function]'
+        // 関数名が無いがfunctionから始まるものは無名関数として返す
+        if (funcName && funcName[1]) 
+            return s + '[anonymous function]'
 
-        case Array.isArray(any):
-            let array_str = '[' + linefeed
-            if (!inValue) deps += 1
-
-            array_str +=
-                (any.map(v =>
-                    s + deps_spaces(deps) +
-                    toString(v, deps + 1, true) + ',' + linefeed
-                ).join(space))
-
-            deps -= 1
-            array_str += s + deps_spaces(deps) + ']' + (inValue ? '' : linefeed)
-            return array_str
-
-        case Object.prototype.toString.call(any) === '[object Object]':
-            let object_str = '{' + linefeed
-            if (!inValue) deps += 1
-
-            Object.keys(any).forEach((key) => {
-                object_str += s + deps_spaces(deps) +
-                    key + ': ' + toString(any[key], deps + 1, true) + ',' + linefeed
-            })
-
-            deps -= 1
-            object_str += s + deps_spaces(deps) + '}' + (inValue ? '' : linefeed)
-            return object_str
-
-        default:
-            if (any === null) return s + 'null'
-            return s + any.toString()
+        // それ以外はlambda functionとして返す
+        return s + '[lambda function]'
     }
+
+    if (Array.isArray(any)) {
+        let array_str = '['
+        if (!inValue) deps += 1
+
+        const array_str2 =
+            (any.map(v =>
+                s + deps_spaces(deps) +
+                toString(v, deps + 1, true) + ',' + linefeed
+            ).join(''))
+
+        deps -= 1
+
+        if (!array_str2 && deps === 0) {
+            array_str += ']'
+            return array_str
+        }
+
+        array_str += linefeed + array_str2 +
+            s + deps_spaces(deps) +
+            ']' + (inValue ? '' : linefeed)
+        return array_str
+    }
+
+    if (Object.prototype.toString.call(any) === '[object Object]') {
+        if (Object.keys(any).length === 0) return s + '{}'
+        if (any.constructor.name === 'BigInt') return s + any.toString()
+
+        let object_str = '{'
+        if (!inValue) deps += 1
+
+        let object_str2 = ''
+
+        Object.keys(any).forEach((key) => {
+            object_str2 += s + deps_spaces(deps) +
+                key + ': ' + toString(any[key], deps + 1, true) + ',' + linefeed
+        })
+
+        if (!object_str2 && deps === 0) {
+            object_str += '}'
+            return object_str
+        }
+
+        deps -= 1
+        object_str += linefeed + object_str2 +
+            s + deps_spaces(deps) +
+            '}' + (inValue ? '' : linefeed)
+        return object_str
+    }
+
+    if (any === null)
+        return s + 'null'
+
+    return s + any.toString()
 }
 
 export const convert = (category: string, any: any[]): string => {
@@ -140,20 +164,37 @@ class ElectronLogWrapper implements LogFunctions
 
 
 
+    private _fileName: string = ''
+
+
+
+    /*  for Test
+     */
+    getLevel(): logOption { return this._level }
+    getAllowedCategories(): string[] { return this._allowed_categories }
+    getCategoryMode(): boolean { return this._category_mode }
+    getFileName(): string { return this._fileName }
+
+
+
     /*  Foundation
     */
 
     start() {
+        if ( this._fileName ) { return }
+
         // electron-logが出力するログのファイル名をカスタマイズ
         const d = new Date()
         const prefix = d.getFullYear() + ('00' + (d.getMonth() + 1)).slice(-2) + ('00' + (d.getDate())).slice(-2)
-        const devprod = env.isProd ? 'prod' : 'dev'
+        const devProd = env.isProd ? 'prod' : 'dev'
         const curr = log.transports.file.fileName
-    
+        const fileName = `${prefix}-${devProd}-${curr}`
+
         // log.transports.file.fileNameを設定するとログファイルが生成されてしまうので、
         // その前にログファイル出力をOFFにしておく
         log.transports.file.level = false;
-        log.transports.file.fileName = `${prefix}-${devprod}-${curr}`
+        log.transports.file.fileName = fileName
+        this._fileName = fileName
     }
 
     level(level: logOption) {
@@ -171,7 +212,16 @@ class ElectronLogWrapper implements LogFunctions
         if (this._level < level) return
 
         log.transports.file.level = electronLogLevel(this._level)
-        log.log(params)
+
+        switch (level) {
+            case logLevel.error: log.error(params); break
+            case logLevel.warn: log.warn(params); break
+            case logLevel.info: log.info(params); break
+            case logLevel.verbose: log.verbose(params); break
+            case logLevel.debug: log.debug(params); break
+            case logLevel.silly: log.silly(params); break
+            default: throw new Error('!!! FATAL ERROR !!! : unknown log level')
+        }
     }
 
     error(category: string, ...params: any[]) {
@@ -270,5 +320,15 @@ class ElectronLogWrapper implements LogFunctions
 
 const electronLogWrapper = new ElectronLogWrapper()
 export default electronLogWrapper
+
+export {
+    logLevel,
+    electronLogLevel,
+    deps_spaces,
+    toString,
+    ElectronLogWrapper,
+}
+
+export type { logOption }
 
 
