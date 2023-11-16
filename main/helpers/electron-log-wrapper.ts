@@ -214,12 +214,12 @@ class ElectronLogWrapper implements LogFunctions
         log.transports.file.level = electronLogLevel(this._level)
 
         switch (level) {
-            case logLevel.error: log.error(params); break
-            case logLevel.warn: log.warn(params); break
-            case logLevel.info: log.info(params); break
-            case logLevel.verbose: log.verbose(params); break
-            case logLevel.debug: log.debug(params); break
-            case logLevel.silly: log.silly(params); break
+            case logLevel.error: log.error(params); return
+            case logLevel.warn: log.warn(params); return
+            case logLevel.info: log.info(params); return
+            case logLevel.verbose: log.verbose(params); return
+            case logLevel.debug: log.debug(params); return
+            case logLevel.silly: log.silly(params); return
             default: throw new Error('!!! FATAL ERROR !!! : unknown log level')
         }
     }

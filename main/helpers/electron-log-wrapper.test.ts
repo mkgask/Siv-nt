@@ -1,5 +1,6 @@
 import { logLevel, electronLogLevel, deps_spaces, toString, convert } from './electron-log-wrapper';
 import { ElectronLogWrapper } from './electron-log-wrapper';
+import log from 'electron-log';
 
 
 describe('toString', () => {
@@ -182,64 +183,64 @@ describe('deps_spaces', () => {
 
 
 describe('convert', () => {
-  it('should return an empty string when given an empty array', () => {
-    expect(convert('test', [])).toEqual('[test] ');
-  });
+    it('should return an empty string when given an empty array', () => {
+        expect(convert('test', [])).toEqual('[test] ');
+    });
 
-  it('should handle normal string in strings', () => {
-    expect(convert('test', ['test string'])).toEqual(`[test] test string`);
-  });
+    it('should handle normal string in strings', () => {
+        expect(convert('test', ['test string'])).toEqual(`[test] test string`);
+    });
 
-  it('should handle special characters in strings', () => {
-    const specialString = 'special!@#$%^&*()_+-=[]{}|;:",./<>?`~';
-    expect(convert('test', [specialString])).toEqual(`[test] ${specialString}`);
-  });
+    it('should handle special characters in strings', () => {
+        const specialString = 'special!@#$%^&*()_+-=[]{}|;:",./<>?`~';
+        expect(convert('test', [specialString])).toEqual(`[test] ${specialString}`);
+    });
 
-  it('should handle numbers', () => {
-    expect(convert('test', [64])).toEqual('[test] 64');
-  });
+    it('should handle numbers', () => {
+        expect(convert('test', [64])).toEqual('[test] 64');
+    });
 
-  it('should handle negative numbers', () => {
-    expect(convert('test', [-42])).toEqual('[test] -42');
-  });
+    it('should handle negative numbers', () => {
+        expect(convert('test', [-42])).toEqual('[test] -42');
+    });
 
-  it('should handle floating-point numbers', () => {
-    expect(convert('test', [3.14])).toEqual('[test] 3.14');
-  });
+    it('should handle floating-point numbers', () => {
+        expect(convert('test', [3.14])).toEqual('[test] 3.14');
+    });
 
-  it('should return a string with the correct category and values', () => {
-    expect(convert('test', [1, 'two', { three: 3, for: "for" }, true])).toEqual(`[test] 1 two {
+    it('should return a string with the correct category and values', () => {
+        expect(convert('test', [1, 'two', { three: 3, for: "for" }, true])).toEqual(`[test] 1 two {
     three: 3,
     for: "for",
 }
  true`);
-  });
+    });
 
-  it('should handle symbols with different descriptions', () => {
-    const sym1 = Symbol('symbol1');
-    const sym2 = Symbol('symbol2');
-    expect(convert('test', [sym1, sym2])).toEqual(`[test] ${sym1.toString()} ${sym2.toString()}`);
-  });
+    it('should handle symbols with different descriptions', () => {
+        const sym1 = Symbol('symbol1');
+        const sym2 = Symbol('symbol2');
+        expect(convert('test', [sym1, sym2])).toEqual(`[test] ${sym1.toString()} ${sym2.toString()}`);
+    });
 
-  it('should handle bigints', () => {
-    const bigInt = BigInt(9007199254740991);
-    expect(convert('test', [bigInt])).toEqual(`[test] ${bigInt.toString()}`);
-  });
+    it('should handle bigints', () => {
+        const bigInt = BigInt(9007199254740991);
+        expect(convert('test', [bigInt])).toEqual(`[test] ${bigInt.toString()}`);
+    });
 
-  it('should handle functions', () => {
-    function namedFunction() { }
-    expect(convert('test', [namedFunction])).toEqual('[test] [function namedFunction]');
-    expect(convert('test', [function () { }])).toEqual('[test] [anonymous function]');
-    expect(convert('test', [() => { }])).toEqual('[test] [anonymous function]');
-  });
+    it('should handle functions', () => {
+        function namedFunction() { }
+        expect(convert('test', [namedFunction])).toEqual('[test] [function namedFunction]');
+        expect(convert('test', [function () { }])).toEqual('[test] [anonymous function]');
+        expect(convert('test', [() => { }])).toEqual('[test] [anonymous function]');
+    });
 
-  it('should handle undefined and null', () => {
-    expect(convert('test', [undefined])).toEqual('[test] undefined');
-    expect(convert('test', [null])).toEqual('[test] null');
-  });
+    it('should handle undefined and null', () => {
+        expect(convert('test', [undefined])).toEqual('[test] undefined');
+        expect(convert('test', [null])).toEqual('[test] null');
+    });
 
-  it('should handle objects and arrays', () => {
-    expect(convert('test', [{ a: 1, b: 'two', c: { three: 3, for: "for" }, d: true }])).toEqual(`[test] {
+    it('should handle objects and arrays', () => {
+        expect(convert('test', [{ a: 1, b: 'two', c: { three: 3, for: "for" }, d: true }])).toEqual(`[test] {
     a: 1,
     b: "two",
     c: {
@@ -249,7 +250,7 @@ describe('convert', () => {
     d: true,
 }
 `);
-    expect(convert('test', [[1, 'two', { three: 3, for: "for" }, true]])).toEqual(`[test] [
+        expect(convert('test', [[1, 'two', { three: 3, for: "for" }, true]])).toEqual(`[test] [
     1,
     "two",
     {
@@ -259,7 +260,7 @@ describe('convert', () => {
     true,
 ]
 `);
-  });
+    });
 });
 
 
@@ -292,173 +293,280 @@ import * as fs from 'fs';
 
 
 describe('ElectronLogWrapper', () => {
-  let logWrapper: ElectronLogWrapper = null;
+    let logWrapper: ElectronLogWrapper = null;
 
-  beforeEach(() => {
-    logWrapper = new ElectronLogWrapper();
-  });
-
-  describe('start', () => {
-    it('should set the log file name', () => {
-      logWrapper.start();
-      expect(logWrapper.getFileName()).toMatch(/20\d{6}-\w+-\w+\.log/);
-    });
-  });
-
-  describe('level', () => {
-    it('should set the log level', () => {
-      logWrapper.level(2);
-      expect(logWrapper.getLevel()).toEqual(2);
-    });
-  });
-
-  describe('output', () => {
-    it('should not output if the log level is false', () => {
-      logWrapper.level(false);
-      const spy = jest.spyOn(console, 'log');
-      logWrapper.output('test', 1);
-      expect(spy).not.toHaveBeenCalled();
+    beforeEach(() => {
+        logWrapper = new ElectronLogWrapper();
     });
 
-    it('should not output if the level parameter is false', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(console, 'log');
-      logWrapper.output('test', false);
-      expect(spy).not.toHaveBeenCalled();
+    describe('start', () => {
+        it('should set the log file name', () => {
+            logWrapper.start();
+            expect(logWrapper.getFileName()).toMatch(/20\d{6}-\w+-\w+\.log/);
+        });
     });
 
-    it('should not output if the log level is lower than the level parameter', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(console, 'log');
-      logWrapper.output('test', 2);
-      expect(spy).not.toHaveBeenCalled();
+    describe('level', () => {
+        it('should set the log level', () => {
+            logWrapper.level(2);
+            expect(logWrapper.getLevel()).toEqual(2);
+        });
     });
 
-    it('should output to the console with the correct log level', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(console, 'log');
-      logWrapper.output('test', 1);
-      expect(spy).toHaveBeenCalled();
+    describe('output', () => {
+        it('should not output if the log level is false', () => {
+            logWrapper.level(false);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.output('test', logLevel.warn);
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it('should not output if the level parameter is false', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.output('test', false);
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it('should not output if the log level is lower than the level parameter', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.output('test', logLevel.info);
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it('should output to the console with the correct log level', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.output('test', logLevel.warn);
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it('should output if the log level is upper than the level parameter', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.output('test', logLevel.warn);
+            expect(spy).toHaveBeenCalled();
+        });
     });
 
-    it('should not output if the log level is upper than the level parameter', () => {
-      logWrapper.level(2);
-      const spy = jest.spyOn(console, 'log');
-      logWrapper.output('test', 1);
-      expect(spy).toHaveBeenCalled();
-    });
-  });
+    describe('error', () => {
+        it('should output an error message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
 
-  describe('error', () => {
-    it('should output an error message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.error('test', 'error message');
-      expect(spy).toHaveBeenCalledWith('[test] "error message"', 0);
-    });
-  });
+        it('should output an error message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
 
-  describe('warn', () => {
-    it('should output a warning message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.warn('test', 'warning message');
-      expect(spy).toHaveBeenCalledWith('[test] "warning message"', 1);
-    });
-  });
+        it('should output an error message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
 
-  describe('info', () => {
-    it('should output an info message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.info('test', 'info message');
-      expect(spy).toHaveBeenCalledWith('[test] "info message"', 2);
-    });
-  });
+        it('should output an error message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
 
-  describe('verbose', () => {
-    it('should output a verbose message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.verbose('test', 'verbose message');
-      expect(spy).toHaveBeenCalledWith('[test] "verbose message"', 3);
-    });
-  });
+        it('should output an error message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
 
-  describe('debug', () => {
-    it('should output a debug message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.debug('test', 'debug message');
-      expect(spy).toHaveBeenCalledWith('[test] "debug message"', 4);
-    });
-  });
-
-  describe('silly', () => {
-    it('should output a silly message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.silly('test', 'silly message');
-      expect(spy).toHaveBeenCalledWith('[test] "silly message"', 5);
-    });
-  });
-
-  describe('log', () => {
-    it('should output an info message', () => {
-      logWrapper.level(1);
-      const spy = jest.spyOn(logWrapper, 'output');
-      logWrapper.log('test', 'log message');
-      expect(spy).toHaveBeenCalledWith('[test] "log message"', 2);
-    });
-  });
-
-  describe('isAllowedCategory', () => {
-    it('should return true if category mode is false', () => {
-      expect(logWrapper.isAllowedCategory('test')).toEqual(true);
+        it('should output an error message to silly', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'error');
+            logWrapper.error('test', 'error message');
+            expect(spy).toHaveBeenCalledWith('[test] error message');
+        });
     });
 
-    it('should return true if the category is allowed', () => {
-      logWrapper.categoryMode(true);
-      logWrapper.allowCategories(['test']);
-      expect(logWrapper.isAllowedCategory('test')).toEqual(true);
+    describe('warn', () => {
+        it('should output a warning message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).not.toHaveBeenCalledWith('[test] warning message');
+        });
+
+        it('should output a warning message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).toHaveBeenCalledWith('[test] warning message');
+        });
+
+        it('should output a warning message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).toHaveBeenCalledWith('[test] warning message');
+        });
+
+        it('should output a warning message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).toHaveBeenCalledWith('[test] warning message');
+        });
+
+        it('should output a warning message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).toHaveBeenCalledWith('[test] warning message');
+        });
+
+        it('should output a warning message to silly', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'warn');
+            logWrapper.warn('test', 'warning message');
+            expect(spy).toHaveBeenCalledWith('[test] warning message');
+        });
     });
 
-    it('should return false if the category is not allowed', () => {
-      logWrapper.categoryMode(true);
-      logWrapper.allowCategories(['test']);
-      expect(logWrapper.isAllowedCategory('other')).toEqual(false);
-    });
-  });
+    describe('info', () => {
+        it('should output an info message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).not.toHaveBeenCalledWith('[test] info message');
+        });
 
-  describe('categoryMode', () => {
-    it('should set the category mode', () => {
-      logWrapper.categoryMode(true);
-      expect(logWrapper.getCategoryMode()).toEqual(true);
-    });
-  });
+        it('should output an info message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).not.toHaveBeenCalledWith('[test] info message');
+        });
 
-  describe('allowCategories', () => {
-    it('should add categories to the allowed categories list', () => {
-      logWrapper.allowCategories(['test']);
-      expect(logWrapper.getAllowedCategories()).toEqual(['test']);
-    });
-  });
+        it('should output an info message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).toHaveBeenCalledWith('[test] info message');
+        });
 
-  describe('clearCategories', () => {
-    it('should clear the allowed categories list', () => {
-      logWrapper.allowCategories(['test']);
-      logWrapper.clearCategories();
-      expect(logWrapper.getAllowedCategories()).toEqual([]);
-    });
-  });
+        it('should output an info message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).toHaveBeenCalledWith('[test] info message');
+        });
 
-  describe('removeLogFile', () => {
-    it('should remove old log files', async () => {
-      const readdirSync = jest.spyOn(fs, 'readdirSync');
-      const spy_unlinkSync = jest.spyOn(fs, 'unlinkSync');
-      await logWrapper.removeLogFile();
-      expect(readdirSync).toHaveBeenCalled();
-      expect(spy_unlinkSync).toHaveBeenCalled();
+        it('should output an info message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).toHaveBeenCalledWith('[test] info message');
+        });
+
+        it('should output an info message to silly', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.info('test', 'info message');
+            expect(spy).toHaveBeenCalledWith('[test] info message');
+        });
     });
-  });
+
+    describe('verbose', () => {
+        it('should output a verbose message to verbose', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).toHaveBeenCalledWith('[test] verbose message');
+        });
+    });
+
+    describe('debug', () => {
+        it('should output a debug message to debug', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).toHaveBeenCalledWith('[test] debug message');
+        });
+    });
+
+    describe('silly', () => {
+        it('should output a silly message to silly', () => {
+            logWrapper.level(logLevel.silly);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).toHaveBeenCalledWith('[test] silly message');
+        });
+    });
+
+    describe('log', () => {
+        it('should output an info message to log', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'info');
+            logWrapper.log('test', 'log message');
+            expect(spy).toHaveBeenCalledWith('[test] log message');
+        });
+    });
+
+    describe('isAllowedCategory', () => {
+        it('should return true if category mode is false', () => {
+            expect(logWrapper.isAllowedCategory('test')).toEqual(true);
+        });
+
+        it('should return true if the category is allowed', () => {
+            logWrapper.categoryMode(true);
+            logWrapper.allowCategories(['test']);
+            expect(logWrapper.isAllowedCategory('test')).toEqual(true);
+        });
+
+        it('should return false if the category is not allowed', () => {
+            logWrapper.categoryMode(true);
+            logWrapper.allowCategories(['test']);
+            expect(logWrapper.isAllowedCategory('other')).toEqual(false);
+        });
+    });
+
+    describe('categoryMode', () => {
+        it('should set the category mode', () => {
+            logWrapper.categoryMode(true);
+            expect(logWrapper.getCategoryMode()).toEqual(true);
+        });
+    });
+
+    describe('allowCategories', () => {
+        it('should add categories to the allowed categories list', () => {
+            logWrapper.allowCategories(['test']);
+            expect(logWrapper.getAllowedCategories()).toEqual(['test']);
+        });
+    });
+
+    describe('clearCategories', () => {
+        it('should clear the allowed categories list', () => {
+            logWrapper.allowCategories(['test']);
+            logWrapper.clearCategories();
+            expect(logWrapper.getAllowedCategories()).toEqual([]);
+        });
+    });
+
+    describe('removeLogFile', () => {
+        it('should remove old log files', async () => {
+            const readdirSync = jest.spyOn(fs, 'readdirSync');
+            const spy_unlinkSync = jest.spyOn(fs, 'unlinkSync');
+            await logWrapper.removeLogFile();
+            expect(readdirSync).toHaveBeenCalled();
+            expect(spy_unlinkSync).toHaveBeenCalled();
+        });
+    });
 });
+
+
