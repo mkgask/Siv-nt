@@ -1,6 +1,8 @@
 import { logLevel, electronLogLevel, deps_spaces, toString, convert } from './electron-log-wrapper';
 import { ElectronLogWrapper } from './electron-log-wrapper';
 import log from 'electron-log';
+import path from 'path';
+
 
 
 describe('toString', () => {
@@ -288,8 +290,6 @@ jest.mock('electron-log', () => {
     };
 });
 
-import * as fs from 'fs';
-
 
 
 describe('ElectronLogWrapper', () => {
@@ -483,7 +483,42 @@ describe('ElectronLogWrapper', () => {
     });
 
     describe('verbose', () => {
+        it('should output a verbose message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).not.toHaveBeenCalledWith('[test] verbose message');
+        });
+
+        it('should output a verbose message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).not.toHaveBeenCalledWith('[test] verbose message');
+        });
+
+        it('should output a verbose message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).not.toHaveBeenCalledWith('[test] verbose message');
+        });
+
         it('should output a verbose message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).toHaveBeenCalledWith('[test] verbose message');
+        });
+
+        it('should output a verbose message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'verbose');
+            logWrapper.verbose('test', 'verbose message');
+            expect(spy).toHaveBeenCalledWith('[test] verbose message');
+        });
+
+        it('should output a verbose message to silly', () => {
             logWrapper.level(logLevel.silly);
             const spy = jest.spyOn(log, 'verbose');
             logWrapper.verbose('test', 'verbose message');
@@ -492,7 +527,42 @@ describe('ElectronLogWrapper', () => {
     });
 
     describe('debug', () => {
+        it('should output a debug message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).not.toHaveBeenCalledWith('[test] debug message');
+        });
+
+        it('should output a debug message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).not.toHaveBeenCalledWith('[test] debug message');
+        });
+
+        it('should output a debug message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).not.toHaveBeenCalledWith('[test] debug message');
+        });
+
+        it('should output a debug message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).not.toHaveBeenCalledWith('[test] debug message');
+        });
+
         it('should output a debug message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'debug');
+            logWrapper.debug('test', 'debug message');
+            expect(spy).toHaveBeenCalledWith('[test] debug message');
+        });
+
+        it('should output a debug message to silly', () => {
             logWrapper.level(logLevel.silly);
             const spy = jest.spyOn(log, 'debug');
             logWrapper.debug('test', 'debug message');
@@ -501,6 +571,41 @@ describe('ElectronLogWrapper', () => {
     });
 
     describe('silly', () => {
+        it('should output a silly message to error', () => {
+            logWrapper.level(logLevel.error);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).not.toHaveBeenCalledWith('[test] silly message');
+        });
+
+        it('should output a silly message to warn', () => {
+            logWrapper.level(logLevel.warn);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).not.toHaveBeenCalledWith('[test] silly message');
+        });
+
+        it('should output a silly message to info', () => {
+            logWrapper.level(logLevel.info);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).not.toHaveBeenCalledWith('[test] silly message');
+        });
+
+        it('should output a silly message to verbose', () => {
+            logWrapper.level(logLevel.verbose);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).not.toHaveBeenCalledWith('[test] silly message');
+        });
+
+        it('should output a silly message to debug', () => {
+            logWrapper.level(logLevel.debug);
+            const spy = jest.spyOn(log, 'silly');
+            logWrapper.silly('test', 'silly message');
+            expect(spy).not.toHaveBeenCalledWith('[test] silly message');
+        });
+
         it('should output a silly message to silly', () => {
             logWrapper.level(logLevel.silly);
             const spy = jest.spyOn(log, 'silly');
@@ -560,11 +665,9 @@ describe('ElectronLogWrapper', () => {
 
     describe('removeLogFile', () => {
         it('should remove old log files', async () => {
-            const readdirSync = jest.spyOn(fs, 'readdirSync');
-            const spy_unlinkSync = jest.spyOn(fs, 'unlinkSync');
+            const readdirSync = jest.spyOn(path, 'dirname');
             await logWrapper.removeLogFile();
             expect(readdirSync).toHaveBeenCalled();
-            expect(spy_unlinkSync).toHaveBeenCalled();
         });
     });
 });

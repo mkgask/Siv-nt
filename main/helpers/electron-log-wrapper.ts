@@ -89,23 +89,19 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
     }
 
     if (Array.isArray(any)) {
-        let array_str = '['
+        if (any.length === 0) return s + '[]'
+
+        let array_str = '[' + linefeed
         if (!inValue) deps += 1
 
-        const array_str2 =
-            (any.map(v =>
+        ; (any.map(v =>
+            array_str += 
                 s + deps_spaces(deps) +
                 toString(v, deps + 1, true) + ',' + linefeed
-            ).join(''))
+        ).join(''))
 
         deps -= 1
-
-        if (!array_str2 && deps === 0) {
-            array_str += ']'
-            return array_str
-        }
-
-        array_str += linefeed + array_str2 +
+        array_str += 
             s + deps_spaces(deps) +
             ']' + (inValue ? '' : linefeed)
         return array_str
@@ -115,23 +111,16 @@ const toString = (any: any, deps: number = 0, inValue: boolean = false): string 
         if (Object.keys(any).length === 0) return s + '{}'
         if (any.constructor.name === 'BigInt') return s + any.toString()
 
-        let object_str = '{'
+        let object_str = '{' + linefeed
         if (!inValue) deps += 1
 
-        let object_str2 = ''
-
         Object.keys(any).forEach((key) => {
-            object_str2 += s + deps_spaces(deps) +
+            object_str += s + deps_spaces(deps) +
                 key + ': ' + toString(any[key], deps + 1, true) + ',' + linefeed
         })
 
-        if (!object_str2 && deps === 0) {
-            object_str += '}'
-            return object_str
-        }
-
         deps -= 1
-        object_str += linefeed + object_str2 +
+        object_str +=
             s + deps_spaces(deps) +
             '}' + (inValue ? '' : linefeed)
         return object_str
@@ -170,6 +159,7 @@ class ElectronLogWrapper implements LogFunctions
 
     /*  for Test
      */
+
     getLevel(): logOption { return this._level }
     getAllowedCategories(): string[] { return this._allowed_categories }
     getCategoryMode(): boolean { return this._category_mode }
@@ -290,22 +280,22 @@ class ElectronLogWrapper implements LogFunctions
     async removeLogFile() {
         const remove_limit_num = 512
         const remove_limit_time = Date.now() - 1000 * 60 * 60 * 24 * 30
-    
+
         // 古いログファイルを削除
         await (async () => {
             const dir = path.dirname(log.transports.file.getFile().path);
             const files = fs.readdirSync(dir)
-    
+
             // ファイルが512以下のときは処理しない
             if (files.length <= remove_limit_num) return
-    
+
             const regex = new RegExp(`^\\d{8}\-.+\\.log$`)
             let remove_count = 0
-    
+
             files.filter(file => regex.test(file)).forEach(file => {
                 const fullpath = path.join(dir, file)
                 const stat = fs.statSync(fullpath)
-    
+
                 // 一ヶ月より古かったら削除
                 if (stat.mtimeMs < remove_limit_time) {
                     fs.unlinkSync(fullpath)
