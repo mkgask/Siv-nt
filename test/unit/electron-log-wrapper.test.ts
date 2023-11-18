@@ -1,5 +1,5 @@
-import { logLevel, electronLogLevel, deps_spaces, toString, convert } from './electron-log-wrapper';
-import { ElectronLogWrapper } from './electron-log-wrapper';
+import { logLevel, electronLogLevel, deps_spaces, toString, convert } from '../../main/helpers/electron-log-wrapper';
+import { ElectronLogWrapper } from '../../main/helpers/electron-log-wrapper';
 import log from 'electron-log';
 import path from 'path';
 

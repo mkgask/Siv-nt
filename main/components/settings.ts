@@ -61,7 +61,7 @@ class Settings {
     save(key, value) {
         // keyが存在しない場合は例外エラー
         if (!key || this.hasOwnProperty(key) === false) {
-            throw new Error(`key '${key}' is not exists in Settings`)
+            throw new Error(`key '${key}' does not exist in Settings`)
         }
 
         this[key] = value
@@ -75,5 +75,15 @@ class Settings {
 
 const settings = new Settings
 export default settings
+
+export {
+    store,
+    settings_defaults,
+    Settings,
+}
+
+export type {
+    SettingsType,
+}
 
 
