@@ -8,7 +8,7 @@ import mediaList from "../components/media-list"
 import env from "../components/env"
 import settings from "../components/settings"
 import packageLicenses from '../components/package-licenses'
-import readyCheck from "../components/ready"
+import rendererReady from "../components/renderer-ready"
 import fileOpen from "./file-open"
 
 
@@ -127,7 +127,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         mainWindow.webContents.send('env', env)
-        //if (readyCheck('readyMediaViewer')) { mainWindow.webContents.send('endLoading')}
+        //if (rendererReady.CheckAndSetReady('readyMediaViewer')) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyFileInfo', (event) => {
@@ -136,7 +136,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
         
         log.debug('view', 'call: ipcMain.handle.readyFileInfo: settings: ', settings)
         mainWindow.webContents.send('settings', settings)
-        //if (readyCheck('readyFileInfo')) { mainWindow.webContents.send('endLoading')}
+        //if (rendererReady.CheckAndSetReady('readyFileInfo')) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyPackageLicenses', (event) => {
@@ -149,7 +149,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
         // ログがとても長くなってしまうので一旦OFF
 
         mainWindow.webContents.send('packageLicenses', licenses)
-        //if (readyCheck('readyPackageLicenses')) { mainWindow.webContents.send('endLoading')}
+        //if (rendererReady.CheckAndSetReady('readyPackageLicenses')) { mainWindow.webContents.send('endLoading')}
     })
 
     ipcMain.on('readyNextPrev', (event) => {
@@ -157,7 +157,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
         if (!validateSender(event.senderFrame)) return null
 
         mainWindow.webContents.send('readyNextPrev')
-        //if (readyCheck('readyNextPrev')) { mainWindow.webContents.send('endLoading')}
+        //if (rendererReady.CheckAndSetReady('readyNextPrev')) { mainWindow.webContents.send('endLoading')}
     }),
 
     ipcMain.on('settings', (event, key, value) => {
