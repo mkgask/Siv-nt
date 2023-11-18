@@ -11,7 +11,7 @@
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "npx jest",
     "test:e2e": "npx playwright test",
-    "deploy": "npm run update:package && npm run update:license && npm run build",
+    "deploy": "npm run update:package && npm run test:unit && npm run update:license && npm run build",
     "postinstall": "electron-builder install-app-deps",
     "update:package": "npm install && npm update && npm audit fix",
     "update:license": "npx license-checker --summary > licenses.summary.txt && npx license-checker --production --json --excludePrivatePackages --customPath license.customFormat.json --failOn GPL;GPL-2.0;GPL-3.0;AGPL;NGPL > licenses.json",
