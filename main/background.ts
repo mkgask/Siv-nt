@@ -1,7 +1,7 @@
+import path from 'path'
+
 import { app, session } from 'electron'
 import serve from 'electron-serve'
-
-import path from 'path'
 
 import env from './components/env'
 import settings from './components/settings'
@@ -11,6 +11,8 @@ import log from './helpers/electron-log-wrapper'
 import { logLevel } from './helpers/electron-log-wrapper'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
+import pubsub from "./helpers/pubsub"
+
 
 
 log.start()
@@ -24,15 +26,8 @@ if (env.isProd) {
     if (settings.log_output) {
         log.level(logLevel.silly)
         log.categoryMode()
-        log.allowCategories([
-            'boot',
-            'ipc',
-            'settings',
-            'file-association',
-            'media-list',
-            'media',
-            //'package-licenses',
-            'view',
+        log.excludeCategories([
+            'package-licenses',    // ログがとんでもなく長くなってしまうので一旦exclude
         ])
     } else {
         log.level(logLevel.error)
@@ -42,15 +37,8 @@ if (env.isProd) {
 
     log.level(logLevel.silly)
     log.categoryMode()
-    log.allowCategories([
-        'boot',
-        'ipc',
-        'settings',
-        'file-association',
-        'media-list',
-        'media',
-        //'package-licenses',
-        'view',
+    log.excludeCategories([
+        'package-licenses',    // ログがとんでもなく長くなってしまうので一旦exclude
     ])
 }
 
@@ -153,9 +141,36 @@ if (env.isProd) {
 
 })()
 
+
+
+let timerID = null
+
+pubsub.Subscribe('AppQuit', () => {
+    log.debug('boot', 'call: AppQuit: timerID: ', timerID)
+
+    if (timerID) { clearTimeout(timerID) }
+
+    timerID = setTimeout(() => {
+        app.quit()
+    }, 128)
+})
+
+
+
 app.on('window-all-closed', () => {
+    log.debug('boot', 'call: window-all-closed')
+    pubsub.Publish('StartCanceledGenerateFileList', {})
     settings.save_all()
-    app.quit()
+
+    if (pubsub.getSpecialField('fileListGenerating')) {
+        setTimeout(() => { pubsub.Publish('AppQuit', {}) }, 128)
+
+        pubsub.Subscribe('EndCancelGenerateFileList', () => {
+            pubsub.Publish('AppQuit', {})
+        })
+    } else {
+        pubsub.Publish('AppQuit', {})
+    }
 })
 
 

@@ -145,6 +145,7 @@ class ElectronLogWrapper implements LogFunctions
 
     private _level: logOption = false
     private _allowed_categories: string[] = []
+    private _excluded_categories: string[] = []
 
     // category mode
     // true is only allowed categories are allowed
@@ -162,6 +163,7 @@ class ElectronLogWrapper implements LogFunctions
 
     getLevel(): logOption { return this._level }
     getAllowedCategories(): string[] { return this._allowed_categories }
+    getExcludeCategories(): string[] { return this._excluded_categories }
     getCategoryMode(): boolean { return this._category_mode }
     getFileName(): string { return this._fileName }
 
@@ -216,37 +218,44 @@ class ElectronLogWrapper implements LogFunctions
 
     error(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.error)
     }
 
     warn(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.warn)
     }
 
     info(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.info)
     }
 
     verbose(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.verbose)
     }
 
     debug(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.debug)
     }
 
     silly(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.silly)
     }
 
     // shortcut to info
     log(category: string, ...params: any[]) {
         if (!this.isAllowedCategory(category)) return
+        if (this.isExceludedCategory(category)) return
         this.output(convert(category, params), logLevel.info)
     }
 
@@ -257,7 +266,14 @@ class ElectronLogWrapper implements LogFunctions
 
     isAllowedCategory(category: string): boolean {
         if (!this._category_mode) return true
+        if (this._allowed_categories.length === 0) return true
         return this._allowed_categories.includes(category)
+    }
+
+    isExceludedCategory(category: string): boolean {
+        if (!this._category_mode) return false
+        if (this._excluded_categories.length === 0) return false
+        return this._excluded_categories.includes(category)
     }
 
     categoryMode(mode: boolean = true) {
@@ -266,6 +282,10 @@ class ElectronLogWrapper implements LogFunctions
 
     allowCategories(categories: string[]) {
         this._allowed_categories = [ ...this._allowed_categories, ...categories ]
+    }
+
+    excludeCategories(categories: string[]) {
+        this._excluded_categories = [ ...this._excluded_categories, ...categories ]
     }
 
     clearCategories() {

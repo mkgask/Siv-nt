@@ -39,7 +39,15 @@ export default function fileOpen(files: Array<Media>, window: BrowserWindow): vo
                 window.webContents.send('progressFileLoading', current + 1, length)
             },
 
-            () => {
+            (status) => {
+                log.debug('file-open', 'load media in directory: status: ', status)
+
+                if (status === 'canceled') {
+                    window.webContents.send('cancelFileLoading')
+                    window.webContents.send('endLoading')
+                    return
+                }
+
                 const current = mediaList.getIndexFromPath(files[0].path)
                 const length = mediaList.getLength()
         

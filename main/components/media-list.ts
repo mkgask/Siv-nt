@@ -8,14 +8,9 @@ import { is_accepted, get_media_type } from './accepted-types'
 import Media from "./media"
 
 import env from "./env"
-import { create } from "domain"
+import pubsub from "../helpers/pubsub"
+import mutableProps from "../helpers/mutable-props"
 
-
-
-// オブジェクトのキーをPHPの連想配列のように自由に追加できるようにする
-interface mutableProps {
-    [props: string]: any
-}
 
 const dirSeparator = env.platform === 'win32' ? '\\' : '/'
 
@@ -50,7 +45,7 @@ class MediaList {
     /*  Modules List
     */
 
-    changeList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = () => {}): void {
+    changeList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = (status) => {}): void {
         log.debug('media-list', 'call: MediaList.changeList')
         log.debug('media-list', 'call: MediaList.changeList: files: ', files)
 
@@ -69,13 +64,24 @@ class MediaList {
         this.list = {}
         this.length = 0
 
+        pubsub.Publish('StartGenerateFileList', {})
+
         const generateFileList = (file: Array<string>, current: number) => {
             log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', current)
 
+            if (pubsub.getSpecialField('canceledGenerateFileList')) {
+                setTimeout(() => {
+                    pubsub.Publish('EndCancelGenerateFileList', {})
+                }, 128)
+                // end_callback('canceled')
+                return
+            }
+
             if (file.length <= current) {
+                pubsub.Publish('EndGenerateFileList', {})
                 self.createTimeOrder()
                 self.createNameOrder()
-                end_callback()
+                end_callback('success')
                 return
             }
 
