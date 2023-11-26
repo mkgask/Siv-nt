@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { app, session } from 'electron'
+import { app, dialog, session } from 'electron'
 import serve from 'electron-serve'
 
 import env from './components/env'
@@ -41,6 +41,40 @@ if (env.isProd) {
         'package-licenses',    // ログがとんでもなく長くなってしまうので一旦exclude
     ])
 }
+
+
+
+process.on('uncaughtException', (error) => {
+    log.error('fatal-error', 'Uncaught Exception: error.message: ', error.message)
+    log.error('fatal-error', 'Uncaught Exception: error.stack: ', error.stack)
+
+    dialog.showErrorBox('Uncaught Exception',
+        'エラーが発生しました。アプリケーションは強制終了されます。\n' +
+        'ウィンドウが閉じてもタスクマネージャーにアプリケーションが残っている場合があります。\n' +
+        'タスクマネージャーを確認し、残っていたらタスクを終了してください。\n' +
+        '\nデバッグ情報:\n' +
+        error.message + '\n' +
+        error.stack
+    )
+
+    app.quit()
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+    log.error('fatal-error', 'Unhandled Rejection: reason: ', reason)
+    log.error('fatal-error', 'Unhandled Rejection: promise: ', promise)
+
+    dialog.showErrorBox('Unhandled Rejection',
+        'エラーが発生しました。アプリケーションは強制終了されます。\n' +
+        'ウィンドウが閉じてもタスクマネージャーにアプリケーションが残っている可能性があります。\n' +
+        'タスクマネージャーを確認し、残っていたらタスクを終了してください。\n' +
+        '\nデバッグ情報:\n' +
+        reason + '\n' +
+        promise
+    )
+
+    app.quit()
+})
 
 
 
@@ -143,33 +177,21 @@ if (env.isProd) {
 
 
 
-let timerID = null
-
-pubsub.Subscribe('AppQuit', () => {
-    log.debug('boot', 'call: AppQuit: timerID: ', timerID)
-
-    if (timerID) { clearTimeout(timerID) }
-
-    timerID = setTimeout(() => {
-        app.quit()
-    }, 128)
-})
-
-
-
 app.on('window-all-closed', () => {
-    log.debug('boot', 'call: window-all-closed')
-    pubsub.Publish('StartCanceledGenerateFileList', {})
+    log.debug('app-quit', 'call: window-all-closed')
+
     settings.save_all()
 
-    if (pubsub.getSpecialField('fileListGenerating')) {
-        setTimeout(() => { pubsub.Publish('AppQuit', {}) }, 128)
-
-        pubsub.Subscribe('EndCancelGenerateFileList', () => {
-            pubsub.Publish('AppQuit', {})
+    if (pubsub.getSpecialField(pubsub.fields.fileListGenerating)) {
+        pubsub.Subscribe(pubsub.topics.endCancelGenerateFileList, () => {
+            log.debug('app-quit', 'call: window-all-closed: app.quit')
+            app.quit()
         })
+
+        pubsub.Publish(pubsub.topics.startCanceledGenerateFileList)
     } else {
-        pubsub.Publish('AppQuit', {})
+        log.debug('app-quit', 'call: window-all-closed: app.quit')
+        app.quit()
     }
 })
 

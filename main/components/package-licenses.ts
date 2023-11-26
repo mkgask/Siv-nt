@@ -51,7 +51,7 @@ export default function packageLicenses() {
         return obj
     }, {})
     
-    log.debug('package-license', 'packageLicenses: licenses: ', licenses)
+    log.debug('package-licenses', 'packageLicenses: licenses: ', licenses)
 
     return licenses
 }

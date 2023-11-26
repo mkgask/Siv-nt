@@ -10,9 +10,16 @@ import Media from "./media"
 import env from "./env"
 import pubsub from "../helpers/pubsub"
 import mutableProps from "../helpers/mutable-props"
+import { nextTick } from "process"
 
 
 const dirSeparator = env.platform === 'win32' ? '\\' : '/'
+
+
+
+function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 
 
@@ -45,7 +52,7 @@ class MediaList {
     /*  Modules List
     */
 
-    changeList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = (status) => {}): void {
+    async changeList(files: Array<Media>, progress_callback = (current, length) => {}, end_callback = (status) => {}) {
         log.debug('media-list', 'call: MediaList.changeList')
         log.debug('media-list', 'call: MediaList.changeList: files: ', files)
 
@@ -58,34 +65,24 @@ class MediaList {
         // ディレクトリ名からファイルリストを取得
         const _files = fs.readdirSync(dir)
         log.debug('media-list', 'call: MediaList.changeList: _files: ', _files)
+        log.debug('media-list', 'call: MediaList.changeList: _files.length: ', _files.length)
 
         // ファイルを一個一個確認
         const self = this
         this.list = {}
         this.length = 0
 
-        pubsub.Publish('StartGenerateFileList', {})
+        let timerID = []
 
-        const generateFileList = (file: Array<string>, current: number) => {
-            log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', current)
+        pubsub.Publish(pubsub.topics.startGenerateFileList)
 
-            if (pubsub.getSpecialField('canceledGenerateFileList')) {
-                setTimeout(() => {
-                    pubsub.Publish('EndCancelGenerateFileList', {})
-                }, 128)
-                // end_callback('canceled')
-                return
-            }
+        for (let index = 0; index < _files.length; index += 1) {
+            const path = dir + dirSeparator + _files[index]
 
-            if (file.length <= current) {
-                pubsub.Publish('EndGenerateFileList', {})
-                self.createTimeOrder()
-                self.createNameOrder()
-                end_callback('success')
-                return
-            }
+            log.debug('media-list', 'call: MediaList.changeList: generateFileList: current: ', index, ' : exist ', fs.existsSync(path))
 
-            const path = dir + dirSeparator + file[current]
+            if (!fs.existsSync(path)) { continue }
+
             const mime_type = mime.getType(path)
 
             if (is_accepted(mime_type)) {
@@ -100,14 +97,23 @@ class MediaList {
                 self.length += 1
             }
 
-            progress_callback(current, _files.length)
+            progress_callback(index, _files.length)
+            await delay(0)
 
-            setTimeout(() => {
-                generateFileList(file, current + 1)
-            }, 0)
+            if (pubsub.getSpecialField(pubsub.fields.canceledGenerateFileList)) {
+                log.debug('media-list', 'call: MediaList.changeList: generateFileList: canceled')
+
+                //end_callback('canceled')
+                nextTick(() => {
+                    pubsub.Publish(pubsub.topics.endCancelGenerateFileList)
+                })
+                return
+            }
         }
 
-        generateFileList(_files, 0)
+        this.createTimeOrder()
+        this.createNameOrder()
+        end_callback('success')
     }
 
     createTimeOrder(): void {
