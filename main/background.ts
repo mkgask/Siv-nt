@@ -12,6 +12,7 @@ import { logLevel } from './helpers/electron-log-wrapper'
 import registerIpc from './helpers/ipc'
 import openAssociation from './helpers/open-association'
 import pubsub from "./helpers/pubsub"
+import killSameNameProcess from './helpers/kill-same-name-process'
 
 
 
@@ -40,6 +41,8 @@ if (env.isProd) {
     log.excludeCategories([
         'package-licenses',    // ログがとんでもなく長くなってしまうので一旦exclude
     ])
+
+    killSameNameProcess()
 }
 
 
