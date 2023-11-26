@@ -75,6 +75,8 @@ const calculateStyleValue2Px = (value: string, key: string, parent): number => {
 
 const default_media_ratio = 100
 
+let image_loaded = false
+
 
 
 export default function MediaViewer() {
@@ -112,18 +114,21 @@ export default function MediaViewer() {
 
         const onChangeView = (media) => {
             console.log('MediaViewer: onChangeView: media: ', media)
-
+    
             if (!media || !media.mime_type || !media.b64) { return }
-
+    
             const dataURI = `data:${media.mime_type};base64,${media.b64}`
             setType(media.type)
             setSrc(dataURI)
             mediaW.current = media.imagesize_w
             mediaH.current = media.imagesize_h
-
-            toggleViewSizeOriginalOrWindow('window')
+    
+            if (!image_loaded) {
+                toggleViewSizeOriginalOrWindow('window')
+                image_loaded = true
+            }
         }
-
+    
         const onEnv = (env) => {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
