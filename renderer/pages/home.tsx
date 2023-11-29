@@ -19,6 +19,10 @@ import Font from '../components/font'
 
 import appBarStyle from './app-bar.module.css'
 
+import type { EnvType } from '../../commonTypes/env-type'
+import type { SettingsType } from '../../commonTypes/settings-type'
+
+
 
 const Theme = styled('section')(({ theme }) => {
     return {
@@ -75,12 +79,12 @@ function Home() {
             })
         }
 
-        const onSettings = (settings) => {
-            console.log('FileInfo: onSettings(): settings.display_info_enabled : ', settings.display_info_enabled)
+        const onSettings = (settings: SettingsType) => {
+            console.log('Home: onSettings(): settings.display_info_enabled : ', settings.display_info_enabled)
             setAppBarActive(settings.display_info_enabled)
         }
 
-        const onEnv = (env) => {
+        const onEnv = (env: EnvType) => {
             console.log('Home: onEnv: env: ', env)
             setAppName(env.name)
             setAppVersion(env.version)
