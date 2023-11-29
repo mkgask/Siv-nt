@@ -41,8 +41,6 @@ if (env.isProd) {
     log.excludeCategories([
         'package-licenses',    // ログがとんでもなく長くなってしまうので一旦exclude
     ])
-
-    killSameNameProcess()
 }
 
 
@@ -184,6 +182,8 @@ app.on('window-all-closed', () => {
     log.debug('app-quit', 'call: window-all-closed')
 
     settings.save_all()
+
+    if (!env.isProd) { killSameNameProcess() }
 
     if (pubsub.getSpecialField(pubsub.fields.fileListGenerating)) {
         pubsub.Subscribe(pubsub.topics.endCancelGenerateFileList, () => {
