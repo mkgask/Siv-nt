@@ -134,5 +134,5 @@ app
 dist
 
 # Custom
-license.*
-licenses.*
+licenses.json
+licenses.summary.txt
