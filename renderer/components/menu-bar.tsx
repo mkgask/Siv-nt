@@ -52,15 +52,15 @@ export default function MenuBar(props) {
     useEffect(() => {
         const ipcEvent = (window as any).ipcEvent
 
-        const onChangeFileInfo = (media) => {
-            console.log('Home: onChangeFileInfo: media: ', media)
+        const onChangeDisplayInfo = (media) => {
+            console.log('Home: onChangeDisplayInfo: media: ', media)
             setDisplayInfoFilePath(media.path)
         }
 
-        ipcEvent.onChangeFileInfo(onChangeFileInfo)
+        ipcEvent.onChangeDisplayInfo(onChangeDisplayInfo)
 
         return () => {
-            ipcEvent.off('onChangeFileInfo', onChangeFileInfo)
+            ipcEvent.off('onChangeDisplayInfo', onChangeDisplayInfo)
         }
     }, [])
 

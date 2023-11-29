@@ -23,7 +23,7 @@ export default function fileOpen(files: Array<Media>, window: BrowserWindow): vo
 
     log.debug('file-open', 'call: fileOpen: media: ', media)
 
-    window.webContents.send('changeFileInfo', media)
+    window.webContents.send('changeDisplayInfo', media)
 
     media.generateViewerInfo()
 

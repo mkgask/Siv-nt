@@ -27,8 +27,8 @@ export default function DisplayInfo() {
         const ipcEvent = (window as any).ipcEvent
         const ipcSend = (window as any).ipcSend
 
-        const onChangeFileInfo = (media) => {
-            console.log('DisplayInfo: onChangeFileInfo: media: ', media)
+        const onChangeDisplayInfo = (media) => {
+            console.log('DisplayInfo: onChangeDisplayInfo: media: ', media)
             setFilePath(media.path)
             setFileSize(media.filesize)
             setSizeW(media.imagesize_w)
@@ -46,21 +46,21 @@ export default function DisplayInfo() {
             setMax(max)
         }
 
-        ipcEvent.onChangeFileInfo(onChangeFileInfo)
+        ipcEvent.onChangeDisplayInfo(onChangeDisplayInfo)
         ipcEvent.onChangeZoomLevel(onChangeZoomLevel)
         ipcEvent.onProgressFileLoading(onProgressFileLoading)
 
-        ipcSend.readyFileInfo()
+        ipcSend.readyDisplayInfo()
 
         return () => {
-            ipcEvent.off('onChangeFileInfo', onChangeFileInfo)
+            ipcEvent.off('onChangeDisplayInfo', onChangeDisplayInfo)
             ipcEvent.off('onChangeZoomLevel', onChangeZoomLevel)
             ipcEvent.off('onProgressFileLoading', onProgressFileLoading)
         }
     }, [])
 
     return (
-        <Theme className={displayInfoStyle.fileInfo}>
+        <Theme className={displayInfoStyle.displayInfo}>
             {filePath ? (
                 <>
                     <Box className={displayInfoStyle.topBox}>
