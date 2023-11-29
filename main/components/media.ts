@@ -7,6 +7,8 @@ import { get_media_type } from './accepted-types'
 
 import log from '../helpers/electron-log-wrapper'
 
+import type { MediaType } from '../../commonTypes/media-type'
+
 
 
 const calculateDisplayFileSize = (size: number) => {
@@ -18,7 +20,7 @@ const calculateDisplayFileSize = (size: number) => {
 
 
 
-export default class Media {
+export default class Media implements MediaType {
     path: string = ''
     mime_type: string = ''
     type: string = ''

@@ -5,24 +5,20 @@ import { accepted_types } from './accepted-types'
 
 import log from '../helpers/electron-log-wrapper'
 
+import type { SettingsType } from '../../commonTypes/settings-type'
+
+import env from './env'
+
 
 
 const store = new Store<Settings>({
-    name: 'settings',
+    name: env.isProd ? 'settings' : 'settings-dev',
     fileExtension: 'yml',
     serialize: yaml.dump,
     deserialize: yaml.load,
 })
 
 
-
-type SettingsType = {
-    display_info_enabled: boolean,
-    accepted_types: object,
-    image_move_ratio: number,
-    zoom_change_ratio: number,
-    log_output: boolean,
-}
 
 const settings_defaults: SettingsType = {
     display_info_enabled: false,
@@ -34,7 +30,7 @@ const settings_defaults: SettingsType = {
 
 
 
-class Settings {
+class Settings implements SettingsType {
     display_info_enabled: boolean = settings_defaults.display_info_enabled
     accepted_types: object = settings_defaults.accepted_types
     image_move_ratio: number = settings_defaults.image_move_ratio
@@ -81,9 +77,3 @@ export {
     settings_defaults,
     Settings,
 }
-
-export type {
-    SettingsType,
-}
-
-

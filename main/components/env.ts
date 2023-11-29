@@ -4,11 +4,13 @@ import packageJson from '../../package.json'
 
 import font from './font'
 
+import type { EnvType } from '../../commonTypes/env-type'
+
 
 
 const platform = os.platform() ?? ''
 
-const env_defaults = {
+const env_defaults: EnvType = {
     name: 'Siv-nt',
     description: 'Simple image viewer - nextron',
     version: '0.0.0',
