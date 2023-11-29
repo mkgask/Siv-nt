@@ -23,7 +23,7 @@ const StyledBox = styled(Box)({
         margin: 'auto',
         width: '1rem',
         height: '1rem',
-        border: '0.32rem solid #33BEA7',
+        border: '0.29rem solid #33BEA7',
         borderRight: '0.5rem solid transparent',
         borderRadius: '50%',
         animation: 'loading 2s linear infinite',
