@@ -3,84 +3,38 @@ import { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
-    DialogContentText,
     DialogTitle,
-    Divider,
-    Slider,
-    Stack,
-    Switch
 } from "@mui/material";
 
-import styled from "@emotion/styled";
+import SettingsSlider from "./dialog-settings/settings-slider";
+import SettingsSwitch from "./dialog-settings/settings-switch";
+import { SettingsDivider } from "./dialog-settings/settings-style";
 
-
-
-const StyledStack = styled(Stack)({
-    marginTop: '1rem',
-    marginBottom: '1rem',
-    width: '50vw',
-    gap: '3vw',
-    justifyContent: 'space-between',
-})
-
-const InnerStack = styled(Stack)({
-    gap: '3vw',
-    alignItems: 'center',
-})
-
-const StyledDialogText = styled(DialogContentText)({
-    flexShrink: 0,
-})
-
-const StyledDivider = styled(Divider)({
-    marginTop: '1rem',
-})
-
+import type { SettingsType } from "../../commonTypes/settings-type";
 
 
 
 export default function DialogSettings(props) {
 
-    const [image_move_ratio, setImageMoveRatio] = useState(1)
-    const [zoom_change_ratio, setZoomChangeRatio] = useState(5)
-    const [log_output, setLogOutput] = useState(false)
+    const [settings, setSettings] = useState<SettingsType>({} as SettingsType)
 
     useEffect(() => {
+        const ipcSend = (window as any).ipcSend
         const ipcEvent = (window as any).ipcEvent
 
-        const onSettings = (settings) => {
-            setImageMoveRatio(settings.image_move_ratio)
-            setZoomChangeRatio(settings.zoom_change_ratio)
-            setLogOutput(settings.log_output)
+        const onSettings = (settings: SettingsType) => {
+            console.log('DialogSettings: onSettings: settings: ', settings)
+            setSettings(settings)
         }
 
         ipcEvent.onSettings(onSettings)
+
+        ipcSend.readySettingsDialog()
 
         return () => {
             ipcEvent.off('onSettings', onSettings)
         }
     }, [])
-
-    const handleImageMoveRatioChange = (event, newValue) => {
-        event.preventDefault()
-        console.log('DialogSettings: handleImageMoveRatioChange: ', newValue)
-        setImageMoveRatio(newValue as number)
-        ; (window as any).ipcSend.settings('image_move_ratio', newValue)
-    }
-
-    const handleZoomChangeRatioChange = (event, newValue) => {
-        event.preventDefault()
-        console.log('DialogSettings: handleZoomChangeRatioChange: ', newValue)
-        setZoomChangeRatio(newValue as number)
-        ; (window as any).ipcSend.settings('zoom_change_ratio', newValue)
-    }
-
-    const handleLogoutput = (event, newValue) => {
-        event.preventDefault()
-        console.log('DialogSettings: handleLogoutput: ', newValue)  
-        setLogOutput(newValue as boolean)
-        ; (window as any).ipcSend.settings('log_output', newValue)
-    }
 
     const handleClose = () => {
         props.setShowDialogSettings(false)
@@ -99,80 +53,67 @@ export default function DialogSettings(props) {
                         Settings
                     </DialogTitle>
 
-                    <StyledDivider />
+                    <SettingsDivider />
 
-                    <StyledStack
-                        direction="row"
-                    >
-                        <StyledDialogText>
-                            Image move ratio
-                        </StyledDialogText>
+                    <SettingsSlider
+                        name="Image move ratio horizontal"
+                        value_name="image_move_ratio_x"
+                        arg_value={settings.image_move_ratio_x}
+                        arg_min={1}
+                        arg_max={32}
+                    />
 
-                        <InnerStack
-                            direction="row"
-                        >
-                            <StyledDialogText>
-                                {image_move_ratio}
-                            </StyledDialogText>
+                    <SettingsDivider />
 
-                            <Slider
-                                value={image_move_ratio}
-                                min={1}
-                                max={32}
-                                onChange={handleImageMoveRatioChange}
-                                sx={{ width: '10vw' }}
-                            ></Slider>
-                        </InnerStack>
-                    </StyledStack>
+                    <SettingsSlider
+                        name="Image move ratio vertical"
+                        value_name="image_move_ratio_y"
+                        arg_value={settings.image_move_ratio_y}
+                        arg_min={1}
+                        arg_max={32}
+                    />
 
-                    <StyledDivider />
+                    <SettingsDivider />
 
-                    <StyledStack
-                        direction="row"
-                    >
-                        <StyledDialogText>
-                            Zoom change ratio
-                        </StyledDialogText>
+                    <SettingsSwitch
+                        name="Image move inverse horizontal"
+                        value_name="move_inverse_x"
+                        arg_checked={settings.move_inverse_x}
+                    />
 
-                        <InnerStack
-                            direction="row"
-                        >
-                        <StyledDialogText>
-                            {zoom_change_ratio}
-                        </StyledDialogText>
+                    <SettingsDivider />
 
-                        <Slider
-                            value={zoom_change_ratio}
-                            min={1}
-                            max={32}
-                            onChange={handleZoomChangeRatioChange}
-                            sx={{ width: '10vw' }}
-                        ></Slider>
-                        </InnerStack>
-                    </StyledStack>
+                    <SettingsSwitch
+                        name="Image move inverse vertical"
+                        value_name="move_inverse_y"
+                        arg_checked={settings.move_inverse_y}
+                    />
 
-                    <StyledDivider />
+                    <SettingsDivider />
 
-                    <StyledStack
-                        direction="row"
-                    >
-                        <StyledDialogText>
-                            Log output
-                        </StyledDialogText>
+                    <SettingsSlider
+                        name="Zoom change ratio"
+                        value_name="zoom_change_ratio"
+                        arg_value={settings.zoom_change_ratio}
+                        arg_min={1}
+                        arg_max={32}
+                    />
 
-                        <InnerStack
-                            direction="row"
-                        >
-                            <StyledDialogText>
-                                {log_output ? 'On' : 'Off'}
-                            </StyledDialogText>
+                    <SettingsDivider />
 
-                            <Switch
-                                checked={log_output}
-                                onChange={handleLogoutput}
-                            ></Switch>
-                        </InnerStack>
-                    </StyledStack>
+                    <SettingsSwitch
+                        name="Zoom wheel inverse"
+                        value_name="wheel_inverse"
+                        arg_checked={settings.wheel_inverse}
+                    />
+
+                    <SettingsDivider />
+
+                    <SettingsSwitch
+                        name="Log output"
+                        value_name="log_output"
+                        arg_checked={settings.log_output}
+                    />
 
                 </DialogContent>
             </Dialog>

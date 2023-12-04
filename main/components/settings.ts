@@ -23,9 +23,13 @@ const store = new Store<Settings>({
 const settings_defaults: SettingsType = {
     display_info_enabled: false,
     accepted_types: accepted_types,
-    image_move_ratio: 16,
+    image_move_ratio_x: 16,
+    image_move_ratio_y: 16,
+    move_inverse_x: false,
+    move_inverse_y: false,
     zoom_change_ratio: 5,
     log_output: false,
+    wheel_inverse: false,
 }
 
 
@@ -33,9 +37,13 @@ const settings_defaults: SettingsType = {
 class Settings implements SettingsType {
     display_info_enabled: boolean = settings_defaults.display_info_enabled
     accepted_types: object = settings_defaults.accepted_types
-    image_move_ratio: number = settings_defaults.image_move_ratio
+    image_move_ratio_x: number = settings_defaults.image_move_ratio_x
+    image_move_ratio_y: number = settings_defaults.image_move_ratio_y
+    move_inverse_x: boolean = settings_defaults.move_inverse_x
+    move_inverse_y: boolean = settings_defaults.move_inverse_y
     zoom_change_ratio: number = settings_defaults.zoom_change_ratio
-    log_output: boolean = false
+    log_output: boolean = settings_defaults.log_output
+    wheel_inverse: boolean = settings_defaults.wheel_inverse
 
     constructor() {
         this.load()

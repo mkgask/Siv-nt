@@ -1,4 +1,6 @@
 module.exports = {
+    output: 'export',
+
     webpack: (defaultConfig) => {
         const config = Object.assign(defaultConfig, {
             entry: {

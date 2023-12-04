@@ -47,9 +47,14 @@ contextBridge.exposeInMainWorld('ipcSend', {
         ipcRenderer.send('readyMediaViewer')
     },
 
-    readyFileInfo: () => {
-        console.log('call: ipcSend.readyFileInfo')
-        ipcRenderer.send('readyFileInfo')
+    readyDisplayInfo: () => {
+        console.log('call: ipcSend.readyDisplayInfo')
+        ipcRenderer.send('readyDisplayInfo')
+    },
+
+    readySettingsDialog: () => {
+        console.log('call: ipcSend.readySettingsDialog')
+        ipcRenderer.send('readySettingsDialog')
     },
 
     readyPackageLicenses: () => {
@@ -103,9 +108,9 @@ contextBridge.exposeInMainWorld('ipcEvent', {
         ipcRenderer.on('changeView', (event, media) => callback(media))
     },
 
-    onChangeFileInfo: (callback) => {
-        console.log('call: ipcEvent.onChangeFileInfo')
-        ipcRenderer.on('changeFileInfo', (event, media) => callback(media))
+    onChangeDisplayInfo: (callback) => {
+        console.log('call: ipcEvent.onChangeDisplayInfo')
+        ipcRenderer.on('changeDisplayInfo', (event, media) => callback(media))
     },
 
     onChangeZoomLevel: (callback) => {

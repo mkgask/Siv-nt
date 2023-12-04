@@ -52,7 +52,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
 
         log.debug('view', 'changeView: media: ', media)
 
-        mainWindow.webContents.send('changeFileInfo', media)
+        mainWindow.webContents.send('changeDisplayInfo', media)
 
         media.generateViewerInfo(item.path)
 
@@ -76,7 +76,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
 
         const media = mediaList.getNext()
 
-        mainWindow.webContents.send('changeFileInfo', media)
+        mainWindow.webContents.send('changeDisplayInfo', media)
 
         media.generateViewerInfo()
 
@@ -96,7 +96,7 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
 
         const media = mediaList.getPrev()
 
-        mainWindow.webContents.send('changeFileInfo', media)
+        mainWindow.webContents.send('changeDisplayInfo', media)
 
         media.generateViewerInfo()
 
@@ -130,13 +130,21 @@ export default function registerIpc(mainWindow: Electron.BrowserWindow) {
         //if (rendererReady.CheckAndSetReady('readyMediaViewer')) { mainWindow.webContents.send('endLoading')}
     })
 
-    ipcMain.on('readyFileInfo', (event) => {
-        log.debug('view', 'call: ipcMain.handle.readyFileInfo')
+    ipcMain.on('readyDisplayInfo', (event) => {
+        log.debug('view', 'call: ipcMain.handle.readyDisplayInfo')
         if (!validateSender(event.senderFrame)) return null
-        
-        log.debug('view', 'call: ipcMain.handle.readyFileInfo: settings: ', settings)
+
+        log.debug('view', 'call: ipcMain.handle.readyDisplayInfo: settings: ', settings)
         mainWindow.webContents.send('settings', settings)
-        //if (rendererReady.CheckAndSetReady('readyFileInfo')) { mainWindow.webContents.send('endLoading')}
+        //if (rendererReady.CheckAndSetReady('readyDisplayInfo')) { mainWindow.webContents.send('endLoading')}
+    })
+
+    ipcMain.on('readySettingsDialog', (event) => {
+        log.debug('view', 'call: ipcMain.handle.readySettingsDialog')
+        if (!validateSender(event.senderFrame)) return null
+
+        log.debug('view', 'call: ipcMain.handle.readySettingsDialog: settings: ', settings)
+        mainWindow.webContents.send('settings', settings)
     })
 
     ipcMain.on('readyPackageLicenses', (event) => {

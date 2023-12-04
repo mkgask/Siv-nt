@@ -4,6 +4,8 @@ import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import type Point from '../types/point'
+import { SettingsType } from '../../commonTypes/settings-type'
+import { EnvType } from '../../commonTypes/env-type'
 
 
 
@@ -89,8 +91,12 @@ export default function MediaViewer() {
     const imageMarginLeft = useRef(0)
     const imageMarginTop = useRef(0)
     
-    const image_move_ratio = useRef(16)
+    const image_move_ratio_x = useRef(16)
+    const image_move_ratio_y = useRef(16)
+    const move_inverse_x = useRef(false)
+    const move_inverse_y = useRef(false)
     const zoom_change_ratio = useRef(5)
+    const wheel_inverse = useRef(false)
 
     const mouseDownPosition = useRef<Point>({ x: 0, y: 0 })
 
@@ -129,17 +135,21 @@ export default function MediaViewer() {
             }
         }
     
-        const onEnv = (env) => {
+        const onEnv = (env: EnvType) => {
             console.log('MediaViewer: onEnv: env: ', env)
             console.log('MediaViewer: onEnv: env.isProd: ', env.isProd)
             setIsProd(env.isProd)
         }
 
-        const onSettings = (settings) => {
+        const onSettings = (settings: SettingsType) => {
             console.log('MediaViewer: onSettings: settings: ', settings)
             setAcceptedTypes(settings.accepted_types)
-            image_move_ratio.current = settings.image_move_ratio
+            image_move_ratio_x.current = settings.image_move_ratio_x
+            image_move_ratio_y.current = settings.image_move_ratio_y
+            move_inverse_x.current = settings.move_inverse_x
+            move_inverse_y.current = settings.move_inverse_y
             zoom_change_ratio.current = settings.zoom_change_ratio
+            wheel_inverse.current = settings.wheel_inverse
         }
 
         ipcEvent.onChangeView(onChangeView)
@@ -267,7 +277,9 @@ export default function MediaViewer() {
     const handleWheel = (event) => {
         console.log('handleWheel()')
 
-        const mediaratio = Math.min(Math.max(10, mediaRatio + event.deltaY * zoom_ratio()), 1000)
+        const mediaratio = (Math.min(Math.max(10, mediaRatio +
+            (event.deltaY * (wheel_inverse.current ? -1 : 1)) *
+            zoom_ratio()), 1000))
         setMediaRatio(mediaratio)
         changeViewSize(mediaW.current, mediaH.current, mediaratio)
     }
@@ -345,17 +357,21 @@ export default function MediaViewer() {
         if (leftClick) {
             // 移動量から移動の方向だけ取得
             const moveX =
-                (0 < (event.movementX)) ? 1 :
+                ((0 < (event.movementX)) ? 1 :
                 ((event.movementX) < 0) ? -1 :
-                0
+                0) * (
+                    move_inverse_x.current ? -1 : 1
+                )
 
             const moveY =
-                (0 < (event.movementY)) ? 1 :
+                ((0 < (event.movementY)) ? 1 :
                 ((event.movementY) < 0) ? -1 :
-                0
+                0) * (
+                    move_inverse_y.current ? -1 : 1
+                )
 
-            imageMarginLeft.current += (moveX * image_move_ratio.current);
-            imageMarginTop.current += (moveY * image_move_ratio.current);
+            imageMarginLeft.current += (moveX * image_move_ratio_x.current);
+            imageMarginTop.current += (moveY * image_move_ratio_y.current);
 
             requestAnimationFrame(() => {
                 if (imageRef === null || imageRef.current === null) { return }

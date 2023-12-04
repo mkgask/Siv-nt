@@ -63,16 +63,16 @@ In no particular order
 - [ ] v0.11.0 image convert and save
 - [ ] v0.10.0 support audio file
 - [ ] v0.9.0 support movie file
-- [ ] v0.8.5 add some settings in settings dialog
+- [x] v0.8.5 add some settings in settings dialog
 - [x] v0.8.4 keep image ratio to show next/prev image
-- [x] v0.8.3 fix show error in app close when dir loading
-- [x] v0.8.2 adjust loading progress
-- [x] v0.8.1 open files in same directory to open association
-- [x] v0.8.0 change next or prev file in same directory
 
 <details>
 <summary>more old versions</summary>
 
+- [x] v0.8.3 fix show error in app close when dir loading
+- [x] v0.8.2 adjust loading progress
+- [x] v0.8.1 open files in same directory to open association
+- [x] v0.8.0 change next or prev file in same directory
 - [x] v0.7.4 change default font to Assistant
 - [x] v0.7.3 change zoom level ratio in settings dialog
 - [x] v0.7.2 adjust env loading with default values
@@ -107,8 +107,6 @@ In no particular order
 - [ ] v?.?.? send main process from renderer process logging data
 - [ ] v?.?.? correct application menu bar
 - [ ] v?.?.? display 2 images at the same time
-- [ ] v?.?.? invert image up/down when mouse up/down from settings
-- [ ] v?.?.? invert zoom in/out when mouse wheel up/down from settings
 - [ ] v?.?.? Directory viewer
 - [ ] v?.?.? auto release in GitHub Actions
 - [ ] v?.?.? multilingual (jp, en)
