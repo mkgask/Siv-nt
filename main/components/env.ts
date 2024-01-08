@@ -9,6 +9,7 @@ import type { EnvType } from '../../commonTypes/env-type'
 
 
 const platform = os.platform() ?? ''
+const os_release = os.release() ?? ''
 
 const env_defaults: EnvType = {
     name: 'Siv-nt',
@@ -20,8 +21,15 @@ const env_defaults: EnvType = {
     isProd: true,
     isDev: false,
     isTest: false,
-    platform: platform,
-    font_styles: font.font_styles,
+    nodeEnv: 'production',
+
+    isWindows: true,
+    isMac: false,
+    isLinux: false,
+    platform: "win32",
+    os_release: "Windows 10 Home",
+
+    font_styles: font.font_styles
 }
 
 
@@ -36,7 +44,14 @@ class Env {
     readonly isProd: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'production' : env_defaults.isProd
     readonly isDev: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'development' : env_defaults.isDev
     readonly isTest: boolean = process.env.NODE_ENV ? process.env.NODE_ENV === 'test' : env_defaults.isTest
+    readonly nodeEnv: string = process.env.NODE_ENV
+
+    readonly isWindows: boolean = platform ? platform === 'win32' : env_defaults.isWindows
+    readonly isMac: boolean = platform ? platform === 'darwin' : env_defaults.isMac
+    readonly isLinux: boolean = platform ? platform === 'linux' : env_defaults.isLinux
     readonly platform: string = platform ?? env_defaults.platform
+    readonly os_release: string = os_release ?? env_defaults.os_release
+
     readonly font_styles: string = font.font_styles ?? env_defaults.font_styles
 }
 

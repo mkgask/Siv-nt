@@ -34,10 +34,18 @@ export default function DialogHelp(props) {
         version: '',
         author: '',
         homepage: '',
+
         isProd: true,
         isDev: false,
         isTest: false,
+        nodeEnv: '',
+
+        isWindows: false,
+        isMac: false,
+        isLinux: false,
         platform: '',
+        os_release: '',
+
         font_styles: '',
     })
 

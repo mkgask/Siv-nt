@@ -119,6 +119,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
     await app.whenReady()
     log.debug('boot', 'load: app.whenReady')
+    if (!env.isProd) { log.debug('boot', 'env: ', env) }
 
     // リモートコンテンツはすべて不許可
     session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
@@ -178,7 +179,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
     log.debug('app-quit', 'call: window-all-closed')
 
     settings.save_all()
@@ -186,15 +187,30 @@ app.on('window-all-closed', () => {
     if (!env.isProd) { killSameNameProcess() }
 
     if (pubsub.getSpecialField(pubsub.fields.fileListGenerating)) {
-        pubsub.Subscribe(pubsub.topics.endCancelGenerateFileList, () => {
-            log.debug('app-quit', 'call: window-all-closed: app.quit')
-            app.quit()
+        const endCancelGenerateFileList = new Promise<void>(resolve => {
+            pubsub.Subscribe(pubsub.topics.endCancelGenerateFileList, () => {
+                log.debug('app-quit', 'call: window-all-closed: app.quit')
+                // app.quit()
+                //app.exit()
+                //killAllProcess(app)
+                //env.isMac ? app.quit() : app.exit()
+                resolve()
+            })
         })
 
         pubsub.Publish(pubsub.topics.startCanceledGenerateFileList)
+
+        await endCancelGenerateFileList
+        env.isMac ? app.quit() : app.exit()
+        //app.quit()
+
     } else {
         log.debug('app-quit', 'call: window-all-closed: app.quit')
-        app.quit()
+        //app.quit()
+        //app.exit()
+        //killAllProcess(app)
+        env.isMac ? app.quit() : app.exit()
+        //app.quit()
     }
 })
 

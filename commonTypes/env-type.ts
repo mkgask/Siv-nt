@@ -11,7 +11,14 @@ type EnvType = {
     isProd: boolean,
     isDev: boolean,
     isTest: boolean,
-    platform: NodeJS.Platform | "",
+    nodeEnv: string,
+
+    isWindows: boolean,
+    isMac: boolean,
+    isLinux: boolean,
+    platform: NodeJS.Platform,
+    os_release: string,
+
     font_styles: string,
 }
 
