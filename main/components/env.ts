@@ -9,6 +9,7 @@ import type { EnvType } from '../../commonTypes/env-type'
 
 
 const platform = os.platform() ?? ''
+const os_version = os.version() ?? ''
 const os_release = os.release() ?? ''
 
 const env_defaults: EnvType = {
@@ -27,7 +28,8 @@ const env_defaults: EnvType = {
     isMac: false,
     isLinux: false,
     platform: "win32",
-    os_release: "Windows 10 Home",
+    os_version: "Unknown OS",
+    os_release: "10.0.00000",
 
     font_styles: font.font_styles
 }
@@ -50,6 +52,7 @@ class Env {
     readonly isMac: boolean = platform ? platform === 'darwin' : env_defaults.isMac
     readonly isLinux: boolean = platform ? platform === 'linux' : env_defaults.isLinux
     readonly platform: string = platform ?? env_defaults.platform
+    readonly os_version: string = os_version ?? env_defaults.os_version
     readonly os_release: string = os_release ?? env_defaults.os_release
 
     readonly font_styles: string = font.font_styles ?? env_defaults.font_styles

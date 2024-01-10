@@ -44,6 +44,7 @@ export default function DialogHelp(props) {
         isMac: false,
         isLinux: false,
         platform: '',
+        os_version: '',
         os_release: '',
 
         font_styles: '',
@@ -78,6 +79,10 @@ export default function DialogHelp(props) {
                     {env.name}
                 </DialogTitle>
 
+                {env.isDev ? <StyledDialogText>
+                    {env.nodeEnv}
+                </StyledDialogText> : ''}
+
                 <StyledDialogText>
                     {env.description}
                 </StyledDialogText>
@@ -93,6 +98,10 @@ export default function DialogHelp(props) {
                 <StyledDialogText>
                     {env.homepage}
                 </StyledDialogText>
+
+                {env.isDev ? <StyledDialogText>
+                    {env.os_version} {env.os_release}
+                </StyledDialogText> : ''}
 
                 <StyledDivider />
 
